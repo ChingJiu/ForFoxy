@@ -14,6 +14,24 @@ h1 {
   margin: 0;
   font-size: 1.8rem;
 }
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 20px;
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.tree-stage {
+  max-width: 90vw;
+  max-height: 90vh;
+}
 
 #tree-container {
   position: relative;
