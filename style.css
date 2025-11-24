@@ -1,0 +1,53 @@
+body {
+  background: #F6F5F3;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header {
+  background: #84D4F6;
+  padding: 1rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+#tree-container {
+  position: relative;
+  width: 90%;
+  max-width: 450px;
+  margin: 2rem auto;
+}
+
+#tree {
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Ornament Tray */
+#ornament-tray {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 1rem;
+  background: #84D4F6;
+}
+
+#ornament-tray img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  cursor: grab;
+}
+
+/* Placed Ornaments */
+.placed {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  cursor: grab;
+}
