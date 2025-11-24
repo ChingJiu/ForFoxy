@@ -15,37 +15,6 @@
 
   html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
   body{
-    background: linear-gradient(180deg,var(--offwhite) 0%, #ffffff 100%);
-    color:#133;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:24px;
-  }
-
-  .page {
-    width:100%;
-    max-width:1100px;
-    background: rgba(255,255,255,0.6);
-    border-radius:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.12);
-    padding:20px;
-  }
-
-  header {display:flex;align-items:center;justify-content:space-between;gap:12px}
-  h1 {font-size:20px;margin:0;color:var(--blue);letter-spacing:0.6px}
-  .subtitle {color:var(--muted);font-size:13px}
-
-  .layout {display:flex;gap:20px;margin-top:18px}
-  /* left: tree area */
-  .canvas-wrap {
-    flex:1 1 0;
-    min-height:520px;
-    display:flex;align-items:center;justify-content:center;
-    background: linear-gradient(180deg, rgba(132,212,246,0.06), rgba(246,245,243,0.02));
-    border-radius:10px;padding:18px;
-    border:1px solid rgba(0,0,0,0.04);
-  }
 
   /* right: controls */
   .controls {
@@ -100,11 +69,43 @@
     <header>
       <div>
         <h1>Shared Christmas Tree</h1>
-        <div class="subtitle">Decorate together — save locally or export/import. (Cloud sync instructions below.)</div>
-      </div>
-      <div class="small">Colors: <span style="color:var(--blue)">#84D4F6</span> &nbsp; <span style="color:var(--offwhite)">#F6F5F3</span></div>
-    </header>
+        <div class="subtitle">Decorate together — save locally or export/import. (Cloud sync instructions below.)
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Christmas Tree Decorator</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <h1>Decorate the Tree Together</h1>
+  </header>
+
+  <main>
+
+    <div id="tree-container">
+      <img id="tree" src="tree.png" alt="Christmas Tree">
+    </div>
+
+    <div id="ornament-tray">
+      <img class="ornament" draggable="true" src="ornaments/star.png" data-type="star">
+      <img class="ornament" draggable="true" src="ornaments/bauble-red.png" data-type="red">
+      <img class="ornament" draggable="true" src="ornaments/bauble-blue.png" data-type="blue">
+      <img class="ornament" draggable="true" src="ornaments/candy.png" data-type="candy">
+      <img class="ornament" draggable="true" src="ornaments/bell.png" data-type="bell">
+    </div>
+      <div class="small">Colors: <span style="color:var(--blue)">#84D4F6</span> &nbsp; <span style="color:var(--offwhite)">#F6F5F3</span></div>
+
+    
     <div class="layout">
       <div class="canvas-wrap">
         <div class="tree-stage" id="stage">
