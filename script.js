@@ -1,13 +1,23 @@
-/* ============= Firebase Setup ============= */
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "xxxx",
-  appId: "xxxx"
-};
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyCb9k3GJPoykO1QQiiteSKdRFYFwYqCRkU",
+    authDomain: "christmas-tree-67873.firebaseapp.com",
+    databaseURL: "https://christmas-tree-67873-default-rtdb.firebaseio.com",
+    projectId: "christmas-tree-67873",
+    storageBucket: "christmas-tree-67873.firebasestorage.app",
+    messagingSenderId: "1030522218712",
+    appId: "1:1030522218712:web:6b01f57afd9a1b8eff8fad",
+    measurementId: "G-GF6YYKBJBQ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
