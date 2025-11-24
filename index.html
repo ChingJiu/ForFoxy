@@ -345,14 +345,6 @@ importFile.addEventListener('change', async (ev)=>{
   } catch(err){ alert('Import failed: ' + err); }
 });
 
-/* -------- CloudKit (iCloud) — OPTIONAL --------
-   To enable:
-   1) Create CloudKit container in Apple Developer / CloudKit Dashboard.
-   2) Configure a "Web Services" key and allow your website origin in CloudKit dashboard.
-   3) Add the CloudKit JS <script src="https://cdn.apple-cloudkit.com/ck/2/cloudkit.js"></script>
-   4) Fill CONTAINER_ID and API_TOKEN below and uncomment the saveToCloud/loadFromCloud usage.
-   NOTE: CloudKit requires HTTPS and users sign in with their Apple ID.
----------------------------------------------- */
 
 const CLOUD_CONFIG = {
   ENABLED: false, // set to true after you follow setup steps
