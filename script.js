@@ -28,30 +28,72 @@ const ornamentsRef = ref(db, "ornaments_shared");
 const treeContainer = document.getElementById("tree-container");
 const decorateLayer = document.getElementById("decorate-layer");
 
-/* ============================================================
-   TAP TO ADD ORNAMENT
-============================================================ */
-document.querySelectorAll(".ornament-template").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const type = btn.dataset.type;
-    const id = "ornament_" + Date.now();
+document.addEventListener("DOMContentLoaded", () => {
+  const tray = document.getElementById("ornament-tray");
+  const layer = document.getElementById("decorate-layer");
 
-    const rect = treeContainer.getBoundingClientRect();
+  // -------------------------
+  //  THEME TOGGLE
+  // -------------------------
+  const toggleBtn = document.getElementById("theme-toggle");
+  toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("night");
+  });
 
-    // Place in the center
-    const x = 50;
-    const y = 50;
+  // Set last edited date
+  document.getElementById("last-edit-date").textContent =
+    new Date().toLocaleDateString();
 
-    const model = {
-      id,
-      type,
-      x, y,
-      scale: 1,
-      rotation: 0
+  // -------------------------
+  //  TAP-TO-ADD ORNAMENT
+  // -------------------------
+  tray.querySelectorAll(".ornament-template").forEach(temp => {
+    temp.addEventListener("click", () => {
+      const newO = document.createElement("img");
+      newO.src = temp.src;
+      newO.classList.add("ornament");
+      newO.style.left = "120px";
+      newO.style.top = "120px";
+
+      makeDraggable(newO);
+      layer.appendChild(newO);
+    });
+  });
+
+  // -------------------------
+  //  DRAG WITH FINGER OR MOUSE
+  // -------------------------
+  function makeDraggable(el) {
+    let offsetX = 0, offsetY = 0;
+
+    const start = (e) => {
+      const p = e.touches ? e.touches[0] : e;
+      offsetX = p.clientX - el.getBoundingClientRect().left;
+      offsetY = p.clientY - el.getBoundingClientRect().top;
+
+      document.addEventListener("mousemove", move);
+      document.addEventListener("touchmove", move, { passive: false });
+
+      document.addEventListener("mouseup", end);
+      document.addEventListener("touchend", end);
     };
 
-    set(ref(db, "ornaments_shared/" + id), model);
-  });
+    const move = (e) => {
+      e.preventDefault();
+      const p = e.touches ? e.touches[0] : e;
+
+      el.style.left = (p.clientX - offsetX) + "px";
+      el.style.top = (p.clientY - offsetY) + "px";
+    };
+
+    const end = () => {
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("touchmove", move);
+    };
+
+    el.addEventListener("mousedown", start);
+    el.addEventListener("touchstart", start, { passive: false });
+  }
 });
 
 /* ============================================================
