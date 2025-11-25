@@ -161,6 +161,8 @@ function inferTypeFromSrc(src) {
   if (src.includes("blue")) return "blue";
   if (src.includes("candy")) return "candy";
   if (src.includes("bell")) return "bell";
+  if (src.includes("ginger")) return "ginger";
+  if (src.includes("present")) return "present";
   return "bell";
 }
 
