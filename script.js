@@ -86,7 +86,8 @@ const SOURCE = {
   bell: "bell.png",
   ginger: "ginger.png",
   present: "present.png",
-  cat: "cat.png"
+  cat: "cat.png",
+  wdzy: "wdzy.png"
 };
 
 /* ===========================
@@ -166,6 +167,7 @@ function inferTypeFromSrc(src) {
   if (s.includes("ginger")) return "ginger";
   if (s.includes("present")) return "present";
   if (s.includes("cat")) return "cat";
+  if (s.includes("wdzy")) return "wdzy";
   return "bell";
 }
 
