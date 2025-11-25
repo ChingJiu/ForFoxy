@@ -146,7 +146,7 @@ if (tray) {
       const xPct = 50; // center
       const yPct = 45;
       const id = uid('orn_');
-      const model = { id, type: chosenType, x: xPct, y: yPct, scale: 0.3, rotation: 0 };
+      const model = { id, type: chosenType, x: xPct, y: yPct, scale: 0.05, rotation: 0 };
       // write to firebase
       set(ref(db, `ornaments_shared/${id}`), model).catch(e => console.warn(e));
     });
@@ -247,7 +247,7 @@ function attachPointerControls(el, model) {
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
 
       // scale multiplier
-const newScale = clamp(start.scale * (dist / start.dist), 0.2, 3.0);
+const newScale = clamp(start.scale * (dist / start.dist), 0.05, 3.0);
 model.scale = newScale;
 
     
@@ -296,24 +296,6 @@ onChildRemoved(ORN_REF, snap => {
   removeOrnamentById(key);
 });
 
-/* ===========================
-   Optional: Save screenshot button (if exists)
-   =========================== */
-if (saveBtn) {
-  saveBtn.addEventListener("click", async () => {
-    try {
-      const { default: html2canvas } = await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.js");
-      const canvas = await html2canvas(stage, { backgroundColor: null, scale: 2 });
-      const a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = "tree-snapshot.png";
-      a.click();
-    } catch (e) {
-      console.warn("Screenshot failed", e);
-      alert("Screenshot failed. Check console.");
-    }
-  });
-}
 
 /* ===========================
    Theme toggle (if present)
