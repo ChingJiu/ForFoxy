@@ -120,6 +120,10 @@ function isOverTrash(el) {
   return cx>=tz.left && cx<=tz.right && cy>=tz.top && cy<=tz.bottom;
 }
 
+el.classList.add("near-trash");
+el.classList.add("wiggle");
+
+
 /* ================================
    Pointer Controls
 ================================ */
