@@ -41,10 +41,10 @@ const trashZone = document.getElementById("trash-zone");
 /* ===========================
    Configuration
    =========================== */
-const DEFAULT_SCALE = 0.45;   // default when adding (smaller than before)
-const MIN_SCALE = 0.2;       // smallest allowed (now small but visible)
+const DEFAULT_SCALE = 0.8;   // default when adding (smaller than before)
+const MIN_SCALE = 0.9;       // smallest allowed (now small but visible)
 const MAX_SCALE = 2.5;        // largest allowed
-const TRASH_HOLD_MS = 700;    // how long over trash before wiggle+delete
+const TRASH_HOLD_MS = 500;    // how long over trash before wiggle+delete
 const SAVE_DEBOUNCE = 220;
 
 /* ===========================
