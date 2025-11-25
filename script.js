@@ -1,9 +1,11 @@
 /* ============================================================
-   FIREBASE INITIALIZE
+   FIREBASE
 ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getDatabase, ref, set, onChildAdded, onChildChanged, onChildRemoved }
-  from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import {
+  getDatabase, ref, set,
+  onChildAdded, onChildChanged, onChildRemoved
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCb9k3GJPoykO1QQiiteSKdRFYFwYqCRkU",
@@ -16,49 +18,50 @@ const firebaseConfig = {
   measurementId: "G-GF6YYKBJBQ"
 };
 
-const app = initializeApp(firebaseConfig);
-const db  = getDatabase(app);
+initializeApp(firebaseConfig);
+const db = getDatabase();
 const ornamentsRef = ref(db, "ornaments_shared");
-
 
 /* ============================================================
    DOM ELEMENTS
 ============================================================ */
-const stage = document.getElementById("stage");
+const treeContainer = document.getElementById("tree-container");
 const decorateLayer = document.getElementById("decorate-layer");
 
-
-// -------------------------
-// Tap to add ornament from tray
-// -------------------------
+/* ============================================================
+   TAP TO ADD ORNAMENT
+============================================================ */
 document.querySelectorAll(".ornament-template").forEach(btn => {
   btn.addEventListener("click", () => {
     const type = btn.dataset.type;
     const id = "ornament_" + Date.now();
 
-    // Default placement: center of tree
     const rect = treeContainer.getBoundingClientRect();
-    const x = rect.width / 2;
-    const y = rect.height / 2;
 
-    const ornamentData = { id, type, x, y, scale: 1, rotation: 0 };
-    set(ref(db, "ornaments_shared/" + id), ornamentData);
+    // Place in the center
+    const x = 50;
+    const y = 50;
+
+    const model = {
+      id,
+      type,
+      x, y,
+      scale: 1,
+      rotation: 0
+    };
+
+    set(ref(db, "ornaments_shared/" + id), model);
   });
 });
 
-
 /* ============================================================
-   RENDER ORNAMENT INSTANCE
+   RENDER ORNAMENT
 ============================================================ */
 function renderOrnament(model) {
   const existing = document.getElementById(model.id);
   if (existing) existing.remove();
 
-  const img = document.createElement("img");
-  img.classList.add("placed");
-  img.id = model.id;
-
-  const sourceMap = {
+  const map = {
     star: "star.png",
     red: "bauble-red.png",
     blue: "bauble-blue.png",
@@ -66,21 +69,29 @@ function renderOrnament(model) {
     bell: "bell.png"
   };
 
-  img.src = "ornaments/" + (sourceMap[model.type] || "bell.png");
+  const el = document.createElement("img");
+  el.src = "ornaments/" + (map[model.type] || "bell.png");
+  el.classList.add("placed");
+  el.id = model.id;
 
-  img.style.left = model.x + "%";
-  img.style.top  = model.y + "%";
-  img.style.transform =
-      `translate(-50%, -50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
+  updateElement(el, model);
+  decorateLayer.appendChild(el);
 
-  decorateLayer.appendChild(img);
-
-  attachPointerControls(img, model);
+  attachPointerControls(el, model);
 }
 
+/* ============================================================
+   UPDATE ELEMENT
+============================================================ */
+function updateElement(el, model) {
+  el.style.left = model.x + "%";
+  el.style.top  = model.y + "%";
+  el.style.transform =
+    `translate(-50%, -50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
+}
 
 /* ============================================================
-   POINTER EVENTS (Touch + Mouse)
+   POINTER CONTROLS (iPad SAFE)
 ============================================================ */
 function attachPointerControls(el, model) {
   const pointers = new Map();
@@ -95,26 +106,26 @@ function attachPointerControls(el, model) {
       const p = e;
       start.x = p.clientX;
       start.y = p.clientY;
+
       start.modelX = model.x;
       start.modelY = model.y;
 
       model.delTimer = setTimeout(() => {
         set(ref(db, "ornaments_shared/" + model.id), null);
         el.remove();
-      }, 600);
+      }, 650);
     }
 
     if (pointers.size === 2) {
       const [p1, p2] = Array.from(pointers.values());
       start.dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
       start.angle = Math.atan2(p2.clientY - p1.clientY,
-                               p2.clientX - p1.clientX) * 180 / Math.PI;
+                               p2.clientX - p1.clientX) * (180 / Math.PI);
 
       start.scale = model.scale;
       start.rotation = model.rotation;
     }
   });
-
 
   el.addEventListener("pointermove", e => {
     if (!pointers.has(e.pointerId)) return;
@@ -122,15 +133,17 @@ function attachPointerControls(el, model) {
 
     clearTimeout(model.delTimer);
 
-    const rect = stage.getBoundingClientRect();
+    const rect = treeContainer.getBoundingClientRect();
 
     if (pointers.size === 1) {
       const p = e;
-      const dx = ((p.clientX - start.x) / rect.width) * 100;
-      const dy = ((p.clientY - start.y) / rect.height) * 100;
 
-      model.x = Math.max(0, Math.min(100, start.modelX + dx));
-      model.y = Math.max(0, Math.min(100, start.modelY + dy));
+      // convert movement to %
+      const dxPerc = ((p.clientX - start.x) / rect.width) * 100;
+      const dyPerc = ((p.clientY - start.y) / rect.height) * 100;
+
+      model.x = Math.max(0, Math.min(100, start.modelX + dxPerc));
+      model.y = Math.max(0, Math.min(100, start.modelY + dyPerc));
 
       updateElement(el, model);
       set(ref(db, "ornaments_shared/" + model.id), model);
@@ -138,19 +151,20 @@ function attachPointerControls(el, model) {
 
     if (pointers.size === 2) {
       const [p1, p2] = Array.from(pointers.values());
+
+      // scaling
       const dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
+      model.scale = Math.max(0.4, Math.min(2.8, start.scale * (dist / start.dist)));
 
-      model.scale = Math.max(0.4, Math.min(2.5, start.scale * (dist / start.dist)));
-
+      // rotation
       const angle = Math.atan2(p2.clientY - p1.clientY,
-                               p2.clientX - p1.clientX) * 180 / Math.PI;
+                               p2.clientX - p1.clientX) * (180 / Math.PI);
       model.rotation = start.rotation + (angle - start.angle);
 
       updateElement(el, model);
       set(ref(db, "ornaments_shared/" + model.id), model);
     }
   });
-
 
   el.addEventListener("pointerup", e => {
     pointers.delete(e.pointerId);
@@ -162,66 +176,28 @@ function attachPointerControls(el, model) {
     clearTimeout(model.delTimer);
   });
 }
-function attachInteraction(el, model) {
-  let dragging = false;
-  let startX, startY, startModelX, startModelY;
-
-  el.addEventListener("pointerdown", e => {
-    dragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startModelX = model.x;
-    startModelY = model.y;
-    el.setPointerCapture(e.pointerId);
-
-    // long press delete
-    model._deleteTimer = setTimeout(() => {
-      el.remove();
-      set(ref(db, "ornaments_shared/" + model.id), null);
-    }, 700);
-  });
-
-  el.addEventListener("pointermove", e => {
-    if (!dragging) return;
-
-    clearTimeout(model._deleteTimer);
-
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-
-    model.x = startModelX + dx;
-    model.y = startModelY + dy;
-
-    el.style.left = model.x + "px";
-    el.style.top = model.y + "px";
-
-    set(ref(db, "ornaments_shared/" + model.id), model);
-  });
-
-  el.addEventListener("pointerup", e => {
-    dragging = false;
-    clearTimeout(model._deleteTimer);
-  });
-}
-
 
 /* ============================================================
-   UPDATE ELEMENT
-============================================================ */
-function updateElement(el, model) {
-  el.style.left = model.x + "%";
-  el.style.top  = model.y + "%";
-  el.style.transform =
-      `translate(-50%, -50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
-}
-
-
-/* ============================================================
-   REALTIME LISTENERS
+   FIREBASE LISTENERS
 ============================================================ */
 onChildAdded(ornamentsRef, snap => renderOrnament(snap.val()));
 onChildChanged(ornamentsRef, snap => renderOrnament(snap.val()));
 onChildRemoved(ornamentsRef, snap => {
   const el = document.getElementById(snap.key);
   if (el) el.remove();
+});
+
+/* ============================================================
+   SAVE SCREENSHOT BUTTON
+============================================================ */
+import html2canvas from "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.js";
+
+document.getElementById("save-btn").addEventListener("click", () => {
+  html2canvas(document.body, { backgroundColor: null })
+    .then(canvas => {
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = "tree.png";
+      a.click();
+    });
 });
