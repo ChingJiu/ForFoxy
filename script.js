@@ -264,7 +264,7 @@ function attachPointerControls(el, model) {
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
 
       // scale relative to start
-      const newScale = clamp(startScale * (dist / start.dist), 0.25, 2.2); // smaller min
+      const newScale = clamp(startScale * (dist / start.dist), 0.5, 2.5); // smaller min
       model.scale = newScale;
 
       // rotation relative
