@@ -113,7 +113,7 @@ function createOrGetElement(model) {
 
 function renderOrnament(model) {
   if (!model || !model.id) return;
-  model.scale = Number(model.scale ?? 0.6);   // default smaller so not huge
+  model.scale = Number(model.scale ?? 1.0);   // default smaller so not huge
   model.rotation = Number(model.rotation ?? 0);
   model.type = model.type ?? "bell";
   model.x = Number(model.x ?? 50);
@@ -266,7 +266,7 @@ function attachPointerControls(el, model) {
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
 
       // scale relative to start
-      const newScale = clamp(startScale * (dist / start.dist), 0.5, 2.5); // smaller min
+      const newScale = clamp(startScale * (dist / start.dist), 0.8, 3.0); // smaller min
       model.scale = newScale;
 
       // rotation relative
@@ -342,6 +342,142 @@ onChildRemoved(ORN_REF, snap => {
   if (!key) return;
   removeOrnamentById(key);
 });
+
+// -------------------------------------
+//  BASIC SETUP
+// -------------------------------------
+const stage = document.getElementById("stage");
+const layer = document.getElementById("decorate-layer");
+const tray = document.getElementById("ornament-tray");
+const bin = document.getElementById("trash-zone");
+
+// Theme toggle
+document.getElementById("theme-toggle").addEventListener("change", e => {
+    document.body.classList.toggle("night", e.target.checked);
+});
+
+// Last edited date
+document.getElementById("last-edit-date").textContent = new Date().toLocaleDateString();
+
+// -------------------------------------
+//  CREATE NEW ORNAMENT WHEN TAPPED
+// -------------------------------------
+tray.addEventListener("click", e => {
+    if (!e.target.classList.contains("ornament-template")) return;
+
+    const img = document.createElement("img");
+    img.src = e.target.src;
+    img.className = "placed";
+    img.dataset.type = e.target.dataset.type;
+
+    // Start centered on tree
+    const rect = stage.getBoundingClientRect();
+    img.style.left = rect.left + rect.width / 2 - 30 + "px";
+    img.style.top = rect.top + rect.height / 2 - 30 + "px";
+
+    document.body.appendChild(img);
+
+    enableDrag(img);
+});
+
+// -------------------------------------
+//  DRAGGING LOGIC
+// -------------------------------------
+function enableDrag(elem) {
+    let offsetX = 0, offsetY = 0;
+
+    const start = (e) => {
+        const touch = e.touches ? e.touches[0] : e;
+        offsetX = touch.clientX - elem.offsetLeft;
+        offsetY = touch.clientY - elem.offsetTop;
+
+        elem.style.transition = "0s";
+        elem.style.zIndex = "9999";
+
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", end);
+        document.addEventListener("touchmove", move, { passive: false });
+        document.addEventListener("touchend", end);
+    };
+
+    const move = (e) => {
+        const touch = e.touches ? e.touches[0] : e;
+        const x = touch.clientX - offsetX;
+        const y = touch.clientY - offsetY;
+
+        elem.style.left = x + "px";
+        elem.style.top = y + "px";
+
+        // BIN HOVER EFFECT
+        const binRect = bin.getBoundingClientRect();
+        const ornamentRect = elem.getBoundingClientRect();
+
+        const overBin =
+            ornamentRect.right > binRect.left &&
+            ornamentRect.left < binRect.right &&
+            ornamentRect.bottom > binRect.top &&
+            ornamentRect.top < binRect.bottom;
+
+        if (overBin) {
+            elem.style.transform = "scale(0.7) rotate(5deg)";
+            bin.classList.add("active");
+        } else {
+            elem.style.transform = "scale(1)";
+            bin.classList.remove("active");
+        }
+
+        e.preventDefault();
+    };
+
+    const end = (e) => {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", end);
+        document.removeEventListener("touchmove", move);
+        document.removeEventListener("touchend", end);
+
+        elem.style.transform = "scale(1)";
+        bin.classList.remove("active");
+
+        const ornamentRect = elem.getBoundingClientRect();
+        const binRect = bin.getBoundingClientRect();
+
+        const overBin =
+            ornamentRect.right > binRect.left &&
+            ornamentRect.left < binRect.right &&
+            ornamentRect.bottom > binRect.top &&
+            ornamentRect.top < binRect.bottom;
+
+        if (overBin) {
+            // Wiggle then delete
+            elem.style.animation = "wiggle 0.3s";
+            setTimeout(() => elem.remove(), 250);
+            return;
+        }
+
+        // SNAP BACK INTO DECORATE-LAYER if inside stage
+        const stageRect = stage.getBoundingClientRect();
+
+        const insideStage =
+            ornamentRect.left > stageRect.left &&
+            ornamentRect.right < stageRect.right &&
+            ornamentRect.top > stageRect.top &&
+            ornamentRect.bottom < stageRect.bottom;
+
+        if (insideStage) {
+            const relX = ornamentRect.left - stageRect.left;
+            const relY = ornamentRect.top - stageRect.top;
+
+            elem.style.left = relX + "px";
+            elem.style.top = relY + "px";
+
+            layer.appendChild(elem);
+        }
+    };
+
+    elem.addEventListener("mousedown", start);
+    elem.addEventListener("touchstart", start, { passive: false });
+}
+
 
 /* ===========================
    Theme toggle wiring
