@@ -41,16 +41,19 @@ footer {
   margin-top: 20px;
   text-align: center;
   opacity: 0.7;
+  font-family:'Space Grotesk',sans-serif;
 }
 
 header {
   background: #84D4F6;
   padding: 1rem;
+  font-family:'Space Grotesk',sans-serif;
 }
 
 h1 {
   margin: 0;
   font-size: 1.8rem;
+  font-family:'Space Grotesk',sans-serif;
 }
 .page {
   display: flex;
