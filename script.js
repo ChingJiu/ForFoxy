@@ -66,6 +66,100 @@
   // -------------------------
   // Drag / Resize / Rotate / Delete
   // -------------------------
+
+function attachDrag(el, model) {
+  let active = false;
+  let startX, startY;
+  let startModelX, startModelY;
+  let startDist = 0;
+  let startAngle = 0;
+
+  let initialScale = model.scale || 1;
+  let initialRotation = model.rotation || 0;
+
+  let pointers = new Map(); // track multiple fingers
+
+  applyTransform();
+
+  el.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+
+    pointers.set(e.pointerId, e);
+
+    if (pointers.size === 1) {
+      // Single finger: drag
+      active = true;
+      const first = Array.from(pointers.values())[0];
+      startX = first.clientX;
+      startY = first.clientY;
+      startModelX = model.x;
+      startModelY = model.y;
+    } else if (pointers.size === 2) {
+      // Two fingers: start pinch/rotate
+      const [p1, p2] = Array.from(pointers.values());
+      startDist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
+      startAngle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * (180 / Math.PI);
+      initialScale = model.scale || 1;
+      initialRotation = model.rotation || 0;
+    }
+  });
+
+  el.addEventListener("pointermove", (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, e);
+
+    if (pointers.size === 1) {
+      // drag
+      const p = Array.from(pointers.values())[0];
+      const rect = stage.getBoundingClientRect();
+      const dx = (p.clientX - startX) / rect.width * 100;
+      const dy = (p.clientY - startY) / rect.height * 100;
+      model.x = Math.max(2, Math.min(98, startModelX + dx));
+      model.y = Math.max(2, Math.min(98, startModelY + dy));
+      el.style.left = model.x + "%";
+      el.style.top = model.y + "%";
+    } else if (pointers.size === 2) {
+      // pinch/rotate
+      const [p1, p2] = Array.from(pointers.values());
+      const dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
+      const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * (180 / Math.PI);
+
+      model.scale = Math.max(0.4, Math.min(2.5, initialScale * (dist / startDist)));
+      model.rotation = initialRotation + (angle - startAngle);
+      applyTransform();
+    }
+  });
+
+  el.addEventListener("pointerup", (e) => {
+    pointers.delete(e.pointerId);
+    if (pointers.size === 0) {
+      active = false;
+      saveLocalDebounced();
+    }
+  });
+
+  el.addEventListener("pointercancel", (e) => pointers.delete(e.pointerId));
+
+  // long-press delete
+  let delTimer;
+  el.addEventListener("pointerdown", () => {
+    delTimer = setTimeout(() => {
+      ornaments = ornaments.filter(x => x.id !== model.id);
+      renderOrnaments();
+      saveLocalDebounced();
+    }, 600);
+  });
+  el.addEventListener("pointerup", () => clearTimeout(delTimer));
+  el.addEventListener("pointermove", () => clearTimeout(delTimer));
+
+  function applyTransform() {
+    const s = model.scale || 1;
+    const r = model.rotation || 0;
+    el.style.transform = `translate(-50%, -50%) scale(${s}) rotate(${r}deg)`;
+  }
+}
+
   function attachInteraction(el, model) {
     let active = false, startX, startY, startXModel, startYModel;
     let initialScale = model.scale, initialRotation = model.rotation;
