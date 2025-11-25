@@ -85,7 +85,9 @@ const SOURCE = {
   red: "bauble-red.png",
   blue: "bauble-blue.png",
   candy: "candy.png",
-  bell: "bell.png"
+  bell: "bell.png",
+  ginger: "ginger.png",
+  present: "present.png"
 };
 
 /* ===========================
