@@ -12,56 +12,6 @@
   <link rel="stylesheet" href="style.css">
   <script defer src="script.js"></script>
 
-  <style>
-    :root {
-      --blue: #84D4F6;
-      --offwhite: #F6F5F3;
-      --accent: #FFD700;
-      --muted: #9aa8b0;
-    }
-
-    html,body{
-      height:100%; margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background:var(--offwhite);
-    }
-
-    header{
-      text-align:center;
-      padding:20px 0;
-      color:#013;
-    }
-
-    #tree-container{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      margin-top:20px;
-    }
-
-    #tree{
-      max-width:400px;
-      width:90%;
-      height:auto;
-      user-select:none;
-      pointer-events:none;
-    }
-
-    #ornament-tray{
-      margin-top:20px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    #ornament-tray img{
-      width:60px;
-      height:60px;
-      cursor:grab;
-    }
-  </style>
-
 </head>
 
 <body>
@@ -72,19 +22,23 @@
 
   <main>
 
+    <!-- TREE -->
     <div id="tree-container">
       <img id="tree" src="tree.png" alt="Christmas Tree">
     </div>
 
+    <!-- ORNAMENT TRAY -->
     <div id="ornament-tray">
-      <img class="ornament" draggable="true" src="ornaments/star.png" data-type="star">
-      <img class="ornament" draggable="true" src="ornaments/bauble-red.png" data-type="red">
-      <img class="ornament" draggable="true" src="ornaments/bauble-blue.png" data-type="blue">
-      <img class="ornament" draggable="true" src="ornaments/candy.png" data-type="candy">
-      <img class="ornament" draggable="true" src="ornaments/bell.png" data-type="bell">
+      <img class="ornament-template" src="ornaments/star.png" data-type="star">
+      <img class="ornament-template" src="ornaments/bauble-red.png" data-type="red">
+      <img class="ornament-template" src="ornaments/bauble-blue.png" data-type="blue">
+      <img class="ornament-template" src="ornaments/candy.png" data-type="candy">
+      <img class="ornament-template" src="ornaments/bell.png" data-type="bell">
     </div>
 
-  </main>
+    <!-- DECORATION AREA -->
+    <div id="decorate-layer"></div>
 
+  </main>
 </body>
 </html>
