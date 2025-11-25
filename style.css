@@ -87,6 +87,47 @@ h1 {
   pointer-events: none;
 }
 
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  transition: 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: 0.3s;
+}
+
+input:checked + .slider::before {
+  transform: translateX(20px);
+  background: #ffd700;
+}
+
+.label-text {
+  font-size: 0.9rem;
+}
+
 
 
 /* Placed Ornaments */
