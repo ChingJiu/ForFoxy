@@ -94,7 +94,8 @@ const SOURCE = {
   candy: "candy.png",
   bell: "bell.png",
   ginger: "ginger.png",
-  present: "present.png"
+  present: "present.png",
+  cat: "cat.png"
 };
 
 /* ===========================
