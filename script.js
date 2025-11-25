@@ -144,7 +144,7 @@ if (tray) {
       const xPct = 50; // center
       const yPct = 45;
       const id = uid('orn_');
-      const model = { id, type: chosenType, x: xPct, y: yPct, scale: 1, rotation: 0 };
+      const model = { id, type: chosenType, x: xPct, y: yPct, scale: 0.3, rotation: 0 };
       // write to firebase
       set(ref(db, `ornaments_shared/${id}`), model).catch(e => console.warn(e));
     });
@@ -243,9 +243,10 @@ function attachPointerControls(el, model) {
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
 
       // scale multiplier
-      const newScale = clamp(start.scale * (dist / start.dist), 0.4, 3.0);
-      model.scale = newScale;
+const newScale = clamp(start.scale * (dist / start.dist), 0.2, 3.0);
+model.scale = newScale;
 
+    
       // rotation relative to start
       model.rotation = (start.rotation ?? 0) + (angle - start.angle);
 
