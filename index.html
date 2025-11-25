@@ -10,18 +10,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
+  <script defer type="module" src="script.js"></script>
 </head>
 
 <body>
 
   <header>
     <h1>Decorate the Tree Together</h1>
-    <button id="theme-toggle">Switch Theme</button>
+    <label class="switch">
+      <input type="checkbox" id="theme-toggle">
+      <span class="slider"></span>
+      <span class="label-text">Switch Theme</span>
+    </label>
   </header>
 
   <main>
-
     <!-- STAGE -->
     <div id="stage">
       <img id="tree" src="tree.PNG" alt="Christmas Tree">
@@ -38,11 +41,10 @@
       <img class="ornament-template" src="ornaments/ginger.png" data-type="ginger">
       <img class="ornament-template" src="ornaments/present.png" data-type="present">
     </div>
-
   </main>
 
   <footer>
-    <p>Last edited: 2025/11/25 <span id="last-edit-date"></span></p>
+    <p>Last edited: <span id="last-edit-date"></span></p>
   </footer>
 
 </body>
