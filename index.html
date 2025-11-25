@@ -10,8 +10,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
 
+  <!-- Load the interactive script AFTER elements exist -->
+  <script defer src="script.js"></script>
 </head>
 
 <body>
@@ -22,23 +23,22 @@
 
   <main>
 
-    <!-- TREE -->
-    <div id="tree-container">
+    <!-- MAIN STAGE (combined tree + decoration layer) -->
+    <div id="stage">
       <img id="tree" src="tree.PNG" alt="Christmas Tree">
+      <div id="decorate-layer"></div>
     </div>
 
     <!-- ORNAMENT TRAY -->
     <div id="ornament-tray">
-      <img class="ornament-template" src="ornaments/star.png" data-type="star">
-      <img class="ornament-template" src="ornaments/bauble-red.png" data-type="red">
-      <img class="ornament-template" src="ornaments/bauble-blue.png" data-type="blue">
-      <img class="ornament-template" src="ornaments/candy.png" data-type="candy">
-      <img class="ornament-template" src="ornaments/bell.png" data-type="bell">
+      <img class="ornament-template" src="ornaments/star.png" data-type="star" draggable="true">
+      <img class="ornament-template" src="ornaments/bauble-red.png" data-type="red" draggable="true">
+      <img class="ornament-template" src="ornaments/bauble-blue.png" data-type="blue" draggable="true">
+      <img class="ornament-template" src="ornaments/candy.png" data-type="candy" draggable="true">
+      <img class="ornament-template" src="ornaments/bell.png" data-type="bell" draggable="true">
     </div>
 
-    <!-- DECORATION AREA -->
-    <div id="decorate-layer"></div>
-
   </main>
+
 </body>
 </html>
