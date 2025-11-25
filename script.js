@@ -1,14 +1,18 @@
 // script.js
-// Use with: <script type="module" src="script.js"></script>
+// load with: <script type="module" src="script.js"></script>
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
-  getDatabase, ref, set,
-  onChildAdded, onChildChanged, onChildRemoved
+  getDatabase,
+  ref,
+  set,
+  onChildAdded,
+  onChildChanged,
+  onChildRemoved
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 /* ===========================
-   CONFIG - replace if needed
+   FIREBASE CONFIG
    =========================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCb9k3GJPoykO1QQiiteSKdRFYFwYqCRkU",
@@ -21,43 +25,35 @@ const firebaseConfig = {
   measurementId: "G-GF6YYKBJBQ"
 };
 
-/* ===========================
-   INIT Firebase
-   =========================== */
 initializeApp(firebaseConfig);
 const db = getDatabase();
 const ORN_REF = ref(db, "ornaments_shared");
 
 /* ===========================
-   DOM references (best-effort)
+   DOM refs
    =========================== */
-const stage = document.getElementById("stage") || document.getElementById("tree-container") || document.body;
+const stage = document.getElementById("stage");
 const decorateLayer = document.getElementById("decorate-layer") || stage;
 const tray = document.getElementById("ornament-tray");
-const saveBtn = document.getElementById("save-btn");
-const themeToggle = document.getElementById("theme-toggle");
 const trashZone = document.getElementById("trash-zone");
+const themeToggle = document.getElementById("theme-toggle");
+const lastEdit = document.getElementById("last-edit-date");
 
-/* ===========================
-   Configuration
-   =========================== */
-const DEFAULT_SCALE = 0.8;   // default when adding (smaller than before)
-const MIN_SCALE = 0.9;       // smallest allowed (now small but visible)
-const MAX_SCALE = 2.5;        // largest allowed
-const TRASH_HOLD_MS = 500;    // how long over trash before wiggle+delete
-const SAVE_DEBOUNCE = 220;
+/* quick safety */
+if (!stage) console.warn("No #stage element found");
+if (!decorateLayer) console.warn("No #decorate-layer; defaulting to stage");
 
 /* ===========================
    Helpers
    =========================== */
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const uid = (p='o') => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const uid = (p = "o") => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
 function pxToPct(clientX, clientY) {
   const rect = stage.getBoundingClientRect();
   const x = ((clientX - rect.left) / rect.width) * 100;
   const y = ((clientY - rect.top) / rect.height) * 100;
-  return { x, y };
+  return { x: clamp(x, 0, 100), y: clamp(y, 0, 100) };
 }
 
 function pctToPx(xPct, yPct) {
@@ -66,27 +62,22 @@ function pctToPx(xPct, yPct) {
 }
 
 const debounceMap = new Map();
-function debounce(id, fn, ms = SAVE_DEBOUNCE) {
+function debounce(id, fn, ms = 200) {
   if (debounceMap.has(id)) clearTimeout(debounceMap.get(id));
   debounceMap.set(id, setTimeout(() => { debounceMap.delete(id); fn(); }, ms));
 }
 
 function saveModelDebounced(model) {
   debounce(model.id, () => {
-    // clamp before saving so DB keeps sane values
-    model.x = Number(clamp(Number(model.x || 0), 0, 100));
-    model.y = Number(clamp(Number(model.y || 0), 0, 100));
-    model.scale = Number(clamp(Number(model.scale || 1), MIN_SCALE, MAX_SCALE));
-    model.rotation = Number(model.rotation || 0);
     set(ref(db, `ornaments_shared/${model.id}`), model).catch(e => console.warn("save failed", e));
-  }, SAVE_DEBOUNCE);
+  }, 200);
 }
 
 function deleteModel(modelId) {
   set(ref(db, `ornaments_shared/${modelId}`), null).catch(e => console.warn("delete failed", e));
 }
 
-/* map type -> filename */
+/* map type -> file */
 const SOURCE = {
   star: "star.png",
   red: "bauble-red.png",
@@ -99,7 +90,7 @@ const SOURCE = {
 };
 
 /* ===========================
-   Render / update element
+   Render / update ornaments
    =========================== */
 function createOrGetElement(model) {
   let el = document.getElementById(model.id);
@@ -112,7 +103,7 @@ function createOrGetElement(model) {
   el.alt = model.type || "orn";
   el.style.position = "absolute";
   el.style.touchAction = "none";
-  el.style.willChange = "transform, left, top";
+  el.style.transformOrigin = "50% 50%";
   (decorateLayer || stage).appendChild(el);
 
   attachPointerControls(el, model);
@@ -120,8 +111,8 @@ function createOrGetElement(model) {
 }
 
 function renderOrnament(model) {
-  // fill defaults
-  model.scale = Number(model.scale ?? DEFAULT_SCALE);
+  if (!model || !model.id) return;
+  model.scale = Number(model.scale ?? 0.6);   // default smaller so not huge
   model.rotation = Number(model.rotation ?? 0);
   model.type = model.type ?? "bell";
   model.x = Number(model.x ?? 50);
@@ -130,13 +121,16 @@ function renderOrnament(model) {
   const el = createOrGetElement(model);
   el.src = `ornaments/${SOURCE[model.type] || SOURCE['bell']}`;
 
-  // set size visually by CSS transform and ensure image natural size doesn't overflow:
-  // Use pct->px so when stage resizes the visual position remains consistent.
+  // ensure visually consistent sizing: apply a CSS width via scale baseline.
+  // Use pct -> px to place element accurately
   const px = pctToPx(model.x, model.y);
   el.style.left = px.left + "px";
   el.style.top = px.top + "px";
-  el.style.transform = `translate(-50%,-50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
-  el.dataset.model = JSON.stringify(model);
+  el.style.width = Math.round(48 * model.scale) + "px"; // base width 48px * scale
+  el.style.height = "auto";
+  el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
+  // store current model on element for quick access
+  el._model = model;
 }
 
 function removeOrnamentById(id) {
@@ -145,44 +139,40 @@ function removeOrnamentById(id) {
 }
 
 /* ===========================
-   Tap-to-add (touch friendly)
+   Tap to add (tray)
    =========================== */
 if (tray) {
-  tray.querySelectorAll(".ornament-template, img").forEach(button => {
-    const type = button.dataset && button.dataset.type ? button.dataset.type : inferTypeFromSrc(button.src);
-    button.addEventListener("click", (ev) => {
-      const id = uid('orn_');
-      const model = {
-        id,
-        type,
-        x: 50,       // center in pct
-        y: 45,
-        scale: DEFAULT_SCALE,
-        rotation: 0
-      };
+  tray.querySelectorAll(".ornament-template").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.type || inferTypeFromSrc(btn.src);
+      // default center placement in pct
+      const xPct = 50;
+      const yPct = 45;
+      const id = uid("orn_");
+      const model = { id, type, x: xPct, y: yPct, scale: 0.6, rotation: 0 };
       set(ref(db, `ornaments_shared/${id}`), model).catch(e => console.warn(e));
     });
   });
 }
 
 function inferTypeFromSrc(src) {
-  if (!src) return 'bell';
-  src = src.toLowerCase();
-  if (src.includes("star")) return "star";
-  if (src.includes("red")) return "red";
-  if (src.includes("blue")) return "blue";
-  if (src.includes("candy")) return "candy";
-  if (src.includes("ginger")) return "ginger";
-  if (src.includes("present")) return "present";
-  if (src.includes("bell")) return "bell";
-  if (src.includes("cat")) return "cat";
+  if (!src) return "bell";
+  const s = src.toLowerCase();
+  if (s.includes("star")) return "star";
+  if (s.includes("red")) return "red";
+  if (s.includes("blue")) return "blue";
+  if (s.includes("candy")) return "candy";
+  if (s.includes("bell")) return "bell";
+  if (s.includes("ginger")) return "ginger";
+  if (s.includes("present")) return "present";
+  if (s.includes("cat")) return "cat";
   return "bell";
 }
 
 /* ===========================
    Trash helpers
    =========================== */
-function isOverTrashByCenter(el) {
+function isElementOverTrash(el) {
   if (!trashZone) return false;
   const trashRect = trashZone.getBoundingClientRect();
   const elRect = el.getBoundingClientRect();
@@ -191,162 +181,131 @@ function isOverTrashByCenter(el) {
   return cx >= trashRect.left && cx <= trashRect.right && cy >= trashRect.top && cy <= trashRect.bottom;
 }
 
+function applyTrashHoverVisual(el, isHovering) {
+  if (isHovering) {
+    el.classList.add("near-trash");
+  } else {
+    el.classList.remove("near-trash");
+  }
+}
+
 /* ===========================
-   Pointer controls (drag, pinch, rotate, trash)
-   Works with pointer events (touch & mouse)
+   Pointer controls - drag, pinch, rotate, drop-to-trash
+   Works with pointer events on iPad & desktop
    =========================== */
 function attachPointerControls(el, model) {
-  // per-element state
   const pointers = new Map();
   let start = {};
-  let trashTimer = null;
-  let inTrash = false;
+  let startScale = model.scale ?? 0.6;
+  let startRotation = model.rotation ?? 0;
+  let moved = false;
 
-  // convenience to sync model -> visual
-  function updateElementVisual() {
+  // ensure element size updates when scale changes
+  function updateVisual() {
     const px = pctToPx(model.x, model.y);
     el.style.left = px.left + "px";
     el.style.top = px.top + "px";
-    el.style.transform = `translate(-50%,-50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
+    el.style.width = Math.round(48 * model.scale) + "px";
+    el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
+    el._model = model;
   }
 
-  // handle pointerdown on the ornament
   el.addEventListener("pointerdown", (ev) => {
     ev.preventDefault();
     el.setPointerCapture?.(ev.pointerId);
     pointers.set(ev.pointerId, ev);
+    moved = false;
 
-    // store starting metrics
     if (pointers.size === 1) {
+      // store start positions (pct)
       const p = ev;
       const rect = stage.getBoundingClientRect();
       start.clientX = p.clientX;
       start.clientY = p.clientY;
       start.modelX = model.x;
       start.modelY = model.y;
-      start.rect = rect;
     } else if (pointers.size === 2) {
       const [a, b] = Array.from(pointers.values());
       start.dist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
       start.angle = Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
-      start.scale = model.scale;
-      start.rotation = model.rotation;
+      startScale = model.scale ?? startScale;
+      startRotation = model.rotation ?? startRotation;
     }
-
-    // remove any previous classes
-    el.classList.remove("near-trash", "wiggle");
   });
 
-  // pointermove - we listen globally on window to allow moving outside the stage
+  // pointermove on window so dragging stays responsive
   window.addEventListener("pointermove", (ev) => {
     if (!pointers.size) return;
     if (!pointers.has(ev.pointerId)) return;
-    // update this pointer's latest event
     pointers.set(ev.pointerId, ev);
+    moved = true;
 
-    // convert to stage rect for percent calculations
     const rect = stage.getBoundingClientRect();
 
     if (pointers.size === 1) {
-      // single pointer => drag: compute delta in pct so persistent model is pct-based
+      // move — convert px delta to percentage
       const p = Array.from(pointers.values())[0];
       const dxPct = ((p.clientX - start.clientX) / rect.width) * 100;
       const dyPct = ((p.clientY - start.clientY) / rect.height) * 100;
+      model.x = clamp(start.modelX + dxPct, 0, 100);
+      model.y = clamp(start.modelY + dyPct, 0, 100);
 
-      // allow movement beyond 0..100 while dragging (so user can move to trash)
-      model.x = start.modelX + dxPct;
-      model.y = start.modelY + dyPct;
+      updateVisual();
 
-      // update visual
-      updateElementVisual();
+      // show shrink / wiggle when near trash
+      const near = isElementOverTrash(el);
+      applyTrashHoverVisual(el, near);
+    }
 
-      // trash detection (by screen center of element) -> shrink/near-trash
-      if (isOverTrashByCenter(el)) {
-        if (!inTrash) {
-          inTrash = true;
-          el.classList.add("near-trash");
-          // start timer that will wiggle then delete if held inside trash
-          trashTimer = setTimeout(() => {
-            el.classList.add("wiggle");
-            // short delay to show wiggle, then delete (if still over trash)
-            setTimeout(() => {
-              if (isOverTrashByCenter(el)) {
-                deleteModel(model.id);
-                removeOrnamentById(model.id);
-              } else {
-                el.classList.remove("wiggle");
-              }
-            }, 350);
-          }, TRASH_HOLD_MS);
-        }
-      } else {
-        // left trash area
-        inTrash = false;
-        el.classList.remove("near-trash");
-        el.classList.remove("wiggle");
-        if (trashTimer) { clearTimeout(trashTimer); trashTimer = null; }
-      }
-
-      // live save but debounced
-      saveModelDebounced(model);
-    } else if (pointers.size === 2) {
+    if (pointers.size === 2) {
       // pinch/rotate
       const [p1, p2] = Array.from(pointers.values());
       const dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
 
-      const newScale = clamp((start.scale || 1) * (dist / (start.dist || dist)), MIN_SCALE, MAX_SCALE);
+      // scale relative to start
+      const newScale = clamp(startScale * (dist / start.dist), 0.25, 2.2); // smaller min
       model.scale = newScale;
-      model.rotation = (start.rotation || 0) + (angle - (start.angle || 0));
 
-      updateElementVisual();
-      saveModelDebounced(model);
+      // rotation relative
+      model.rotation = startRotation + (angle - start.angle);
 
-      // if gesture moves the element center to trash, handle similar to above:
-      if (isOverTrashByCenter(el)) {
-        el.classList.add("near-trash");
-      } else {
-        el.classList.remove("near-trash");
-      }
+      updateVisual();
     }
   }, { passive: false });
 
-  // pointerup / cancel: remove pointer and finalize
-  function finalizePointer(ev) {
+  function pointerUpHandler(ev) {
     if (pointers.has(ev.pointerId)) pointers.delete(ev.pointerId);
 
-    // if currently over trash on release -> delete
-    if (isOverTrashByCenter(el)) {
-      deleteModel(model.id);
-      removeOrnamentById(model.id);
-      if (trashTimer) { clearTimeout(trashTimer); trashTimer = null; }
+    // If dropped while over trash, delete
+    if (isElementOverTrash(el)) {
+      // visual: wiggle before remove then delete
+      el.classList.add("will-delete");
+      setTimeout(() => {
+        deleteModel(model.id);
+        removeOrnamentById(model.id);
+      }, 240); // short wiggle duration
       return;
     }
 
-    // clean up any temporary classes
-    el.classList.remove("near-trash", "wiggle");
-    if (trashTimer) { clearTimeout(trashTimer); trashTimer = null; }
-    // clamp model to safe range and persist
-    model.x = clamp(Number(model.x ?? 0), 0, 100);
-    model.y = clamp(Number(model.y ?? 0), 0, 100);
-    model.scale = clamp(Number(model.scale ?? DEFAULT_SCALE), MIN_SCALE, MAX_SCALE);
+    // otherwise save final model
     saveModelDebounced(model);
+    applyTrashHoverVisual(el, false);
   }
 
-  window.addEventListener("pointerup", finalizePointer);
-  window.addEventListener("pointercancel", finalizePointer);
+  window.addEventListener("pointerup", pointerUpHandler);
+  window.addEventListener("pointercancel", pointerUpHandler);
 }
 
 /* ===========================
-   Firebase realtime listeners
+   Realtime Firebase listeners
    =========================== */
 onChildAdded(ORN_REF, snap => {
   const model = snap.val();
   if (!model || !model.id) return;
-  // normalize
   model.x = Number(model.x ?? 50);
   model.y = Number(model.y ?? 45);
-  model.scale = Number(model.scale ?? DEFAULT_SCALE);
+  model.scale = Number(model.scale ?? 0.6);
   model.rotation = Number(model.rotation ?? 0);
   renderOrnament(model);
 });
@@ -354,7 +313,26 @@ onChildAdded(ORN_REF, snap => {
 onChildChanged(ORN_REF, snap => {
   const model = snap.val();
   if (!model || !model.id) return;
-  renderOrnament(model);
+  // If element exists, update it's model and visuals
+  const el = document.getElementById(model.id);
+  if (el) {
+    // update stored model and recolor/resize
+    el._model = model;
+    model.scale = Number(model.scale ?? 0.6);
+    model.rotation = Number(model.rotation ?? 0);
+    model.x = Number(model.x ?? 50);
+    model.y = Number(model.y ?? 45);
+
+    // apply visuals
+    const px = pctToPx(model.x, model.y);
+    el.style.left = px.left + "px";
+    el.style.top = px.top + "px";
+    el.style.width = Math.round(48 * model.scale) + "px";
+    el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
+  } else {
+    // not present — render fresh
+    renderOrnament(model);
+  }
 });
 
 onChildRemoved(ORN_REF, snap => {
@@ -364,57 +342,32 @@ onChildRemoved(ORN_REF, snap => {
 });
 
 /* ===========================
-   Theme toggle (works for button or checkbox)
+   Theme toggle wiring
    =========================== */
-function initThemeToggle() {
-  const saved = localStorage.getItem('theme') || 'light';
-  document.documentElement.dataset.theme = saved;
-
-  if (!themeToggle) return;
-
-  // if checkbox input
-  if (themeToggle.type === 'checkbox') {
-    themeToggle.checked = saved === 'dark';
-    themeToggle.addEventListener('change', () => {
-      const t = themeToggle.checked ? 'dark' : 'light';
-      document.documentElement.dataset.theme = t;
-      localStorage.setItem('theme', t);
-    });
+if (themeToggle) {
+  // initial apply from localStorage
+  const saved = localStorage.getItem("theme");
+  if (saved === "dark") {
+    document.documentElement.dataset.theme = "dark";
+    themeToggle.checked = true;
   } else {
-    // button or other element -> toggle on click
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = next;
-      localStorage.setItem('theme', next);
-      // if it's a toggle-like element, try toggling checked if present
-      try { if ('checked' in themeToggle) themeToggle.checked = next === 'dark'; } catch {}
-    });
+    document.documentElement.dataset.theme = "light";
+    themeToggle.checked = false;
   }
-}
 
-/* ===========================
-   Optional: Save screenshot button (if exists)
-   =========================== */
-if (saveBtn) {
-  saveBtn.addEventListener("click", async () => {
-    try {
-      const { default: html2canvas } = await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.js");
-      const canvas = await html2canvas(stage, { backgroundColor: null, scale: 2 });
-      const a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = "tree-snapshot.png";
-      a.click();
-    } catch (e) {
-      console.warn("Screenshot failed", e);
-      alert("Screenshot failed. See console.");
-    }
+  themeToggle.addEventListener("change", () => {
+    const dark = themeToggle.checked;
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    localStorage.setItem("theme", dark ? "dark" : "light");
   });
 }
 
 /* ===========================
-   Init
+   Footer date
    =========================== */
-initThemeToggle();
+if (lastEdit) lastEdit.textContent = new Date().toLocaleDateString();
 
-console.log("script.js initialized — pointer controls + firebase active.");
+/* ===========================
+   Done
+   =========================== */
+console.log("script.js loaded — drag/pinch/delete-on-drop wired.");
