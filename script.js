@@ -168,7 +168,7 @@ function inferTypeFromSrc(src) {
   if (s.includes("present")) return "present";
   if (s.includes("cat")) return "cat";
   if (s.includes("wdzy")) return "wdzy";
-  return "bell";
+  return "wdzy";
 }
 
 /* ===========================
