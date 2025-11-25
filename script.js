@@ -162,6 +162,47 @@ function attachPointerControls(el, model) {
     clearTimeout(model.delTimer);
   });
 }
+function attachInteraction(el, model) {
+  let dragging = false;
+  let startX, startY, startModelX, startModelY;
+
+  el.addEventListener("pointerdown", e => {
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startModelX = model.x;
+    startModelY = model.y;
+    el.setPointerCapture(e.pointerId);
+
+    // long press delete
+    model._deleteTimer = setTimeout(() => {
+      el.remove();
+      set(ref(db, "ornaments_shared/" + model.id), null);
+    }, 700);
+  });
+
+  el.addEventListener("pointermove", e => {
+    if (!dragging) return;
+
+    clearTimeout(model._deleteTimer);
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    model.x = startModelX + dx;
+    model.y = startModelY + dy;
+
+    el.style.left = model.x + "px";
+    el.style.top = model.y + "px";
+
+    set(ref(db, "ornaments_shared/" + model.id), model);
+  });
+
+  el.addEventListener("pointerup", e => {
+    dragging = false;
+    clearTimeout(model._deleteTimer);
+  });
+}
 
 
 /* ============================================================
