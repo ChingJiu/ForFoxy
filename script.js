@@ -1,14 +1,14 @@
-// script.js
-// Use with <script type="module" src="script.js"></script>
+// script.js (must be loaded with: <script type="module" src="script.js"></script>)
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
-  getDatabase, ref, set, onChildAdded, onChildChanged, onChildRemoved
+  getDatabase, ref, set,
+  onChildAdded, onChildChanged, onChildRemoved
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-/* ===========================
-   CONFIG - replace if needed
-   =========================== */
+/* ================================
+   Firebase Init
+================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyCb9k3GJPoykO1QQiiteSKdRFYFwYqCRkU",
   authDomain: "christmas-tree-67873.firebaseapp.com",
@@ -16,352 +16,239 @@ const firebaseConfig = {
   projectId: "christmas-tree-67873",
   storageBucket: "christmas-tree-67873.firebasestorage.app",
   messagingSenderId: "1030522218712",
-  appId: "1:1030522218712:web:6b01f57afd9a1b8eff8fad",
-  measurementId: "G-GF6YYKBJBQ"
+  appId: "1:1030522218712:web:6b01f57afd9a1b8eff8fad"
 };
 
-/* ===========================
-   INIT Firebase
-   =========================== */
 initializeApp(firebaseConfig);
 const db = getDatabase();
 const ORN_REF = ref(db, "ornaments_shared");
 
-/* ===========================
-   DOM references (best-effort)
-   =========================== */
-const stage = document.getElementById("stage") || document.getElementById("tree-container") || document.querySelector("#tree-container") || document.body;
-const decorateLayer = document.getElementById("decorate-layer") || document.getElementById("decorate-layer") || (stage.querySelector && stage.querySelector("#decorate-layer")) || stage;
-const tray = document.getElementById("ornament-tray") || document.querySelector("#ornament-tray");
-const saveBtn = document.getElementById("save-btn");
+/* ================================
+   DOM
+================================ */
+const stage = document.getElementById("stage");
+const tray = document.getElementById("ornament-tray");
+const decorateLayer = document.getElementById("decorate-layer");
 const themeToggle = document.getElementById("theme-toggle");
+const trashZone = document.getElementById("trash-zone");
 
-/* safe guards */
-if (!stage) console.warn("script.js: no #stage element found; script expects an element with id='stage' or 'tree-container'");
-if (!decorateLayer) console.warn("script.js: no #decorate-layer element found; placed ornaments will be appended to stage");
-
-/* ===========================
+/* ================================
    Helpers
-   =========================== */
+================================ */
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const uid = (p='o') => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const uid = () => "orn_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
 
-/* convert pixel coords relative to stage rect -> percentage (0-100) */
-function pxToPct(clientX, clientY) {
-  const rect = stage.getBoundingClientRect();
-  const x = ((clientX - rect.left) / rect.width) * 100;
-  const y = ((clientY - rect.top) / rect.height) * 100;
-  return { x: clamp(x, 0, 100), y: clamp(y, 0, 100) };
+function pxToPct(x, y) {
+  const r = stage.getBoundingClientRect();
+  return {
+    x: clamp(((x - r.left) / r.width) * 100, 0, 100),
+    y: clamp(((y - r.top) / r.height) * 100, 0, 100)
+  };
 }
 
-/* convert pct coords -> pixel positions (for style.left/top) */
 function pctToPx(xPct, yPct) {
-  const rect = stage.getBoundingClientRect();
-  return { left: (xPct / 100) * rect.width, top: (yPct / 100) * rect.height };
+  const r = stage.getBoundingClientRect();
+  return {
+    left: (xPct / 100) * r.width,
+    top: (yPct / 100) * r.height
+  };
 }
 
-/* simple debounce keyed by id */
-const debounceMap = new Map();
-function debounce(id, fn, ms = 200) {
-  if (debounceMap.has(id)) clearTimeout(debounceMap.get(id));
-  debounceMap.set(id, setTimeout(() => { debounceMap.delete(id); fn(); }, ms));
+function saveModel(model) {
+  set(ref(db, `ornaments_shared/${model.id}`), model);
 }
 
-/* save model to firebase (debounced per model) */
-function saveModelDebounced(model) {
-  debounce(model.id, () => {
-    set(ref(db, `ornaments_shared/${model.id}`), model).catch(e => console.warn("save failed", e));
-  }, 220);
+function deleteModel(id) {
+  set(ref(db, `ornaments_shared/${id}`), null);
 }
 
-/* delete model in firebase */
-function deleteModel(modelId) {
-  set(ref(db, `ornaments_shared/${modelId}`), null).catch(e => console.warn("delete failed", e));
-}
-
-/* map type -> filename */
-const SOURCE = {
-  star: "star.png",
-  red: "bauble-red.png",
-  blue: "bauble-blue.png",
-  candy: "candy.png",
-  bell: "bell.png",
-  ginger: "ginger.png",
-  present: "present.png"
+const SRC = {
+  star:"star.png",
+  red:"bauble-red.png",
+  blue:"bauble-blue.png",
+  candy:"candy.png",
+  bell:"bell.png",
+  ginger:"ginger.png",
+  present:"present.png"
 };
 
-/* ===========================
-   Render / update element
-   =========================== */
-function createOrGetElement(model) {
+/* ================================
+   Ornaments
+================================ */
+function createElement(model) {
   let el = document.getElementById(model.id);
   if (el) return el;
 
   el = document.createElement("img");
   el.id = model.id;
-  el.draggable = false; // we'll use pointer events
   el.className = "placed-ornament";
-  el.alt = model.type || "orn";
   el.style.position = "absolute";
   el.style.touchAction = "none";
-  (decorateLayer || stage).appendChild(el);
+  el.draggable = false;
+  decorateLayer.appendChild(el);
 
   attachPointerControls(el, model);
   return el;
 }
 
-function renderOrnament(model) {
-  // store model attributes defaults
-  model.scale = model.scale ?? 1;
-  model.rotation = model.rotation ?? 0;
-  model.type = model.type ?? "bell";
+function render(model) {
+  const el = createElement(model);
+  el.src = "ornaments/" + SRC[model.type];
 
-  const el = createOrGetElement(model);
-  el.src = `ornaments/${SOURCE[model.type] || SOURCE['bell']}`;
-
-  // position using pct -> px so it lines up visually
   const px = pctToPx(model.x, model.y);
   el.style.left = px.left + "px";
-  el.style.top  = px.top + "px";
-  el.style.transform = `translate(-50%,-50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
+  el.style.top = px.top + "px";
+
+  el.style.transform =
+    `translate(-50%,-50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
 }
 
-/* remove */
-function removeOrnamentById(id) {
+function removeLocal(id){
   const el = document.getElementById(id);
-  if (el && el.parentNode) el.parentNode.removeChild(el);
+  if (el) el.remove();
 }
 
-/* ===========================
-   Tap-to-add (touch friendly)
-   =========================== */
-if (tray) {
-  tray.querySelectorAll(".ornament-template, .ornament-btn, img").forEach(button => {
-    // prefer data-type attribute; fallback to filename mapping by src
-    const type = button.dataset && button.dataset.type ? button.dataset.type : null;
-    button.addEventListener("click", (ev) => {
-      const chosenType = type || inferTypeFromSrc(button.src);
-      // center of stage by default (in pct)
-      const rect = stage.getBoundingClientRect();
-      const xPct = 50; // center
-      const yPct = 45;
-      const id = uid('orn_');
-      const model = { id, type: chosenType, x: xPct, y: yPct, scale: 0.05, rotation: 0 };
-      // write to firebase
-      set(ref(db, `ornaments_shared/${id}`), model).catch(e => console.warn(e));
-    });
-  });
-}
-
-function inferTypeFromSrc(src) {
-  if (!src) return 'bell';
-  src = src.toLowerCase();
-  if (src.includes("star")) return "star";
-  if (src.includes("red")) return "red";
-  if (src.includes("blue")) return "blue";
-  if (src.includes("candy")) return "candy";
-  if (src.includes("bell")) return "bell";
-  if (src.includes("ginger")) return "ginger";
-  if (src.includes("present")) return "present";
-  return "bell";
-}
-
-/* ===========================
-   Pointer controls - drag, pinch, rotate, long-press delete
-   Works with pointer events (touch & mouse)
-   =========================== */
-function attachPointerControls(el, model) {
-  // track active pointers
-  const pointers = new Map();
-  let start = {}; // will contain start positions and metrics
-  let isDragging = false;
-  let delTimer = null;
-  let movedSinceDown = false;
-
-  const trashZone = document.getElementById("trash-zone");
-
+/* ================================
+   Trash-zone detection
+================================ */
 function isOverTrash(el) {
   if (!trashZone) return false;
-  const trashRect = trashZone.getBoundingClientRect();
-  const elRect = el.getBoundingClientRect();
-  const centerX = elRect.left + elRect.width/2;
-  const centerY = elRect.top + elRect.height/2;
-  return (
-    centerX >= trashRect.left &&
-    centerX <= trashRect.right &&
-    centerY >= trashRect.top &&
-    centerY <= trashRect.bottom
-  );
+  const tz = trashZone.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width/2;
+  const cy = r.top + r.height/2;
+  return cx>=tz.left && cx<=tz.right && cy>=tz.top && cy<=tz.bottom;
 }
 
-  function pointerEnd(ev) {
-  if (pointers.has(ev.pointerId)) pointers.delete(ev.pointerId);
+/* ================================
+   Pointer Controls
+================================ */
+function attachPointerControls(el, model){
+  const pointers = new Map();
+  let start = {};
 
-  // check for trash deletion
-  if (isOverTrash(el)) {
-    deleteModel(model.id);
-    if (el.parentNode) el.parentNode.removeChild(el);
-    return; // skip saving position
+  function updateVisual(){
+    render(model);
   }
 
-  // final save
-  saveModelDebounced(model);
-}
+  el.addEventListener("pointerdown", e=>{
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, e);
 
-  // helper: update element visual based on model (pct coords)
-  function updateElementVisual() {
-    const px = pctToPx(model.x, model.y);
-    el.style.left = px.left + "px";
-    el.style.top  = px.top + "px";
-    el.style.transform = `translate(-50%,-50%) scale(${model.scale}) rotate(${model.rotation}deg)`;
-  }
+    if (pointers.size===1){
+      const p = e;
+      start = {
+        x: p.clientX,
+        y: p.clientY,
+        mx: model.x,
+        my: model.y,
+        rect: stage.getBoundingClientRect()
+      };
+    }
 
-  // pointerdown
-  el.addEventListener("pointerdown", (ev) => {
-    ev.preventDefault();
-    el.setPointerCapture(ev.pointerId);
-    pointers.set(ev.pointerId, ev);
-
-    // for long-press delete: start timer, cancel on move
-    movedSinceDown = false;
-    delTimer = setTimeout(() => {
-      // if not moved, delete
-      if (!movedSinceDown) {
-        deleteModel(model.id);
-      }
-    }, 700);
-
-    if (pointers.size === 1) {
-      const p = ev;
-      const rect = stage.getBoundingClientRect();
-      start.clientX = p.clientX;
-      start.clientY = p.clientY;
-      start.modelX = model.x;
-      start.modelY = model.y;
-      start.rect = rect;
-      isDragging = true;
-    } else if (pointers.size === 2) {
-      // initialize pinch/rotate
-      const [a, b] = Array.from(pointers.values());
-      start.dist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-      start.angle = Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
-      start.scale = model.scale ?? 1;
-      start.rotation = model.rotation ?? 0;
-      isDragging = false;
+    if (pointers.size===2){
+      const [a,b] = [...pointers.values()];
+      start.dist = Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+      start.ang = Math.atan2(b.clientY-a.clientY,b.clientX-a.clientX)*180/Math.PI;
+      start.scale = model.scale;
+      start.rot = model.rotation;
     }
   });
 
-  // pointermove
-  window.addEventListener("pointermove", (ev) => {
-    if (!pointers.size) return;
-    if (!pointers.has(ev.pointerId)) return;
-    pointers.set(ev.pointerId, ev);
-    movedSinceDown = true;
-    if (delTimer) { clearTimeout(delTimer); delTimer = null; }
+  window.addEventListener("pointermove", e=>{
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, e);
 
-    const rect = stage.getBoundingClientRect();
+    if (pointers.size===1){
+      const p = [...pointers.values()][0];
+      const dx = ((p.clientX - start.x)/start.rect.width)*100;
+      const dy = ((p.clientY - start.y)/start.rect.height)*100;
 
-    if (pointers.size === 1) {
-      // single-finger drag -> move in pct
-      const p = Array.from(pointers.values())[0];
-      const dx = (p.clientX - start.clientX) / rect.width * 100;
-      const dy = (p.clientY - start.clientY) / rect.height * 100;
-      model.x = clamp(start.modelX + dx, 0, 100);
-      model.y = clamp(start.modelY + dy, 0, 100);
-      updateElementVisual();
-      saveModelDebounced(model);
-    } else if (pointers.size === 2) {
-      // pinch/rotate using two pointers
-      const [p1, p2] = Array.from(pointers.values());
-      const dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
-      const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
-
-      // scale multiplier
-const newScale = clamp(start.scale * (dist / start.dist), 0.02, 2.5);
-model.scale = newScale;
-
-    
-      // rotation relative to start
-      model.rotation = (start.rotation ?? 0) + (angle - start.angle);
-
-      updateElementVisual();
-      saveModelDebounced(model);
+      model.x = clamp(start.mx + dx, 0, 100);
+      model.y = clamp(start.my + dy, 0, 100);
+      updateVisual();
+      saveModel(model);
     }
-  }, { passive: false });
 
-  // pointerup / cancel
-  function pointerEnd(ev) {
-    if (pointers.has(ev.pointerId)) pointers.delete(ev.pointerId);
-    if (delTimer) { clearTimeout(delTimer); delTimer = null; }
-    // final save
-    saveModelDebounced(model);
-  }
-  window.addEventListener("pointerup", pointerEnd);
-  window.addEventListener("pointercancel", pointerEnd);
-}
+    if (pointers.size===2){
+      const [a,b] = [...pointers.values()];
+      const dist = Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+      const ang = Math.atan2(b.clientY-a.clientY,b.clientX-a.clientX)*180/Math.PI;
 
-/* ===========================
-   Firebase realtime listeners
-   =========================== */
-onChildAdded(ORN_REF, snap => {
-  const model = snap.val();
-  if (!model || !model.id) return;
-  // ensure model.x/y exist and are pct numbers
-  model.x = Number(model.x ?? 50);
-  model.y = Number(model.y ?? 45);
-  model.scale = Number(model.scale ?? 1);
-  model.rotation = Number(model.rotation ?? 0);
-  renderOrnament(model);
-});
-
-onChildChanged(ORN_REF, snap => {
-  const model = snap.val();
-  if (!model || !model.id) return;
-  renderOrnament(model);
-});
-
-onChildRemoved(ORN_REF, snap => {
-  const key = snap.key;
-  if (!key) return;
-  removeOrnamentById(key);
-});
-
-
-/* ===========================
-   Theme toggle (if present)
-   =========================== */
-if (themeToggle) {
-  // toggle 'night' class on body
-  themeToggle.addEventListener("change", () => {
-    document.documentElement.dataset.theme = themeToggle.checked ? 'dark' : 'light';
-    localStorage.setItem('theme', document.documentElement.dataset.theme);
+      model.scale = clamp(start.scale*(dist/start.dist), 0.05, 3);
+      model.rotation = start.rot + (ang - start.ang);
+      updateVisual();
+      saveModel(model);
+    }
   });
-  // apply saved
-  const saved = localStorage.getItem('theme');
-  if (saved) {
-    document.documentElement.dataset.theme = saved;
-    try { themeToggle.checked = saved === 'dark'; } catch {}
-  }
+
+  window.addEventListener("pointerup", e=>{
+    if (pointers.has(e.pointerId)) pointers.delete(e.pointerId);
+
+    if (isOverTrash(el)){
+      deleteModel(model.id);
+      el.remove();
+      return;
+    }
+
+    saveModel(model);
+  });
 }
 
-/* ===========================
-   Helpful: when window resizes, re-render all elements to align px positions
-   =========================== */
-window.addEventListener("resize", () => {
-  // iterate all placed elements and re-render from their stored model (firebase entries)
-  // we assume DOM elements have id equal to firebase model.id and attached transform
-  // For correctness, request current data from DOM element dataset where possible
-  // We'll attempt to convert current left/top pct values back to px positions
-  document.querySelectorAll(".placed-ornament").forEach(el => {
-    // if element has inline left/top in px, keep it; if it has model values we rendered earlier they are applied
-    // simply re-apply transform using current computed pct from style left/top if percent->px mismatch
-    const id = el.id;
-    if (!id) return;
-    // nothing heavy here; rendering is driven by firebase updates in real-time
+/* ================================
+   Tap-to-add
+================================ */
+tray.querySelectorAll("img").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    const type = t.dataset.type;
+    const id = uid();
+
+    const model = {
+      id,
+      type,
+      x:50,
+      y:45,
+      scale:0.2,
+      rotation:0
+    };
+
+    saveModel(model);
   });
 });
 
-/* ===========================
-   Done
-   =========================== */
-console.log("script.js loaded — percent coordinate mode enabled (Option A).");
+/* ================================
+   Firebase Events
+================================ */
+onChildAdded(ORN_REF, snap=>{
+  const m = snap.val();
+  render(m);
+});
+
+onChildChanged(ORN_REF, snap=>{
+  const m = snap.val();
+  render(m);
+});
+
+onChildRemoved(ORN_REF, snap=>{
+  removeLocal(snap.key);
+});
+
+/* ================================
+   Theme Toggle
+================================ */
+if (themeToggle){
+  themeToggle.addEventListener("change", ()=>{
+    const mode = themeToggle.checked ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", mode);
+    localStorage.setItem("theme", mode);
+  });
+
+  const saved = localStorage.getItem("theme");
+  if (saved){
+    document.documentElement.setAttribute("data-theme", saved);
+    themeToggle.checked = saved==="dark";
+  }
+}
+
+console.log("script.js ready.");
