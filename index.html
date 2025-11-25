@@ -10,8 +10,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- Load the interactive script AFTER elements exist -->
   <script defer src="script.js"></script>
 </head>
 
@@ -19,13 +17,12 @@
 
   <header>
     <h1>Decorate the Tree Together</h1>
+    <button id="theme-toggle">Switch Theme</button>
   </header>
-
-  <button id="save-btn">Save Screenshot</button>
 
   <main>
 
-    <!-- MAIN STAGE (combined tree + decoration layer) -->
+    <!-- STAGE -->
     <div id="stage">
       <img id="tree" src="tree.PNG" alt="Christmas Tree">
       <div id="decorate-layer"></div>
@@ -33,14 +30,18 @@
 
     <!-- ORNAMENT TRAY -->
     <div id="ornament-tray">
-      <img class="ornament-template" src="ornaments/star.png" data-type="star" draggable="true">
-      <img class="ornament-template" src="ornaments/bauble-red.png" data-type="red" draggable="true">
-      <img class="ornament-template" src="ornaments/bauble-blue.png" data-type="blue" draggable="true">
-      <img class="ornament-template" src="ornaments/candy.png" data-type="candy" draggable="true">
-      <img class="ornament-template" src="ornaments/bell.png" data-type="bell" draggable="true">
+      <img class="ornament-template" src="ornaments/star.png" data-type="star">
+      <img class="ornament-template" src="ornaments/bauble-red.png" data-type="red">
+      <img class="ornament-template" src="ornaments/bauble-blue.png" data-type="blue">
+      <img class="ornament-template" src="ornaments/candy.png" data-type="candy">
+      <img class="ornament-template" src="ornaments/bell.png" data-type="bell">
     </div>
 
   </main>
+
+  <footer>
+    <p>Last edited: 25/11/2025 <span id="last-edit-date"></span></p>
+  </footer>
 
 </body>
 </html>
