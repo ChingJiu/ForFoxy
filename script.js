@@ -28,31 +28,22 @@ const stage = document.getElementById("stage");
 const decorateLayer = document.getElementById("decorate-layer");
 
 
-/* ============================================================
-   DRAG FROM TRAY → DROP ON TREE
-============================================================ */
-document.querySelectorAll(".ornament-template").forEach(temp => {
-  temp.addEventListener("dragstart", e => {
-    e.dataTransfer.setData("type", temp.dataset.type);
+// -------------------------
+// Tap to add ornament from tray
+// -------------------------
+document.querySelectorAll(".ornament-template").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+    const id = "ornament_" + Date.now();
+
+    // Default placement: center of tree
+    const rect = treeContainer.getBoundingClientRect();
+    const x = rect.width / 2;
+    const y = rect.height / 2;
+
+    const ornamentData = { id, type, x, y, scale: 1, rotation: 0 };
+    set(ref(db, "ornaments_shared/" + id), ornamentData);
   });
-});
-
-stage.addEventListener("dragover", e => e.preventDefault());
-
-stage.addEventListener("drop", e => {
-  e.preventDefault();
-
-  const type = e.dataTransfer.getData("type");
-  if (!type) return;
-
-  const rect = stage.getBoundingClientRect();
-
-  const id = "ornament_" + Date.now();
-  const x  = ((e.clientX - rect.left) / rect.width) * 100;
-  const y  = ((e.clientY - rect.top)  / rect.height) * 100;
-
-  const newData = { id, type, x, y, scale: 1, rotation: 0 };
-  set(ref(db, "ornaments_shared/" + id), newData);
 });
 
 
