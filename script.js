@@ -178,6 +178,36 @@ function attachPointerControls(el, model) {
   let delTimer = null;
   let movedSinceDown = false;
 
+  const trashZone = document.getElementById("trash-zone");
+
+function isOverTrash(el) {
+  if (!trashZone) return false;
+  const trashRect = trashZone.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const centerX = elRect.left + elRect.width/2;
+  const centerY = elRect.top + elRect.height/2;
+  return (
+    centerX >= trashRect.left &&
+    centerX <= trashRect.right &&
+    centerY >= trashRect.top &&
+    centerY <= trashRect.bottom
+  );
+}
+
+  function pointerEnd(ev) {
+  if (pointers.has(ev.pointerId)) pointers.delete(ev.pointerId);
+
+  // check for trash deletion
+  if (isOverTrash(el)) {
+    deleteModel(model.id);
+    if (el.parentNode) el.parentNode.removeChild(el);
+    return; // skip saving position
+  }
+
+  // final save
+  saveModelDebounced(model);
+}
+
   // helper: update element visual based on model (pct coords)
   function updateElementVisual() {
     const px = pctToPx(model.x, model.y);
@@ -247,7 +277,7 @@ function attachPointerControls(el, model) {
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
 
       // scale multiplier
-const newScale = clamp(start.scale * (dist / start.dist), 0.05, 3.0);
+const newScale = clamp(start.scale * (dist / start.dist), 0.02, 2.5);
 model.scale = newScale;
 
     
