@@ -79,17 +79,23 @@ footer {
   transition: transform 0.15s;
 }
 
-/* shrink when near trash */
+/* when near trash */
 .placed-ornament.near-trash {
-  transform: translate(-50%, -50%) scale(0.65) rotate(var(--rot, 0deg));
-  opacity: 0.75;
+  transform-origin: 50% 50%;
+  transition: transform 0.12s ease, width 0.12s ease;
+  /* slightly smaller by visual shrink (actual width controlled in JS) */
+  filter: brightness(0.95);
 }
 
 /* wiggle animation before delete */
 @keyframes wiggle {
-  0% { transform: translate(-50%, -50%) rotate(-8deg); }
-  50% { transform: translate(-50%, -50%) rotate(8deg); }
-  100% { transform: translate(-50%, -50%) rotate(-8deg); }
+  0% { transform: translate(-50%,-50%) rotate(-6deg) scale(0.95); }
+  50% { transform: translate(-50%,-50%) rotate(6deg) scale(0.95); }
+  100% { transform: translate(-50%,-50%) rotate(-6deg) scale(0.95); }
+}
+.placed-ornament.will-delete {
+  animation: wiggle 240ms ease-in-out 0s 2;
+  opacity: 0.9;
 }
 
 .placed-ornament.wiggle {
