@@ -69,6 +69,108 @@ function renderOrnament({ id, type, x, y }) {
   treeContainer.appendChild(img);
 }
 
+/* -------------------------
+   FIREBASE INIT
+-------------------------- */
+
+const firebaseConfig = {
+  apiKey: "YOUR-API-KEY",
+  authDomain: "YOUR-PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR-PROJECT.firebaseio.com",
+  projectId: "YOUR-PROJECT",
+  storageBucket: "YOUR-PROJECT.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "YOUR-APP-ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database().ref("sharedTree");
+
+/* -------------------------
+   STATE
+-------------------------- */
+
+let ornaments = {};  // id → { x, y, size, rotation, type, src }
+const layer = document.getElementById("decorate-layer");
+const tray = document.getElementById("ornament-tray");
+
+/* -------------------------
+   LIVE FIREBASE SYNC
+-------------------------- */
+
+db.on("value", snap => {
+  const data = snap.val() || {};
+  ornaments = data;
+  renderAll();
+});
+
+/* -------------------------
+   RENDER ORNAMENTS
+-------------------------- */
+
+function renderAll() {
+  layer.innerHTML = "";
+
+  Object.entries(ornaments).forEach(([id, o]) => {
+    const el = document.createElement("img");
+    el.src = o.src;
+    el.className = "placed-ornament";
+    el.style.left = o.x + "%";
+    el.style.top = o.y + "%";
+    el.style.width = o.size + "px";
+    el.style.transform = `translate(-50%, -50%) rotate(${o.rotation}deg)`;
+    el.dataset.id = id;
+
+    attachHandlers(el);
+    layer.appendChild(el);
+  });
+}
+
+/* -------------------------
+   CREATE NEW ORNAMENT
+-------------------------- */
+
+tray.addEventListener("click", e => {
+  if (!e.target.classList.contains("ornament-template")) return;
+
+  const type = e.target.dataset.type;
+
+  const id = "o" + Math.random().toString(36).slice(2, 9);
+  ornaments[id] = {
+    type,
+    src: e.target.src,
+    x: 50,
+    y: 50,
+    size: 60,
+    rotation: 0
+  };
+
+  db.set(ornaments);
+});
+
+/* -------------------------
+   INTERACTION HANDLERS
+   move / resize / rotate / delete
+-------------------------- */
+
+function attachHandlers(el) {
+  let id = el.dataset.id;
+  let dragging = false;
+
+  /* DRAG */
+  el.addEventListener("pointerdown", e => {
+    dragging = true;
+    el.setPointerCapture(e.pointerId);
+  });
+
+  el.addEventListener("pointermove", e => {
+    if (!dragging) return;
+
+    const rect = layer.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) *
+
+      
 function attachDrag(el, model) {
   let active = false;
   let startX, startY;
