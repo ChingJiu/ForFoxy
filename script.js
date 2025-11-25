@@ -22,6 +22,8 @@ initializeApp(firebaseConfig);
 const db = getDatabase();
 const ornamentsRef = ref(db, "ornaments_shared");
 
+<script type="module" src="script.js"></script>
+
 /* ============================================================
    DOM ELEMENTS
 ============================================================ */
