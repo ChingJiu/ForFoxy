@@ -1,18 +1,15 @@
 // script.js
-// load with: <script type="module" src="script.js"></script>
+// Hybrid (Firebase real-time + free drag-out-to-trash) implementation
+// Load as: <script type="module" src="script.js"></script>
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import {
-  getDatabase,
-  ref,
-  set,
-  onChildAdded,
-  onChildChanged,
-  onChildRemoved
+  getDatabase, ref, set, remove,
+  onChildAdded, onChildChanged, onChildRemoved
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 /* ===========================
-   FIREBASE CONFIG
+   Firebase config - replace if needed
    =========================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCb9k3GJPoykO1QQiiteSKdRFYFwYqCRkU",
@@ -30,24 +27,25 @@ const db = getDatabase();
 const ORN_REF = ref(db, "ornaments_shared");
 
 /* ===========================
-   DOM refs
+   DOM references
    =========================== */
-const stage = document.getElementById("stage");
-const decorateLayer = document.getElementById("decorate-layer") || stage;
+const stage = document.getElementById("stage");                 // visible stage (container)
+const decorateLayer = document.getElementById("decorate-layer") || stage; // where ornaments visually live
 const tray = document.getElementById("ornament-tray");
-const trashZone = document.getElementById("trash-zone");
+const trash = document.getElementById("trash-zone");
 const themeToggle = document.getElementById("theme-toggle");
+const saveBtn = document.getElementById("save-btn");
 const lastEdit = document.getElementById("last-edit-date");
 
-/* quick safety */
-if (!stage) console.warn("No #stage element found");
-if (!decorateLayer) console.warn("No #decorate-layer; defaulting to stage");
+/* quick checks */
+if (!stage) console.warn("script.js: #stage not found (expected).");
+if (!decorateLayer) console.warn("script.js: #decorate-layer not found; falling back to stage.");
 
 /* ===========================
-   Helpers
+   Utilities
    =========================== */
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const uid = (p = "o") => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const uid = (p='o') => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 
 function pxToPct(clientX, clientY) {
   const rect = stage.getBoundingClientRect();
@@ -61,23 +59,25 @@ function pctToPx(xPct, yPct) {
   return { left: (xPct / 100) * rect.width, top: (yPct / 100) * rect.height };
 }
 
+/* debounce per id */
 const debounceMap = new Map();
-function debounce(id, fn, ms = 200) {
+function debounce(id, fn, ms = 180) {
   if (debounceMap.has(id)) clearTimeout(debounceMap.get(id));
   debounceMap.set(id, setTimeout(() => { debounceMap.delete(id); fn(); }, ms));
 }
-
 function saveModelDebounced(model) {
   debounce(model.id, () => {
     set(ref(db, `ornaments_shared/${model.id}`), model).catch(e => console.warn("save failed", e));
   }, 200);
 }
-
+function saveModelImmediate(model) {
+  set(ref(db, `ornaments_shared/${model.id}`), model).catch(e => console.warn("save failed", e));
+}
 function deleteModel(modelId) {
-  set(ref(db, `ornaments_shared/${modelId}`), null).catch(e => console.warn("delete failed", e));
+  remove(ref(db, `ornaments_shared/${modelId}`)).catch(e => console.warn("delete failed", e));
 }
 
-/* map type -> file */
+/* source map */
 const SOURCE = {
   star: "star.png",
   red: "bauble-red.png",
@@ -86,12 +86,11 @@ const SOURCE = {
   bell: "bell.png",
   ginger: "ginger.png",
   present: "present.png",
-  cat: "cat.png",
-  wdzy: "wdzy.png"
+  cat: "cat.png"
 };
 
 /* ===========================
-   Render / update ornaments
+   Render / element lifecycle
    =========================== */
 function createOrGetElement(model) {
   let el = document.getElementById(model.id);
@@ -107,30 +106,31 @@ function createOrGetElement(model) {
   el.style.transformOrigin = "50% 50%";
   (decorateLayer || stage).appendChild(el);
 
+  // attach pointer controls which handle dragging/pinch/rotate
   attachPointerControls(el, model);
+
   return el;
 }
 
 function renderOrnament(model) {
   if (!model || !model.id) return;
-  model.scale = Number(model.scale ?? 1.0);   // default smaller so not huge
-  model.rotation = Number(model.rotation ?? 0);
-  model.type = model.type ?? "bell";
+  // normalize model
   model.x = Number(model.x ?? 50);
   model.y = Number(model.y ?? 45);
+  model.scale = Number(model.scale ?? 0.6);
+  model.rotation = Number(model.rotation ?? 0);
+  model.type = model.type ?? "bell";
 
   const el = createOrGetElement(model);
   el.src = `ornaments/${SOURCE[model.type] || SOURCE['bell']}`;
 
-  // ensure visually consistent sizing: apply a CSS width via scale baseline.
-  // Use pct -> px to place element accurately
+  // compute px placement and apply sizing via width baseline * scale
   const px = pctToPx(model.x, model.y);
   el.style.left = px.left + "px";
   el.style.top = px.top + "px";
-  el.style.width = Math.round(48 * model.scale) + "px"; // base width 48px * scale
+  el.style.width = Math.round(46 * model.scale) + "px"; // base 46px * scale (adjustable)
   el.style.height = "auto";
   el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
-  // store current model on element for quick access
   el._model = model;
 }
 
@@ -140,24 +140,21 @@ function removeOrnamentById(id) {
 }
 
 /* ===========================
-   Tap to add (tray)
+   Tap-to-add (touch friendly)
    =========================== */
 if (tray) {
   tray.querySelectorAll(".ornament-template").forEach(btn => {
     btn.addEventListener("click", () => {
       const type = btn.dataset.type || inferTypeFromSrc(btn.src);
-      // default center placement in pct
-      const xPct = 50;
-      const yPct = 45;
-      const id = uid("orn_");
-      const model = { id, type, x: xPct, y: yPct, scale: 0.6, rotation: 0 };
-      set(ref(db, `ornaments_shared/${id}`), model).catch(e => console.warn(e));
+      const id = uid('orn_');
+      // center in stage pct
+      const model = { id, type, x: 50, y: 45, scale: 0.6, rotation: 0 };
+      saveModelImmediate(model);
     });
   });
 }
-
 function inferTypeFromSrc(src) {
-  if (!src) return "bell";
+  if (!src) return 'bell';
   const s = src.toLowerCase();
   if (s.includes("star")) return "star";
   if (s.includes("red")) return "red";
@@ -167,174 +164,214 @@ function inferTypeFromSrc(src) {
   if (s.includes("ginger")) return "ginger";
   if (s.includes("present")) return "present";
   if (s.includes("cat")) return "cat";
-  if (s.includes("wdzy")) return "wdzy";
-  return "wdzy";
+  return "bell";
 }
 
 /* ===========================
    Trash helpers
    =========================== */
 function isElementOverTrash(el) {
-  if (!trashZone) return false;
-  const trashRect = trashZone.getBoundingClientRect();
-  const elRect = el.getBoundingClientRect();
-  const cx = elRect.left + elRect.width / 2;
-  const cy = elRect.top + elRect.height / 2;
-  return cx >= trashRect.left && cx <= trashRect.right && cy >= trashRect.top && cy <= trashRect.bottom;
+  if (!trash) return false;
+  const tr = trash.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  const cx = er.left + er.width/2;
+  const cy = er.top  + er.height/2;
+  return cx >= tr.left && cx <= tr.right && cy >= tr.top && cy <= tr.bottom;
 }
-
-function applyTrashHoverVisual(el, isHovering) {
-  if (isHovering) {
-    el.classList.add("near-trash");
+function applyTrashVisual(el, near) {
+  if (near) {
+    el.classList.add("near-trash"); // your CSS shrink + wiggle class
+    if (trash) trash.classList.add("active");
   } else {
     el.classList.remove("near-trash");
+    if (trash) trash.classList.remove("active");
   }
 }
 
 /* ===========================
-   Pointer controls - drag, pinch, rotate, drop-to-trash
-   Works with pointer events on iPad & desktop
+   Pointer controls (hybrid)
+   - while dragging, element becomes fixed to document.body (so it can go to trash)
+   - on release: if over trash -> delete; else compute pct relative to stage and save to Firebase
+   - supports pinch-to-scale and rotate (2 pointers)
    =========================== */
 function attachPointerControls(el, model) {
+  // maintain local model reference
+  el._model = model;
+
   const pointers = new Map();
   let start = {};
   let startScale = model.scale ?? 0.6;
   let startRotation = model.rotation ?? 0;
+  let dragging = false;
   let moved = false;
 
-  // ensure element size updates when scale changes
-  function updateVisual() {
+  // helper to update visuals from model (pct coords)
+  function applyVisual() {
     const px = pctToPx(model.x, model.y);
     el.style.left = px.left + "px";
     el.style.top = px.top + "px";
-    el.style.width = Math.round(48 * model.scale) + "px";
+    el.style.width = Math.round(46 * model.scale) + "px";
     el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
-    el._model = model;
   }
 
+  // helper to move element to document.body as fixed-position during dragging
+  function placeElementAsFixedFromCurrent(el) {
+    // compute current bounding rect and convert left/top to page px
+    const rect = el.getBoundingClientRect();
+    el.style.position = "fixed";
+    el.style.left = rect.left + "px";
+    el.style.top = rect.top + "px";
+    el.style.zIndex = 9999;
+    // remove from decorateLayer and ensure it's child of body (so it can move freely)
+    if (el.parentElement !== document.body) document.body.appendChild(el);
+  }
+
+  // and return it back to relative placement inside decorateLayer after finalizing
+  function returnElementToLayer(el, model) {
+    // convert current fixed left/top px into percentage relative to stage
+    const rect = stage.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    // center point of the ornament
+    const centerX = elRect.left + elRect.width/2;
+    const centerY = elRect.top + elRect.height/2;
+    const xPct = clamp(((centerX - rect.left) / rect.width) * 100, 0, 100);
+    const yPct = clamp(((centerY - rect.top) / rect.height) * 100, 0, 100);
+    model.x = xPct;
+    model.y = yPct;
+    // append back into decorateLayer for consistent DOM hierarchy
+    if (decorateLayer && el.parentElement !== decorateLayer) decorateLayer.appendChild(el);
+    el.style.position = "absolute";
+    el.style.left = pctToPx(model.x, model.y).left + "px";
+    el.style.top = pctToPx(model.x, model.y).top + "px";
+    el.style.zIndex = "";
+    el.style.width = Math.round(46 * model.scale) + "px";
+    el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
+  }
+
+  // pointerdown on element
   el.addEventListener("pointerdown", (ev) => {
     ev.preventDefault();
+    // capture pointer locally
     el.setPointerCapture?.(ev.pointerId);
     pointers.set(ev.pointerId, ev);
     moved = false;
 
+    // if first pointer, remember start client coords and model pct
     if (pointers.size === 1) {
-      // store start positions (pct)
       const p = ev;
-      const rect = stage.getBoundingClientRect();
       start.clientX = p.clientX;
       start.clientY = p.clientY;
       start.modelX = model.x;
       start.modelY = model.y;
+      start.rect = stage.getBoundingClientRect();
+      // prepare to drag: place element as fixed so it can move to trash area outside decorateLayer
+      placeElementAsFixedFromCurrent(el);
+      dragging = true;
     } else if (pointers.size === 2) {
+      // pinch start: compute initial distance & angle
       const [a, b] = Array.from(pointers.values());
       start.dist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-      start.angle = Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
+      start.angle = Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * (180/Math.PI);
       startScale = model.scale ?? startScale;
       startRotation = model.rotation ?? startRotation;
     }
   });
 
-  // pointermove on window so dragging stays responsive
+  // pointermove on window (so pointer works outside original container)
   window.addEventListener("pointermove", (ev) => {
     if (!pointers.size) return;
     if (!pointers.has(ev.pointerId)) return;
     pointers.set(ev.pointerId, ev);
     moved = true;
 
-    const rect = stage.getBoundingClientRect();
+    // prevent scrolling on touch during manipulation
+    if (ev.pointerType === 'touch') ev.preventDefault?.();
 
+    // single pointer = translate
     if (pointers.size === 1) {
-      // move — convert px delta to percentage
       const p = Array.from(pointers.values())[0];
-      const dxPct = ((p.clientX - start.clientX) / rect.width) * 100;
-      const dyPct = ((p.clientY - start.clientY) / rect.height) * 100;
+      const dxPx = p.clientX - start.clientX;
+      const dyPx = p.clientY - start.clientY;
+      // stage rect for pct conversion
+      const rect = stage.getBoundingClientRect();
+      // convert delta px to percent
+      const dxPct = (dxPx / rect.width) * 100;
+      const dyPct = (dyPx / rect.height) * 100;
       model.x = clamp(start.modelX + dxPct, 0, 100);
       model.y = clamp(start.modelY + dyPct, 0, 100);
-
-      updateVisual();
-
-      // show shrink / wiggle when near trash
-      const near = isElementOverTrash(el);
-      applyTrashHoverVisual(el, near);
+      // while dragging, update fixed-position left/top directly (px)
+      // compute pixel placement of model center relative to page
+      const px = pctToPx(model.x, model.y);
+      // px.left/top are relative to stage; convert to page px by adding stage.left/top
+      const stageRect = rect;
+      const pageLeft = stageRect.left + px.left;
+      const pageTop  = stageRect.top  + px.top;
+      el.style.left = pageLeft - (el.getBoundingClientRect().width/2) + "px";
+      el.style.top  = pageTop  - (el.getBoundingClientRect().height/2) + "px";
+      // shrink / wiggle visual if near trash
+      applyTrashVisual(el, isElementOverTrash(el));
+      // live debounce save
+      saveModelDebounced(model);
     }
 
+    // two pointers = pinch / rotate
     if (pointers.size === 2) {
-      // pinch/rotate
       const [p1, p2] = Array.from(pointers.values());
       const dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
-      const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * 180 / Math.PI;
-
-      // scale relative to start
-      const newScale = clamp(startScale * (dist / start.dist), 0.8, 3.0); // smaller min
+      const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * (180/Math.PI);
+      const newScale = clamp(startScale * (dist / start.dist), 0.35, 3.5);
       model.scale = newScale;
-
-      // rotation relative
       model.rotation = startRotation + (angle - start.angle);
-
-      updateVisual();
+      // update element sizing while fixed
+      el.style.width = Math.round(46 * model.scale) + "px";
+      el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
+      saveModelDebounced(model);
+      applyTrashVisual(el, isElementOverTrash(el));
     }
   }, { passive: false });
 
-  function pointerUpHandler(ev) {
+  // pointerup/cancel handling
+  const onPointerEnd = (ev) => {
     if (pointers.has(ev.pointerId)) pointers.delete(ev.pointerId);
-
-    // If dropped while over trash, delete
-    if (isElementOverTrash(el)) {
-      // visual: wiggle before remove then delete
-      el.classList.add("will-delete");
-      setTimeout(() => {
-        deleteModel(model.id);
-        removeOrnamentById(model.id);
-      }, 240); // short wiggle duration
-      return;
+    // drop behavior only after last pointer lifts
+    if (pointers.size === 0) {
+      // if currently over trash -> delete
+      if (isElementOverTrash(el)) {
+        // small wiggle animation class then delete
+        el.classList.add("will-delete");
+        setTimeout(() => {
+          deleteModel(model.id);
+          removeOrnamentById(model.id);
+        }, 260);
+      } else {
+        // else finalize position: convert px center -> pct inside stage, save, and return element to decorateLayer
+        returnElementToLayer(el, model);
+        saveModelImmediate(model);
+        applyTrashVisual(el, false);
+      }
+      // reset dragging flags
+      dragging = false;
+      moved = false;
     }
+  };
 
-    // otherwise save final model
-    saveModelDebounced(model);
-    applyTrashHoverVisual(el, false);
-  }
-
-  window.addEventListener("pointerup", pointerUpHandler);
-  window.addEventListener("pointercancel", pointerUpHandler);
+  window.addEventListener("pointerup", onPointerEnd);
+  window.addEventListener("pointercancel", onPointerEnd);
 }
 
 /* ===========================
-   Realtime Firebase listeners
+   Firebase realtime listeners
    =========================== */
 onChildAdded(ORN_REF, snap => {
   const model = snap.val();
   if (!model || !model.id) return;
-  model.x = Number(model.x ?? 50);
-  model.y = Number(model.y ?? 45);
-  model.scale = Number(model.scale ?? 0.6);
-  model.rotation = Number(model.rotation ?? 0);
   renderOrnament(model);
 });
 
 onChildChanged(ORN_REF, snap => {
   const model = snap.val();
   if (!model || !model.id) return;
-  // If element exists, update it's model and visuals
-  const el = document.getElementById(model.id);
-  if (el) {
-    // update stored model and recolor/resize
-    el._model = model;
-    model.scale = Number(model.scale ?? 0.6);
-    model.rotation = Number(model.rotation ?? 0);
-    model.x = Number(model.x ?? 50);
-    model.y = Number(model.y ?? 45);
-
-    // apply visuals
-    const px = pctToPx(model.x, model.y);
-    el.style.left = px.left + "px";
-    el.style.top = px.top + "px";
-    el.style.width = Math.round(48 * model.scale) + "px";
-    el.style.transform = `translate(-50%,-50%) rotate(${model.rotation}deg)`;
-  } else {
-    // not present — render fresh
-    renderOrnament(model);
-  }
+  renderOrnament(model);
 });
 
 onChildRemoved(ORN_REF, snap => {
@@ -343,169 +380,47 @@ onChildRemoved(ORN_REF, snap => {
   removeOrnamentById(key);
 });
 
-// -------------------------------------
-//  BASIC SETUP
-// -------------------------------------
-const stage = document.getElementById("stage");
-const layer = document.getElementById("decorate-layer");
-const tray = document.getElementById("ornament-tray");
-const bin = document.getElementById("trash-zone");
-
-// Theme toggle
-document.getElementById("theme-toggle").addEventListener("change", e => {
-    document.body.classList.toggle("night", e.target.checked);
-});
-
-// Last edited date
-document.getElementById("last-edit-date").textContent = new Date().toLocaleDateString();
-
-// -------------------------------------
-//  CREATE NEW ORNAMENT WHEN TAPPED
-// -------------------------------------
-tray.addEventListener("click", e => {
-    if (!e.target.classList.contains("ornament-template")) return;
-
-    const img = document.createElement("img");
-    img.src = e.target.src;
-    img.className = "placed";
-    img.dataset.type = e.target.dataset.type;
-
-    // Start centered on tree
-    const rect = stage.getBoundingClientRect();
-    img.style.left = rect.left + rect.width / 2 - 30 + "px";
-    img.style.top = rect.top + rect.height / 2 - 30 + "px";
-
-    document.body.appendChild(img);
-
-    enableDrag(img);
-});
-
-// -------------------------------------
-//  DRAGGING LOGIC
-// -------------------------------------
-function enableDrag(elem) {
-    let offsetX = 0, offsetY = 0;
-
-    const start = (e) => {
-        const touch = e.touches ? e.touches[0] : e;
-        offsetX = touch.clientX - elem.offsetLeft;
-        offsetY = touch.clientY - elem.offsetTop;
-
-        elem.style.transition = "0s";
-        elem.style.zIndex = "9999";
-
-        document.addEventListener("mousemove", move);
-        document.addEventListener("mouseup", end);
-        document.addEventListener("touchmove", move, { passive: false });
-        document.addEventListener("touchend", end);
-    };
-
-    const move = (e) => {
-        const touch = e.touches ? e.touches[0] : e;
-        const x = touch.clientX - offsetX;
-        const y = touch.clientY - offsetY;
-
-        elem.style.left = x + "px";
-        elem.style.top = y + "px";
-
-        // BIN HOVER EFFECT
-        const binRect = bin.getBoundingClientRect();
-        const ornamentRect = elem.getBoundingClientRect();
-
-        const overBin =
-            ornamentRect.right > binRect.left &&
-            ornamentRect.left < binRect.right &&
-            ornamentRect.bottom > binRect.top &&
-            ornamentRect.top < binRect.bottom;
-
-        if (overBin) {
-            elem.style.transform = "scale(0.7) rotate(5deg)";
-            bin.classList.add("active");
-        } else {
-            elem.style.transform = "scale(1)";
-            bin.classList.remove("active");
-        }
-
-        e.preventDefault();
-    };
-
-    const end = (e) => {
-        document.removeEventListener("mousemove", move);
-        document.removeEventListener("mouseup", end);
-        document.removeEventListener("touchmove", move);
-        document.removeEventListener("touchend", end);
-
-        elem.style.transform = "scale(1)";
-        bin.classList.remove("active");
-
-        const ornamentRect = elem.getBoundingClientRect();
-        const binRect = bin.getBoundingClientRect();
-
-        const overBin =
-            ornamentRect.right > binRect.left &&
-            ornamentRect.left < binRect.right &&
-            ornamentRect.bottom > binRect.top &&
-            ornamentRect.top < binRect.bottom;
-
-        if (overBin) {
-            // Wiggle then delete
-            elem.style.animation = "wiggle 0.3s";
-            setTimeout(() => elem.remove(), 250);
-            return;
-        }
-
-        // SNAP BACK INTO DECORATE-LAYER if inside stage
-        const stageRect = stage.getBoundingClientRect();
-
-        const insideStage =
-            ornamentRect.left > stageRect.left &&
-            ornamentRect.right < stageRect.right &&
-            ornamentRect.top > stageRect.top &&
-            ornamentRect.bottom < stageRect.bottom;
-
-        if (insideStage) {
-            const relX = ornamentRect.left - stageRect.left;
-            const relY = ornamentRect.top - stageRect.top;
-
-            elem.style.left = relX + "px";
-            elem.style.top = relY + "px";
-
-            layer.appendChild(elem);
-        }
-    };
-
-    elem.addEventListener("mousedown", start);
-    elem.addEventListener("touchstart", start, { passive: false });
-}
-
-
 /* ===========================
    Theme toggle wiring
+   - expects an input (checkbox) #theme-toggle
+   - uses dataset.theme='dark'|'light'
    =========================== */
 if (themeToggle) {
-  // initial apply from localStorage
-  const saved = localStorage.getItem("theme");
-  if (saved === "dark") {
-    document.documentElement.dataset.theme = "dark";
-    themeToggle.checked = true;
-  } else {
-    document.documentElement.dataset.theme = "light";
-    themeToggle.checked = false;
-  }
-
-  themeToggle.addEventListener("change", () => {
-    const dark = themeToggle.checked;
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
-    localStorage.setItem("theme", dark ? "dark" : "light");
+  const saved = localStorage.getItem('theme') || document.documentElement.dataset.theme || 'light';
+  document.documentElement.dataset.theme = saved;
+  try { themeToggle.checked = (saved === 'dark'); } catch (e) {}
+  themeToggle.addEventListener('change', (e) => {
+    const dark = !!e.target.checked;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
   });
 }
 
 /* ===========================
-   Footer date
+   Optional: save screenshot if #save-btn present
+   =========================== */
+if (saveBtn) {
+  saveBtn.addEventListener('click', async () => {
+    try {
+      const { default: html2canvas } = await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.js");
+      const canvas = await html2canvas(stage, { backgroundColor: null, scale: 2 });
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'tree-snapshot.png';
+      a.click();
+    } catch (err) {
+      console.warn('screenshot failed', err);
+      alert('Screenshot failed (see console).');
+    }
+  });
+}
+
+/* ===========================
+   Last edited date
    =========================== */
 if (lastEdit) lastEdit.textContent = new Date().toLocaleDateString();
 
 /* ===========================
-   Done
+   End
    =========================== */
-console.log("script.js loaded — drag/pinch/delete-on-drop wired.");
+console.log("script.js — hybrid drag/pinch/trash + Firebase wired.");
