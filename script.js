@@ -175,6 +175,7 @@ function inferTypeFromSrc(src) {
   if (src.includes("ginger")) return "ginger";
   if (src.includes("present")) return "present";
   if (src.includes("bell")) return "bell";
+  if (src.includes("cat")) return "cat";
   return "bell";
 }
 
