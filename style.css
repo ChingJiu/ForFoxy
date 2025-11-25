@@ -1,84 +1,53 @@
+/* =========================
+   GLOBAL
+   ========================= */
+:root {
+  --bg-light: #f4f4f4;
+  --text-light: #111;
+  --bg-dark: #0c0c0c;
+  --text-dark: #e6e6e6;
+}
+
 body {
-  background: #f4f4f4;
-  color: #111;
-  transition: 0.3s;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
-body.night {
-  background: #0c0c0c;
-  color: #e6e6e6;
+body[data-theme="dark"] {
+  background: var(--bg-dark);
+  color: var(--text-dark);
 }
 
-#stage {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
+/* =========================
+   HEADER + FOOTER
+   ========================= */
+header {
+  background: #84D4F6;
+  padding: 1rem;
+  text-align: center;
 }
 
-#decorate-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.ornament {
-  position: absolute;
-  width: 60px;
-  height: auto;
-  touch-action: none;
-}
-
-#ornament-tray img {
-  width: 60px;
-  margin: 6px;
-  touch-action: manipulation;
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
 }
 
 footer {
   margin-top: 20px;
   text-align: center;
   opacity: 0.7;
-  font-family:'Space Grotesk',sans-serif;
 }
 
-header {
-  background: #84D4F6;
-  padding: 1rem;
-  font-family:'Space Grotesk',sans-serif;
-}
-
-h1 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-family:'Space Grotesk',sans-serif;
-}
-.page {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  gap: 20px;
-}
-
-.layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.tree-stage {
-  max-width: 90vw;
-  max-height: 90vh;
-}
-
-#tree-container {
+/* =========================
+   STAGE
+   ========================= */
+#stage {
   position: relative;
-  width: 90%;
-  max-width: 450px;
-  margin: 2rem auto;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
 }
 
 #tree {
@@ -87,6 +56,52 @@ h1 {
   pointer-events: none;
 }
 
+#decorate-layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* =========================
+   ORNAMENT TRAY
+   ========================= */
+#ornament-tray img {
+  width: 55px;
+  margin: 6px;
+  touch-action: manipulation;
+}
+
+/* =========================
+   PLACED ORNAMENTS
+   ========================= */
+.placed-ornament {
+  position: absolute;
+  width: 60px;
+  height: auto;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.15s;
+}
+
+/* shrink when near trash */
+.placed-ornament.near-trash {
+  transform: translate(-50%, -50%) scale(0.65) rotate(var(--rot, 0deg));
+  opacity: 0.75;
+}
+
+/* wiggle animation before delete */
+@keyframes wiggle {
+  0% { transform: translate(-50%, -50%) rotate(-8deg); }
+  50% { transform: translate(-50%, -50%) rotate(8deg); }
+  100% { transform: translate(-50%, -50%) rotate(-8deg); }
+}
+
+.placed-ornament.wiggle {
+  animation: wiggle 0.25s infinite;
+}
+
+/* =========================
+   THEME SWITCH
+   ========================= */
 .switch {
   display: inline-flex;
   align-items: center;
@@ -94,9 +109,7 @@ h1 {
   cursor: pointer;
 }
 
-.switch input {
-  display: none;
-}
+.switch input { display: none; }
 
 .slider {
   width: 40px;
@@ -104,7 +117,7 @@ h1 {
   background-color: #ccc;
   border-radius: 20px;
   position: relative;
-  transition: 0.3s;
+  transition: background 0.3s;
 }
 
 .slider::before {
@@ -124,40 +137,31 @@ input:checked + .slider::before {
   background: #ffd700;
 }
 
-.label-text {
-  font-size: 0.9rem;
-}
-
+/* =========================
+   TRASH ZONE
+   ========================= */
 #trash-zone {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 60px;
-  height: 60px;
-  z-index: 1000;
+  width: 65px;
+  height: 65px;
   border: 2px dashed red;
-  border-radius: 10px;
+  border-radius: 12px;
+  background: rgba(255,0,0,0.1);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,0,0,0.1);
-  transition: background 0.2s;
+  transition: background 0.25s, transform 0.25s;
 }
 
 #trash-zone.active {
-  background: rgba(255,0,0,0.3);
+  background: rgba(255,0,0,0.35);
+  transform: scale(1.1);
 }
+
 #trash-zone img {
-  width: 100%;
+  width: 70%;
   height: auto;
-}
-
-
-
-/* Placed Ornaments */
-.placed {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  cursor: grab;
 }
