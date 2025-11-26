@@ -149,7 +149,7 @@ if (tray) {
       const type = btn.dataset.type || inferTypeFromSrc(btn.src);
       const id = uid('orn_');
       // center in stage pct
-      const model = { id, type, x: 50, y: 45, scale: 1.0, rotation: 0 };
+      const model = { id, type, x: 50, y: 45, scale: 2.0, rotation: 0 };
       saveModelImmediate(model);
     });
   });
@@ -321,7 +321,7 @@ function attachPointerControls(el, model) {
       const [p1, p2] = Array.from(pointers.values());
       const dist = Math.hypot(p2.clientX - p1.clientX, p2.clientY - p1.clientY);
       const angle = Math.atan2(p2.clientY - p1.clientY, p2.clientX - p1.clientX) * (180/Math.PI);
-      const newScale = clamp(startScale * (dist / start.dist), 0.35, 3.5);
+      const newScale = clamp(startScale * (dist / start.dist), 1.0, 3.5);
       model.scale = newScale;
       model.rotation = startRotation + (angle - start.angle);
       // update element sizing while fixed
