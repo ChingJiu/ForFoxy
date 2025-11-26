@@ -86,7 +86,8 @@ const SOURCE = {
   bell: "bell.png",
   ginger: "ginger.png",
   present: "present.png",
-  cat: "cat.png"
+  cat: "cat.png",
+  wdzy: "wdzy.png"
 };
 
 /* ===========================
@@ -117,7 +118,7 @@ function renderOrnament(model) {
   // normalize model
   model.x = Number(model.x ?? 50);
   model.y = Number(model.y ?? 45);
-  model.scale = Number(model.scale ?? 0.6);
+  model.scale = Number(model.scale ?? 1.0);
   model.rotation = Number(model.rotation ?? 0);
   model.type = model.type ?? "bell";
 
@@ -148,7 +149,7 @@ if (tray) {
       const type = btn.dataset.type || inferTypeFromSrc(btn.src);
       const id = uid('orn_');
       // center in stage pct
-      const model = { id, type, x: 50, y: 45, scale: 0.6, rotation: 0 };
+      const model = { id, type, x: 50, y: 45, scale: 1.0, rotation: 0 };
       saveModelImmediate(model);
     });
   });
@@ -164,6 +165,7 @@ function inferTypeFromSrc(src) {
   if (s.includes("ginger")) return "ginger";
   if (s.includes("present")) return "present";
   if (s.includes("cat")) return "cat";
+  if (s.includes("wdzy")) return "wdzy";
   return "bell";
 }
 
@@ -200,7 +202,7 @@ function attachPointerControls(el, model) {
 
   const pointers = new Map();
   let start = {};
-  let startScale = model.scale ?? 0.6;
+  let startScale = model.scale ?? 1.0;
   let startRotation = model.rotation ?? 0;
   let dragging = false;
   let moved = false;
