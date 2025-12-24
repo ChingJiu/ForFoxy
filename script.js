@@ -50,12 +50,12 @@ const ORNAMENTS = {
 const ORNAMENT_POSITIONS = {
   star: { x: 45, y: 70 },
   red: { x: 38, y: 30 },
-  blue: { x: 62, y: 20 },
-  candy: { x: 50, y: 48 },
-  bell: { x: 70, y: 50 },
-  ginger: { x: 30, y: 62 },
+  blue: { x: 56, y: 20 },
+  candy: { x: 50, y: 37 },
+  bell: { x: 70, y: 46 },
+  ginger: { x: 34, y: 62 },
   present: { x: 60, y: 66 },
-  cat: { x: 32, y: 76 },
+  cat: { x: 25, y: 76 },
   wdzy: { x: 79, y: 85 }
 };
 
