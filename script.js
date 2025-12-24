@@ -34,13 +34,13 @@ const ORNAMENTS = {
      wish: "Warmth can survive even the coldest seasons." },
   present: { 
      img: "present.png", 
-     wish: "Not everything precious is wrapped." },
+     wish: "I know people come and go, but I guess i did planned to take quite a lot of blue pills with you. " },
   cat: { 
      img: "cat.png", 
-     wish: "Someone is always thinking of you, even if they don’t say it." },
+     wish: "Stuff that i dont say it out, i wanted you to rest early, cause i hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. but I need you to know I am here for you." },
   wdzy: { 
      img: "wdzy.png", 
-     wish: "i miss you." }
+     wish: "I wish you joy and peace. Always, everyday, 24/7." }
 };
 
 /* =========================
@@ -48,7 +48,7 @@ const ORNAMENTS = {
 ========================= */
 
 const ORNAMENT_POSITIONS = {
-  star: { x: 45, y: 68 },
+  star: { x: 45, y: 74 },
   red: { x: 38, y: 34 },
   blue: { x: 62, y: 25 },
   candy: { x: 45, y: 48 },
