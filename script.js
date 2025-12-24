@@ -16,22 +16,22 @@ const snowLayer = document.getElementById("snow-layer");
 const ORNAMENTS = {
   star: { 
      img: "star.png", 
-     wish: "May this year end gently, and the next begin with courage." },
+     wish: "My lighthouse, my anchor, and my safe place. I miss you so much baby." },
   red: { 
      img: "bauble-red.png", 
-     wish: "if you ever feel like you dont love anymore, please tell me. but for now, please focus on me, be obsessive, be posessive, be whoever you want in front of me. i love who you are, even if its just a fragment of you." },
+     wish: "If you ever feel like you don't love anymore, please just tell me. But for now, please focus on me, be agressive, be posessive, be whoever you want in front of me. I love for who you are, even if its just a fragment of you." },
   blue: { 
      img: "bauble-blue.png", 
-     wish: "i love you sounded too heavy in some ways. lets go with i really like you this time." },
+     wish: "I wasn't prepared at the time you stepped into my life. you showed me stuff that I had never expected to introduce into my life, I break my own rules, I show my vulnerability..nothing makes sense except you." },
   candy: { 
      img: "candy.png", 
-     wish: "have a chocolate when you see this message. hope it makes you smile. thats the point for this message." },
+     wish: "Have a chocolate when you see this message. Hope it makes you smile. Thats the point for this message." },
   bell: { 
      img: "bell.png", 
-     wish: "You are allowed to rest. The world will wait." },
+     wish: "Take rest if you needed, do nothing if you can't be bother, think of me if you want to spiral. The world could always wait for my princess." },
   ginger: { 
      img: "ginger.png", 
-     wish: "hug hug baby. stay warm and drink plenty of water." },
+     wish: "Hug hug baby. Stay warm and drink plenty of water in this winter. And don't forget my goodnight kisses." },
   present: { 
      img: "present.png", 
      wish: "I know people come and go, but I guess I did planned to take quite a lot of blue pills with you." },
