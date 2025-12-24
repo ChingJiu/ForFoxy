@@ -175,4 +175,6 @@ tray.querySelectorAll(".ornament-template").forEach(btn => {
   });
 });
 
+if (lastEdit) lastEdit.textContent = newDate().toLocaleDateString();
+
 console.log("🎄 Ornament ritual ready");
