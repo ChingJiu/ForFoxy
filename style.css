@@ -163,6 +163,14 @@ body[data-theme="dark"] #wish-text {
   touch-action: manipulation;
 }
 
+/* Ornaments once placed on tree */
+.placed {
+  position: absolute;
+  width: 90px;   /* ← increase this */
+  height: auto;
+  transition: transform 0.6s ease;
+}
+
 /* =========================
    THEME SWITCH
    ========================= */
