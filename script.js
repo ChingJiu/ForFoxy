@@ -1,4 +1,4 @@
-// script.js — Ornament Wishes (Local, Fixed)
+// script.js — Ornament Wishes with Gentle Drift
 
 const stage = document.getElementById("stage");
 const layer = document.getElementById("decorate-layer");
@@ -10,8 +10,7 @@ const bubble = document.getElementById("wish-bubble");
 const bubbleText = document.getElementById("wish-text");
 
 /* =========================
-   ORNAMENT WISH DATA
-   (EDIT YOUR WISHES HERE)
+   WISH CONTENT (EDIT HERE)
 ========================= */
 
 const ORNAMENT_WISHES = {
@@ -26,7 +25,7 @@ const ORNAMENT_WISHES = {
 };
 
 /* =========================
-   ORNAMENT SOURCES
+   IMAGE SOURCES
 ========================= */
 
 const SOURCE = {
@@ -52,26 +51,31 @@ function pctToPx(xPct, yPct) {
   };
 }
 
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+/* =========================
+   WISH BUBBLE
+========================= */
+
 let bubbleTimer = null;
 
 function showWish(el, text) {
-  if (!text) return;
-
   bubbleText.textContent = text;
   bubble.hidden = false;
 
   const r = el.getBoundingClientRect();
   bubble.style.left = r.left + r.width / 2 + "px";
-  bubble.style.top = r.top - 10 + "px";
+  bubble.style.top = r.top - 12 + "px";
   bubble.style.transform = "translate(-50%, -100%)";
 
   clearTimeout(bubbleTimer);
   bubbleTimer = setTimeout(() => {
     bubble.hidden = true;
-  }, 6000);
+  }, 6500);
 }
 
-/* Hide bubble when tapping elsewhere */
 document.addEventListener("click", e => {
   if (!e.target.classList.contains("ornament-button")) {
     bubble.hidden = true;
@@ -79,7 +83,44 @@ document.addEventListener("click", e => {
 });
 
 /* =========================
-   CREATE ORNAMENT ON TREE
+   GENTLE DRIFT LOGIC
+========================= */
+
+function driftOrnament(el) {
+  const currentX = parseFloat(el.dataset.x);
+  const currentY = parseFloat(el.dataset.y);
+
+  // small poetic movement
+  const dx = (Math.random() - 0.5) * 12; // px
+  const dy = (Math.random() - 0.5) * 14;
+
+  const r = stage.getBoundingClientRect();
+
+  let px = (currentX / 100) * r.width + dx;
+  let py = (currentY / 100) * r.height + dy;
+
+  // convert back to %
+  const newX = clamp((px / r.width) * 100, 15, 85);
+  const newY = clamp((py / r.height) * 100, 18, 82);
+
+  el.dataset.x = newX;
+  el.dataset.y = newY;
+
+  el.style.transition = "transform 2.8s ease, left 2.8s ease, top 2.8s ease";
+  el.style.left = pxToLeft(newX) + "px";
+  el.style.top = pxToTop(newY) + "px";
+}
+
+function pxToLeft(xPct) {
+  return (xPct / 100) * stage.getBoundingClientRect().width;
+}
+
+function pxToTop(yPct) {
+  return (yPct / 100) * stage.getBoundingClientRect().height;
+}
+
+/* =========================
+   CREATE ORNAMENT
 ========================= */
 
 function createOrnament(type) {
@@ -90,57 +131,50 @@ function createOrnament(type) {
   el.style.position = "absolute";
   el.style.transform = "translate(-50%, -50%)";
   el.style.width = "48px";
-  el.setAttribute("role", "button");
+  el.style.cursor = "pointer";
 
-  // default placement (center-ish)
-  const pos = pctToPx(50, 45);
-  el.style.left = pos.left + "px";
-  el.style.top = pos.top + "px";
+  // initial placement
+  const x = 50;
+  const y = 45;
+
+  el.dataset.x = x;
+  el.dataset.y = y;
+
+  el.style.left = pxToLeft(x) + "px";
+  el.style.top = pxToTop(y) + "px";
 
   el.addEventListener("click", e => {
     e.stopPropagation();
     showWish(el, ORNAMENT_WISHES[type]);
+    driftOrnament(el);
   });
 
   layer.appendChild(el);
 }
 
 /* =========================
-   TRAY → ADD ORNAMENT
+   TRAY TAP
 ========================= */
 
 tray?.querySelectorAll(".ornament-template").forEach(btn => {
   btn.addEventListener("click", () => {
     const type = btn.dataset.type;
-    if (!type || !SOURCE[type]) return;
-    createOrnament(type);
+    if (SOURCE[type]) createOrnament(type);
   });
 });
 
 /* =========================
-   THEME TOGGLE
+   THEME + FOOTER
 ========================= */
 
 if (themeToggle) {
-  const saved = localStorage.getItem("theme");
-  if (saved === "dark") {
-    document.documentElement.dataset.theme = "dark";
-    themeToggle.checked = true;
-  }
-
-  themeToggle.addEventListener("change", () => {
-    const dark = themeToggle.checked;
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
-    localStorage.setItem("theme", dark ? "dark" : "light");
+  themeToggle.addEventListener("change", e => {
+    document.body.classList.toggle("night", e.target.checked);
   });
 }
-
-/* =========================
-   FOOTER DATE
-========================= */
 
 if (lastEdit) {
   lastEdit.textContent = new Date().toLocaleDateString();
 }
 
-console.log("🎄 Ornament wishes loaded — local & intentional.");
+console.log("🎄 Wishes drift gently across the tree.");
