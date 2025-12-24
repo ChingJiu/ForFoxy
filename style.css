@@ -5,7 +5,15 @@
   --text-dark: #e6e6e6;
 }
 
+/* =========================
+   BASE
+   ========================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
+  margin: 0;
   background: var(--bg-light);
   color: var(--text-light);
   transition: background 0.3s, color 0.3s;
@@ -24,6 +32,8 @@ header {
   background: #84D4F6;
   padding: 1rem;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 h1 {
@@ -32,32 +42,44 @@ h1 {
 }
 
 footer {
-  margin-top: 20px;
+  margin: 20px 0;
   text-align: center;
   opacity: 0.7;
+  position: relative;
+  z-index: 2;
 }
 
 /* =========================
    STAGE
    ========================= */
+main {
+  position: relative;
+  z-index: 2;
+}
+
 #stage {
   position: relative;
   width: 100%;
   max-width: 500px;
-  margin: auto;
+  margin: 20px auto;
 }
 
 #tree {
   width: 100%;
   height: auto;
+  display: block;
   pointer-events: none;
 }
 
 #decorate-layer {
   position: absolute;
   inset: 0;
+  pointer-events: auto;
 }
 
+/* =========================
+   WISH BUBBLE
+   ========================= */
 #wish-bubble {
   position: fixed;
   max-width: 260px;
@@ -66,7 +88,7 @@ footer {
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   z-index: 2000;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 #wish-text {
@@ -88,6 +110,17 @@ footer {
   color: #666;
 }
 
+body[data-theme="dark"] #wish-bubble {
+  background: #1e1e1e;
+}
+
+body[data-theme="dark"] #wish-text {
+  color: #f4f4f4;
+}
+
+/* =========================
+   SNOW
+   ========================= */
 #snow-layer {
   position: fixed;
   inset: 0;
@@ -111,21 +144,24 @@ footer {
   }
 }
 
-[data-theme="dark"] #wish-bubble {
-  background: #1e1e1e;
-  color: #f4f4f4;
-}
-
-
 /* =========================
    ORNAMENT TRAY
    ========================= */
+#ornament-tray {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 16px auto;
+  position: relative;
+  z-index: 2;
+}
+
 #ornament-tray img {
   width: 55px;
   margin: 6px;
+  cursor: pointer;
   touch-action: manipulation;
 }
-
 
 /* =========================
    THEME SWITCH
@@ -137,7 +173,9 @@ footer {
   cursor: pointer;
 }
 
-.switch input { display: none; }
+.switch input {
+  display: none;
+}
 
 .slider {
   width: 40px;
@@ -157,7 +195,11 @@ footer {
   border-radius: 50%;
   top: 2px;
   left: 2px;
-  transition: 0.3s;
+  transition: transform 0.3s, background 0.3s;
+}
+
+input:checked + .slider {
+  background: #555;
 }
 
 input:checked + .slider::before {
