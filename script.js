@@ -48,7 +48,7 @@ const ORNAMENTS = {
 ========================= */
 
 const ORNAMENT_POSITIONS = {
-  star: { x: 80, y: 68 },
+  star: { x: 45, y: 68 },
   red: { x: 38, y: 34 },
   blue: { x: 62, y: 25 },
   candy: { x: 45, y: 48 },
