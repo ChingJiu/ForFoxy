@@ -63,9 +63,11 @@ const ORNAMENT_POSITIONS = {
   bell:    { x: 55, y: 52 },
   ginger:  { x: 35, y: 62 },
   present: { x: 65, y: 66 },
-  cat:     { x: 50, y: 78 },
-   wdzy: { x: 45, y: 69 }
+  cat:     { x: 20, y: 78 },
+   wdzy: { x: 70, y: 69 }
 };
+
+ornament.classList.add('placed');
 
 /* =========================
    HELPERS
