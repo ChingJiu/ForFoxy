@@ -57,16 +57,24 @@ footer {
   position: absolute;
   inset: 0;
 }
+
 #wish-bubble {
   position: fixed;
   max-width: 260px;
-  background: white;
-  color: black;
-  padding: 12px 14px;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.2);
-  z-index: 9999;
-  font-size: 14px;
+  padding: 14px 18px;
+  background: rgba(246, 245, 243, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  z-index: 2000;
+  pointer-events: none;
+}
+
+#wish-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: #2a2a2a;
 }
 
 [data-theme="dark"] #wish-bubble {
@@ -84,40 +92,6 @@ footer {
   touch-action: manipulation;
 }
 
-/* =========================
-   PLACED ORNAMENTS
-   ========================= */
-.placed-ornament {
-  position: absolute;
-  width: 60px;
-  height: auto;
-  cursor: grab;
-  touch-action: none;
-  transition: transform 0.15s;
-}
-
-/* when near trash */
-.placed-ornament.near-trash {
-  transform-origin: 50% 50%;
-  transition: transform 0.12s ease, width 0.12s ease;
-  /* slightly smaller by visual shrink (actual width controlled in JS) */
-  filter: brightness(0.95);
-}
-
-/* wiggle animation before delete */
-@keyframes wiggle {
-  0% { transform: translate(-50%,-50%) rotate(-6deg) scale(0.95); }
-  50% { transform: translate(-50%,-50%) rotate(6deg) scale(0.95); }
-  100% { transform: translate(-50%,-50%) rotate(-6deg) scale(0.95); }
-}
-.placed-ornament.will-delete {
-  animation: wiggle 240ms ease-in-out 0s 2;
-  opacity: 0.9;
-}
-
-.placed-ornament.wiggle {
-  animation: wiggle 0.25s infinite;
-}
 
 /* =========================
    THEME SWITCH
@@ -155,33 +129,4 @@ footer {
 input:checked + .slider::before {
   transform: translateX(20px);
   background: #ffd700;
-}
-
-/* =========================
-   TRASH ZONE
-   ========================= */
-#trash-zone {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 65px;
-  height: 65px;
-  border: 2px dashed red;
-  border-radius: 12px;
-  background: rgba(255,0,0,0.1);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.25s, transform 0.25s;
-}
-
-#trash-zone.active {
-  background: rgba(255,0,0,0.35);
-  transform: scale(1.1);
-}
-
-#trash-zone img {
-  width: 70%;
-  height: auto;
 }
