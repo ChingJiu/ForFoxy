@@ -19,7 +19,7 @@ const ORNAMENTS = {
      wish: "My lighthouse, my anchor, and my safe place. I miss you so much baby." },
   red: { 
      img: "bauble-red.png", 
-     wish: "If you ever feel like you don't love anymore, please just tell me. But for now, please focus on me, be agressive, be posessive, be whoever you want in front of me. I love for who you are, even if its just a fragment of you." },
+     wish: "If you ever feel like you don't love anymore, please just tell me. But for now, please focus on me, be agressive, be posessive, be whoever you want in front of me. I love you for who you are, even if its just a fragment of you." },
   blue: { 
      img: "bauble-blue.png", 
      wish: "I wasn't prepared at the time you stepped into my life. You showed me stuff that I had never expected to introduce into my life, I break my own rules, I show my vulnerability..nothing makes sense except you." },
@@ -37,7 +37,7 @@ const ORNAMENTS = {
      wish: "I know people come and go, but I guess I did planned to keep taking the blue pills with you." },
   cat: { 
      img: "cat.png", 
-     wish: "Stuff that I don't say it out, I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. but I need you to know I am here for you." },
+     wish: "Stuff that I don't say it out: I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. but I need you to know I am here for you." },
   wdzy: { 
      img: "wdzy.png", 
      wish: "Merry Christmas and a Happy New Year my foxy. I wish you joy and peace. Always, everyday, 24/7." }
@@ -51,12 +51,12 @@ const ORNAMENT_POSITIONS = {
   star: { x: 45, y: 70 },
   red: { x: 38, y: 30 },
   blue: { x: 56, y: 20 },
-  candy: { x: 50, y: 37 },
+  candy: { x: 50, y: 40 },
   bell: { x: 70, y: 46 },
-  ginger: { x: 34, y: 62 },
-  present: { x: 60, y: 66 },
-  cat: { x: 25, y: 76 },
-  wdzy: { x: 79, y: 85 }
+  ginger: { x: 34, y: 48 },
+  present: { x: 68, y: 66 },
+  cat: { x: 25, y: 80 },
+  wdzy: { x: 79, y: 83 }
 };
 
 /* =========================
