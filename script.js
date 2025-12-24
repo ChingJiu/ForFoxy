@@ -14,15 +14,33 @@ const snowLayer = document.getElementById("snow-layer");
 ========================= */
 
 const ORNAMENTS = {
-  star: { img: "star.png", wish: "May this year end gently, and the next begin with courage." },
-  red: { img: "bauble-red.png", wish: "I hope you always feel loved, even on the quiet days." },
-  blue: { img: "bauble-blue.png", wish: "Peace doesn’t need to be loud to be real." },
-  candy: { img: "candy.png", wish: "Sweet moments count, even the small ones." },
-  bell: { img: "bell.png", wish: "You are allowed to rest. The world will wait." },
-  ginger: { img: "ginger.png", wish: "Warmth can survive even the coldest seasons." },
-  present: { img: "present.png", wish: "Not everything precious is wrapped." },
-  cat: { img: "cat.png", wish: "Someone is always thinking of you, even if they don’t say it." },
-  wdzy: { img: "wdzy.png", wish: "i miss you." }
+  star: { 
+     img: "star.png", 
+     wish: "May this year end gently, and the next begin with courage." },
+  red: { 
+     img: "bauble-red.png", 
+     wish: "I hope you always feel loved, even on the quiet days." },
+  blue: { 
+     img: "bauble-blue.png", 
+     wish: "Peace doesn’t need to be loud to be real." },
+  candy: { 
+     img: "candy.png", 
+     wish: "Sweet moments count, even the small ones." },
+  bell: { 
+     img: "bell.png", 
+     wish: "You are allowed to rest. The world will wait." },
+  ginger: { 
+     img: "ginger.png", 
+     wish: "Warmth can survive even the coldest seasons." },
+  present: { 
+     img: "present.png", 
+     wish: "Not everything precious is wrapped." },
+  cat: { 
+     img: "cat.png", 
+     wish: "Someone is always thinking of you, even if they don’t say it." },
+  wdzy: { 
+     img: "wdzy.png", 
+     wish: "i miss you." }
 };
 
 /* =========================
@@ -30,15 +48,15 @@ const ORNAMENTS = {
 ========================= */
 
 const ORNAMENT_POSITIONS = {
-  star: { x: 50, y: 18 },
+  star: { x: 80, y: 18 },
   red: { x: 38, y: 34 },
   blue: { x: 62, y: 36 },
   candy: { x: 45, y: 48 },
-  bell: { x: 55, y: 52 },
+  bell: { x: 70, y: 52 },
   ginger: { x: 35, y: 62 },
   present: { x: 65, y: 66 },
-  cat: { x: 20, y: 78 },
-  wdzy: { x: 70, y: 69 }
+  cat: { x: 25, y: 78 },
+  wdzy: { x: 79, y: 90 }
 };
 
 /* =========================
