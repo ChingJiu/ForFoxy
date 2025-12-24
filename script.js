@@ -22,22 +22,22 @@ const ORNAMENTS = {
      wish: "if you ever feel like you dont love anymore, please tell me. but for now, please focus on me, be obsessive, be posessive, be whoever you want in front of me. i love who you are, even if its just a fragment of you." },
   blue: { 
      img: "bauble-blue.png", 
-     wish: "Peace doesn’t need to be loud to be real." },
+     wish: "i love you sounded too heavy in some ways. lets go with i really like you this time." },
   candy: { 
      img: "candy.png", 
-     wish: "Sweet moments count, even the small ones." },
+     wish: "have a chocolate when you see this message. hope it makes you smile. thats the point for this message." },
   bell: { 
      img: "bell.png", 
      wish: "You are allowed to rest. The world will wait." },
   ginger: { 
      img: "ginger.png", 
-     wish: "Warmth can survive even the coldest seasons." },
+     wish: "hug hug baby. stay warm and drink plenty of water." },
   present: { 
      img: "present.png", 
-     wish: "I know people come and go, but I guess i did planned to take quite a lot of blue pills with you. " },
+     wish: "I know people come and go, but I guess I did planned to take quite a lot of blue pills with you." },
   cat: { 
      img: "cat.png", 
-     wish: "Stuff that i dont say it out, i wanted you to rest early, cause i hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. but I need you to know I am here for you." },
+     wish: "Stuff that I don't say it out, I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. but I need you to know I am here for you." },
   wdzy: { 
      img: "wdzy.png", 
      wish: "I wish you joy and peace. Always, everyday, 24/7." }
