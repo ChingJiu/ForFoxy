@@ -44,6 +44,10 @@ const ORNAMENTS = {
   cat: {
     img: "cat.png",
     wish: "Someone is always thinking of you, even if they don’t say it."
+  },
+   wdzy: {
+    img: "wdzy.png",
+    wish: "i miss you."
   }
 };
 
@@ -59,7 +63,8 @@ const ORNAMENT_POSITIONS = {
   bell:    { x: 55, y: 52 },
   ginger:  { x: 35, y: 62 },
   present: { x: 65, y: 66 },
-  cat:     { x: 50, y: 78 }
+  cat:     { x: 50, y: 78 },
+   wdzy: { x: 45, y: 69 }
 };
 
 /* =========================
@@ -142,6 +147,27 @@ function placeOnTree(type) {
     showWish(el, data.wish);
   });
 }
+
+const snowLayer = document.getElementById("snow-layer");
+
+function createSnowflake() {
+  const flake = document.createElement("div");
+  flake.className = "snowflake";
+  flake.textContent = "❄";
+
+  flake.style.left = Math.random() * 100 + "vw";
+  flake.style.animationDuration = 6 + Math.random() * 6 + "s";
+  flake.style.opacity = 0.4 + Math.random() * 0.6;
+  flake.style.fontSize = 10 + Math.random() * 12 + "px";
+
+  snowLayer.appendChild(flake);
+
+  setTimeout(() => flake.remove(), 12000);
+}
+
+// steady snowfall
+setInterval(createSnowflake, 400);
+
 
 /* =========================
    TRAY INTERACTION
