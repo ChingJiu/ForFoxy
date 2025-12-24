@@ -19,7 +19,7 @@ const ORNAMENTS = {
      wish: "May this year end gently, and the next begin with courage." },
   red: { 
      img: "bauble-red.png", 
-     wish: "I hope you always feel loved, even on the quiet days." },
+     wish: "if you ever feel like you dont love anymore, please tell me. but for now, please focus on me, be obsessive, be posessive, be whoever you want in front of me. i love who you are, even if its just a fragment of you." },
   blue: { 
      img: "bauble-blue.png", 
      wish: "Peace doesn’t need to be loud to be real." },
