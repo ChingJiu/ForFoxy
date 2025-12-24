@@ -1,42 +1,65 @@
-// script.js — Ornament Wishes with Gentle Drift
+// script.js — Ornament Ritual with Fixed Positions & Wishes
 
 const stage = document.getElementById("stage");
 const layer = document.getElementById("decorate-layer");
 const tray = document.getElementById("ornament-tray");
-const themeToggle = document.getElementById("theme-toggle");
-const lastEdit = document.getElementById("last-edit-date");
 
 const bubble = document.getElementById("wish-bubble");
 const bubbleText = document.getElementById("wish-text");
+const bubbleClose = document.getElementById("wish-close");
 
 /* =========================
-   WISH CONTENT (EDIT HERE)
+   ORNAMENT DATA (EDIT HERE)
 ========================= */
 
-const ORNAMENT_WISHES = {
-  star: "May this year end gently, and the next begin with courage.",
-  red: "I hope you always feel loved, even on the quiet days.",
-  blue: "Peace doesn’t need to be loud to be real.",
-  candy: "Sweet moments count, even the small ones.",
-  bell: "You are allowed to rest. The world will wait.",
-  ginger: "Warmth can survive even the coldest seasons.",
-  present: "Not everything precious is wrapped.",
-  cat: "Someone is always thinking of you, even if they don’t say it."
+const ORNAMENTS = {
+  star: {
+    img: "star.png",
+    wish: "May this year end gently, and the next begin with courage."
+  },
+  red: {
+    img: "bauble-red.png",
+    wish: "I hope you always feel loved, even on the quiet days."
+  },
+  blue: {
+    img: "bauble-blue.png",
+    wish: "Peace doesn’t need to be loud to be real."
+  },
+  candy: {
+    img: "candy.png",
+    wish: "Sweet moments count, even the small ones."
+  },
+  bell: {
+    img: "bell.png",
+    wish: "You are allowed to rest. The world will wait."
+  },
+  ginger: {
+    img: "ginger.png",
+    wish: "Warmth can survive even the coldest seasons."
+  },
+  present: {
+    img: "present.png",
+    wish: "Not everything precious is wrapped."
+  },
+  cat: {
+    img: "cat.png",
+    wish: "Someone is always thinking of you, even if they don’t say it."
+  }
 };
 
 /* =========================
-   IMAGE SOURCES
+   FIXED TREE POSITIONS (%)
 ========================= */
 
-const SOURCE = {
-  star: "star.png",
-  red: "bauble-red.png",
-  blue: "bauble-blue.png",
-  candy: "candy.png",
-  bell: "bell.png",
-  ginger: "ginger.png",
-  present: "present.png",
-  cat: "cat.png"
+const ORNAMENT_POSITIONS = {
+  star:    { x: 50, y: 18 },
+  red:     { x: 38, y: 34 },
+  blue:    { x: 62, y: 36 },
+  candy:   { x: 45, y: 48 },
+  bell:    { x: 55, y: 52 },
+  ginger:  { x: 35, y: 62 },
+  present: { x: 65, y: 66 },
+  cat:     { x: 50, y: 78 }
 };
 
 /* =========================
@@ -51,15 +74,9 @@ function pctToPx(xPct, yPct) {
   };
 }
 
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
-}
-
 /* =========================
    WISH BUBBLE
 ========================= */
-
-let bubbleTimer = null;
 
 function showWish(el, text) {
   bubbleText.textContent = text;
@@ -69,112 +86,78 @@ function showWish(el, text) {
   bubble.style.left = r.left + r.width / 2 + "px";
   bubble.style.top = r.top - 12 + "px";
   bubble.style.transform = "translate(-50%, -100%)";
-
-  clearTimeout(bubbleTimer);
-  bubbleTimer = setTimeout(() => {
-    bubble.hidden = true;
-  }, 6500);
 }
 
+bubbleClose.addEventListener("click", () => {
+  bubble.hidden = true;
+});
+
 document.addEventListener("click", e => {
-  if (!e.target.classList.contains("ornament-button")) {
+  if (!e.target.classList.contains("tree-ornament")) {
     bubble.hidden = true;
   }
 });
 
 /* =========================
-   GENTLE DRIFT LOGIC
+   CREATE TREE ORNAMENT
 ========================= */
 
-function driftOrnament(el) {
-  const currentX = parseFloat(el.dataset.x);
-  const currentY = parseFloat(el.dataset.y);
+function placeOnTree(type) {
+  const data = ORNAMENTS[type];
+  const pos = ORNAMENT_POSITIONS[type];
 
-  // small poetic movement
-  const dx = (Math.random() - 0.5) * 12; // px
-  const dy = (Math.random() - 0.5) * 14;
-
-  const r = stage.getBoundingClientRect();
-
-  let px = (currentX / 100) * r.width + dx;
-  let py = (currentY / 100) * r.height + dy;
-
-  // convert back to %
-  const newX = clamp((px / r.width) * 100, 15, 85);
-  const newY = clamp((py / r.height) * 100, 18, 82);
-
-  el.dataset.x = newX;
-  el.dataset.y = newY;
-
-  el.style.transition = "transform 2.8s ease, left 2.8s ease, top 2.8s ease";
-  el.style.left = pxToLeft(newX) + "px";
-  el.style.top = pxToTop(newY) + "px";
-}
-
-function pxToLeft(xPct) {
-  return (xPct / 100) * stage.getBoundingClientRect().width;
-}
-
-function pxToTop(yPct) {
-  return (yPct / 100) * stage.getBoundingClientRect().height;
-}
-
-/* =========================
-   CREATE ORNAMENT
-========================= */
-
-function createOrnament(type) {
   const el = document.createElement("img");
-  el.className = "placed-ornament ornament-button";
-  el.src = `ornaments/${SOURCE[type]}`;
-  el.alt = type;
+  el.src = `ornaments/${data.img}`;
+  el.className = "placed-ornament tree-ornament";
   el.style.position = "absolute";
-  el.style.transform = "translate(-50%, -50%)";
   el.style.width = "48px";
+  el.style.transform = "translate(-50%, -50%)";
   el.style.cursor = "pointer";
+  el.style.transition = "left 2.5s ease, top 2.5s ease";
 
-  // initial placement
-  const x = 50;
-  const y = 45;
+  // start from tray position
+  const trayRect = tray.getBoundingClientRect();
+  const stageRect = stage.getBoundingClientRect();
 
-  el.dataset.x = x;
-  el.dataset.y = y;
-
-  el.style.left = pxToLeft(x) + "px";
-  el.style.top = pxToTop(y) + "px";
-
-  el.addEventListener("click", e => {
-    e.stopPropagation();
-    showWish(el, ORNAMENT_WISHES[type]);
-    driftOrnament(el);
-  });
+  el.style.left = trayRect.left - stageRect.left + trayRect.width / 2 + "px";
+  el.style.top = trayRect.top - stageRect.top + trayRect.height / 2 + "px";
 
   layer.appendChild(el);
+
+  // drift to final position
+  requestAnimationFrame(() => {
+    const px = pctToPx(pos.x, pos.y);
+    el.style.left = px.left + "px";
+    el.style.top = px.top + "px";
+  });
+
+  // show wish once arrived
+  setTimeout(() => {
+    showWish(el, data.wish);
+  }, 2600);
+
+  // tap to re-open wish
+  el.addEventListener("click", e => {
+    e.stopPropagation();
+    showWish(el, data.wish);
+  });
 }
 
 /* =========================
-   TRAY TAP
+   TRAY INTERACTION
 ========================= */
 
-tray?.querySelectorAll(".ornament-template").forEach(btn => {
+tray.querySelectorAll(".ornament-template").forEach(btn => {
   btn.addEventListener("click", () => {
     const type = btn.dataset.type;
-    if (SOURCE[type]) createOrnament(type);
+    if (!ORNAMENTS[type]) return;
+
+    // remove from tray
+    btn.style.opacity = "0";
+    btn.style.pointerEvents = "none";
+
+    placeOnTree(type);
   });
 });
 
-/* =========================
-   THEME + FOOTER
-========================= */
-
-if (themeToggle) {
-  themeToggle.addEventListener("change", e => {
-    document.body.classList.toggle("night", e.target.checked);
-  });
-}
-
-if (lastEdit) {
-  lastEdit.textContent = new Date().toLocaleDateString();
-}
-
-console.log("🎄 Wishes drift gently across the tree.");
+console.log("🎄 Ornament ritual ready.");
