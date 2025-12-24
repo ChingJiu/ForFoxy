@@ -88,6 +88,29 @@ footer {
   color: #666;
 }
 
+#snow-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: white;
+  font-size: 12px;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+  }
+}
+
 [data-theme="dark"] #wish-bubble {
   background: #1e1e1e;
   color: #f4f4f4;
