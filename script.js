@@ -22,7 +22,7 @@ const ORNAMENTS = {
      wish: "If you ever feel like you don't love anymore, please just tell me. But for now, please focus on me, be agressive, be posessive, be whoever you want in front of me. I love you for who you are, even if its just a fragment of you." },
   blue: { 
      img: "bauble-blue.png", 
-     wish: "I wasn't prepared at the time you stepped into my life. You showed me stuff that I had never expected to introduce into my life, I break my own rules, I show my vulnerability..nothing makes sense except you." },
+     wish: "I wasn't prepared at the time you stepped into my life... at the end of the day, nothing makes sense except you." },
   candy: { 
      img: "candy.png", 
      wish: "Have a chocolate when you see this message. Hope it makes you smile. Thats the point for this message." },
@@ -37,7 +37,7 @@ const ORNAMENTS = {
      wish: "I know people come and go, but I guess I did planned to keep taking the blue pills with you." },
   cat: { 
      img: "cat.png", 
-     wish: "Stuff that I don't say it out: I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. but I need you to know I am here for you." },
+     wish: "Stuff that I don't say it out: I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. But I need you to know I am here for you." },
   wdzy: { 
      img: "wdzy.png", 
      wish: "Merry Christmas and a Happy New Year my foxy. I wish you joy and peace. Always, everyday, 24/7." }
