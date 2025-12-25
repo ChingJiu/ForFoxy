@@ -52,7 +52,7 @@ const ORNAMENT_POSITIONS = {
   red: { x: 38, y: 30 },
   blue: { x: 56, y: 20 },
   candy: { x: 50, y: 48 },
-  bell: { x: 70, y: 54 },
+  bell: { x: 70, y: 42 },
   ginger: { x: 34, y: 60 },
   present: { x: 68, y: 63 },
   cat: { x: 25, y: 76 },
