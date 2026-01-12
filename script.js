@@ -177,3 +177,53 @@ tray.querySelectorAll(".ornament-template").forEach(btn => {
 }
 
 console.log("🎄 Ornament ritual ready");
+
+<script>
+/* -------- CONFIG -------- */
+
+// Set who this device belongs to
+// Change to "B" on your partner’s device
+const PARTNER = "A";
+
+/* -------- VISIT LOGGING -------- */
+
+const now = new Date();
+const hour = now.getHours();
+const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+const visit = {
+  partner: PARTNER,
+  month: monthKey,
+  hour: hour,
+  time: now.getTime()
+};
+
+const visits = JSON.parse(localStorage.getItem("presenceVisits") || "[]");
+visits.push(visit);
+localStorage.setItem("presenceVisits", JSON.stringify(visits));
+
+/* -------- RENDER -------- */
+
+const container = document.getElementById("constellation");
+
+const currentMonthVisits = visits.filter(v => v.month === monthKey);
+
+currentMonthVisits.forEach(v => {
+  const dot = document.createElement("div");
+  dot.classList.add("dot");
+
+  // Partner identity
+  dot.classList.add(v.partner === "A" ? "partner-a" : "partner-b");
+
+  // Time tone
+  const isNight = v.hour >= 22 || v.hour < 5;
+  dot.classList.add(isNight ? "night" : "day");
+
+  // Fade older visits
+  const ageHours = (Date.now() - v.time) / 36e5;
+  if (ageHours > 48) dot.classList.add("faded");
+
+  container.appendChild(dot);
+});
+</script>
+
