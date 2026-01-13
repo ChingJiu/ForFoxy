@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+
 const stage = document.getElementById("stage"); 
 const layer = document.getElementById("decorate-layer"); 
 const tray = document.getElementById("ornament-tray"); 
@@ -90,7 +92,7 @@ tray.querySelectorAll(".ornament-template").forEach(btn => {
   const type = btn.dataset.type; 
     if (!ORNAMENTS[type]) return; btn.style.opacity = "0"; 
     btn.style.pointerEvents = "none"; 
-    placeOnTree(type); }); }); } 
+    placeOnTree(type); }); });} 
 
 console.log("🎄 Ornament ritual ready");
 
