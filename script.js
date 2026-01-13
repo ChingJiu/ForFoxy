@@ -1,5 +1,5 @@
 // script.js — Ornament Ritual (fixed, bubble-enabled)
-
+<script>
 const stage = document.getElementById("stage");
 const layer = document.getElementById("decorate-layer");
 const tray = document.getElementById("ornament-tray");
@@ -177,4 +177,4 @@ tray.querySelectorAll(".ornament-template").forEach(btn => {
 }
 
 console.log("🎄 Ornament ritual ready");
-
+</script>
