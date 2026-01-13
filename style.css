@@ -172,6 +172,109 @@ body[data-theme="dark"] #wish-text {
 }
 
 /* =========================
+   PRESENCE PAGE
+   ========================= */
+
+.presence-wrapper {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Month container */
+.month-sky {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 48px;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+/* Dark mode sky */
+body[data-theme="dark"] .month-sky {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Month label */
+.month-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   DOTS (VISITS)
+   ========================= */
+
+.presence-dot {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.75;
+  transition:
+    opacity 1.2s ease,
+    box-shadow 1.2s ease,
+    transform 1.2s ease;
+}
+
+/* Day visits */
+.presence-dot.day {
+  width: 5px;
+  height: 5px;
+  background: rgba(120, 120, 140, 0.7);
+}
+
+/* Night visits — warmer, softer glow */
+.presence-dot.night {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 190, 150, 0.85);
+  box-shadow: 0 0 10px rgba(255, 180, 130, 0.45);
+}
+
+/* Dark mode tuning */
+body[data-theme="dark"] .presence-dot.day {
+  background: rgba(200, 200, 220, 0.6);
+}
+
+body[data-theme="dark"] .presence-dot.night {
+  background: rgba(255, 200, 160, 0.9);
+  box-shadow: 0 0 12px rgba(255, 200, 160, 0.5);
+}
+
+/* =========================
+   AGING / FADING
+   ========================= */
+
+.presence-dot.old {
+  opacity: 0.3;
+  box-shadow: none;
+}
+
+/* =========================
+   OPTIONAL CONSTELLATION LINES
+   (use only at month end if you want)
+   ========================= */
+
+.constellation-line {
+  position: absolute;
+  height: 1px;
+  background: rgba(180, 180, 200, 0.25);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+body[data-theme="dark"] .constellation-line {
+  background: rgba(220, 220, 240, 0.25);
+}
+
+
+/* =========================
    THEME SWITCH
    ========================= */
 .switch {
