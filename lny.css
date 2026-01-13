@@ -1,0 +1,225 @@
+:root {
+  --bg-light: #f4f4f4;
+  --text-light: #111;
+  --bg-dark: #0c0c0c;
+  --text-dark: #e6e6e6;
+}
+
+
+nav a{
+  margin:0 1rem;
+  color:var(--bg-light);
+  text-decoration:none;
+  font-weight:700
+}
+
+/* =========================
+   BASE
+   ========================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+body[data-theme="dark"] {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* =========================
+   HEADER + FOOTER
+   ========================= */
+header {
+  background: #84D4F6;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+footer {
+  margin: 20px 0;
+  text-align: center;
+  opacity: 0.7;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================
+   STAGE
+   ========================= */
+main {
+  position: relative;
+  z-index: 2;
+}
+
+#stage {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+#tree {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+#decorate-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+/* =========================
+   WISH BUBBLE
+   ========================= */
+#wish-bubble {
+  position: fixed;
+  max-width: 260px;
+  padding: 14px 18px;
+  background: rgba(246, 245, 243, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  z-index: 2000;
+  pointer-events: auto;
+}
+
+#wish-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: #2a2a2a;
+}
+
+#wish-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+body[data-theme="dark"] #wish-bubble {
+  background: #1e1e1e;
+}
+
+body[data-theme="dark"] #wish-text {
+  color: #f4f4f4;
+}
+
+/* =========================
+   SNOW
+   ========================= */
+#snow-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: white;
+  font-size: 12px;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+/* =========================
+   ORNAMENT TRAY
+   ========================= */
+#ornament-tray {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 16px auto;
+  position: relative;
+  z-index: 2;
+}
+
+#ornament-tray img {
+  width: 55px;
+  margin: 6px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Ornaments once placed on tree */
+.placed {
+  position: absolute;
+  width: 90px;   /* ← increase this */
+  height: auto;
+  transition: transform 0.6s ease;
+}
+
+
+/* =========================
+   THEME SWITCH
+   ========================= */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s, background 0.3s;
+}
+
+input:checked + .slider {
+  background: #555;
+}
+
+input:checked + .slider::before {
+  transform: translateX(20px);
+  background: #ffd700;
+}
