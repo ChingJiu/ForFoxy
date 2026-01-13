@@ -1,7 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-  
-nav a{margin:0 1rem;color:var(--accent);text-decoration:none;font-weight:700}
   
 const stage = document.getElementById("stage"); 
 const layer = document.getElementById("decorate-layer"); 
