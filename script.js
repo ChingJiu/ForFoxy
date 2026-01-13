@@ -128,7 +128,7 @@ function createSnowflake() {
   flake.style.left = Math.random() * 100 + "vw";
   flake.style.animationDuration = 6 + Math.random() * 6 + "s";
   flake.style.opacity = 0.4 + Math.random() * 0.6;
-  flake.style.fontSize = 10 + Math.random() * 12 + "px";
+  flake.style.fontSize = 15 + Math.random() * 12 + "px";
 
   snowLayer.appendChild(flake);
   setTimeout(() => flake.remove(), 12000);
