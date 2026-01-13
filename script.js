@@ -37,9 +37,40 @@ function showWish(el, text) {
    bubble.style.top = r.top - 12 + "px"; 
    bubble.style.transform = "translate(-50%, -100%)"; } 
 bubbleClose.addEventListener("click", () => { bubble.hidden = true; }); 
-document.addEventListener("click", e => { if (!e.target.classList.contains("tree-ornament")) { bubble.hidden = true; } }); 
+document.addEventListener("click", e => 
+  { if (!e.target.classList.contains("tree-ornament")) { bubble.hidden = true; } }); 
 /* ========================= PLACE ORNAMENT ========================= */ 
 function placeOnTree(type) { 
    const data = ORNAMENTS[type]; 
    const pos = ORNAMENT_POSITIONS[type]; 
-   const el = document.createElement("img"); el.src = ornaments/${data.img}; el.className = "tree-ornament placed-ornament"; el.style.position = "absolute"; el.style.width = "80px"; // initial size el.style.transform = "translate(-50%, -50%)"; el.style.cursor = "pointer"; el.style.transition = "left 2.5s ease, top 2.5s ease"; // start from tray const trayRect = tray.getBoundingClientRect(); const stageRect = stage.getBoundingClientRect(); el.style.left = trayRect.left - stageRect.left + trayRect.width / 2 + "px"; el.style.top = trayRect.top - stageRect.top + trayRect.height / 2 + "px"; layer.appendChild(el); // drift to final position requestAnimationFrame(() => { const px = pctToPx(pos.x, pos.y); el.style.left = px.left + "px"; el.style.top = px.top + "px"; }); // show wish after arrival setTimeout(() => { showWish(el, data.wish); }, 2600); el.addEventListener("click", e => { e.stopPropagation(); showWish(el, data.wish); }); } /* ========================= SNOW (CONTINUOUS) ========================= */ function createSnowflake() { const flake = document.createElement("div"); flake.className = "snowflake"; flake.textContent = "❄"; flake.style.left = Math.random() * 100 + "vw"; flake.style.animationDuration = 6 + Math.random() * 6 + "s"; flake.style.opacity = 0.4 + Math.random() * 0.6; flake.style.fontSize = 10 + Math.random() * 12 + "px"; snowLayer.appendChild(flake); setTimeout(() => flake.remove(), 12000); } setInterval(createSnowflake, 400); /* ========================= TRAY INTERACTION ========================= */ tray.querySelectorAll(".ornament-template").forEach(btn => { btn.addEventListener("click", () => { const type = btn.dataset.type; if (!ORNAMENTS[type]) return; btn.style.opacity = "0"; btn.style.pointerEvents = "none"; placeOnTree(type); }); }); } console.log("🎄 Ornament ritual ready");
+   const el = document.createElement("img"); 
+  el.src = ornaments/${data.img}; 
+  el.className = "tree-ornament placed-ornament"; 
+  el.style.position = "absolute"; 
+  el.style.width = "80px"; 
+ initial size el.style.transform = "translate(-50%, -50%)"; 
+  el.style.cursor = "pointer"; 
+  el.style.transition = "left 2.5s ease, top 2.5s ease"; 
+start from tray const trayRect = tray.getBoundingClientRect(); 
+  const stageRect = stage.getBoundingClientRect(); 
+  el.style.left = trayRect.left - stageRect.left + trayRect.width / 2 + "px"; 
+  el.style.top = trayRect.top - stageRect.top + trayRect.height / 2 + "px"; 
+  layer.appendChild(el); 
+drift to final position requestAnimationFrame(() => 
+  { const px = pctToPx(pos.x, pos.y); 
+  el.style.left = px.left + "px"; 
+   el.style.top = px.top + "px"; });
+show wish after arrival setTimeout(() => { showWish(el, data.wish); }, 2600); 
+  el.addEventListener("click", e => 
+    { e.stopPropagation(); 
+     showWish(el, data.wish); }); } 
+/* ========================= SNOW (CONTINUOUS) ========================= */ 
+function createSnowflake() { 
+  const flake = document.createElement("div"); 
+  flake.className = "snowflake"; 
+  flake.textContent = "❄"; 
+  flake.style.left = Math.random() * 100 + "vw"; 
+  flake.style.animationDuration = 6 + Math.random() * 6 + "s"; 
+  flake.style.opacity = 0.4 + Math.random() * 0.6; 
+  flake.style.fontSize = 10 + Math.random() * 12 + "px"; snowLayer.appendChild(flake); setTimeout(() => flake.remove(), 12000); } setInterval(createSnowflake, 400); /* ========================= TRAY INTERACTION ========================= */ tray.querySelectorAll(".ornament-template").forEach(btn => { btn.addEventListener("click", () => { const type = btn.dataset.type; if (!ORNAMENTS[type]) return; btn.style.opacity = "0"; btn.style.pointerEvents = "none"; placeOnTree(type); }); }); } console.log("🎄 Ornament ritual ready");
+
