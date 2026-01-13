@@ -116,7 +116,7 @@ body {
 /* Overlay */
 
 #memory-overlay[hidden] {
-  display: none;
+  display: none !important;
 }
 
 #memory-overlay {
