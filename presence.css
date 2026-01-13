@@ -5,6 +5,13 @@
   --text-dark: #e6e6e6;
 }
 
+nav a{
+  margin:0 1rem;
+  color:var(--bg-light);
+  text-decoration:none;
+  font-weight:700
+}
+
 /* =========================
    BASE
    ========================= */
