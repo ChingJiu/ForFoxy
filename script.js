@@ -125,15 +125,16 @@ function createSnowflake() {
   flake.className = "snowflake";
   flake.textContent = "❄";
 
+  const size = 12 + Math.random() * 28;
+  flake.style.fontSize = size + "px";
+
   flake.style.left = Math.random() * 100 + "vw";
-  flake.style.animationDuration = 6 + Math.random() * 6 + "s";
-  flake.style.opacity = 0.4 + Math.random() * 0.6;
-  flake.style.fontSize = 15 + Math.random() * 12 + "px";
+  flake.style.opacity = 0.3 + Math.random() * 0.6;
+  flake.style.animationDuration = 4 + (40 - size) * 0.15 + "s";
 
   snowLayer.appendChild(flake);
-  setTimeout(() => flake.remove(), 12000);
+  setTimeout(() => flake.remove(), 14000);
 }
-
 setInterval(createSnowflake, 400);
 
 /* =========================
