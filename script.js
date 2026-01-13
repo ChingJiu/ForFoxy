@@ -1,5 +1,7 @@
-// script.js — Ornament Ritual (fixed, bubble-enabled)
-<script>
+// script.js — Ornament Ritual (fixed & stable)
+
+document.addEventListener("DOMContentLoaded", () => {
+
 const stage = document.getElementById("stage");
 const layer = document.getElementById("decorate-layer");
 const tray = document.getElementById("ornament-tray");
@@ -14,33 +16,15 @@ const snowLayer = document.getElementById("snow-layer");
 ========================= */
 
 const ORNAMENTS = {
-  star: { 
-     img: "star.png", 
-     wish: "My lighthouse, my anchor, and my safe place. I miss you so much baby." },
-  red: { 
-     img: "bauble-red.png", 
-     wish: "If you ever feel like you don't love anymore, please just tell me. But for now, please focus on me, be agressive, be posessive, be whoever you want in front of me. I love you for who you are, even if its just a fragment of you." },
-  blue: { 
-     img: "bauble-blue.png", 
-     wish: "I wasn't prepared at the time you stepped into my life... at the end of the day, nothing makes sense except you." },
-  candy: { 
-     img: "candy.png", 
-     wish: "Have a chocolate when you see this message. Hope it makes you smile. Thats the point for this message." },
-  bell: { 
-     img: "bell.png", 
-     wish: "Take rest if you needed, do nothing if you can't be bother, think of me if you want to spiral. The world could always wait for my princess." },
-  ginger: { 
-     img: "ginger.png", 
-     wish: "Hug hug baby. Stay warm and drink plenty of water in this winter. And don't forget my goodnight kisses." },
-  present: { 
-     img: "present.png", 
-     wish: "I know people come and go, but I guess I did planned to keep taking the blue pills with you." },
-  cat: { 
-     img: "cat.png", 
-     wish: "Stuff that I don't say it out: I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. But I need you to know I am here for you." },
-  wdzy: { 
-     img: "wdzy.png", 
-     wish: "Merry Christmas and a Happy New Year my foxy. I wish you joy and peace. Always, everyday, 24/7." }
+  star: { img: "star.png", wish: "My lighthouse, my anchor, and my safe place. I miss you so much baby." },
+  red: { img: "bauble-red.png", wish: "If you ever feel like you don't love anymore, please just tell me. But for now, please focus on me, be agressive, be posessive, be whoever you want in front of me. I love you for who you are, even if its just a fragment of you." },
+  blue: { img: "bauble-blue.png", wish: "I wasn't prepared at the time you stepped into my life... at the end of the day, nothing makes sense except you." },
+  candy: { img: "candy.png", wish: "Have a chocolate when you see this message. Hope it makes you smile. Thats the point for this message." },
+  bell: { img: "bell.png", wish: "Take rest if you needed, do nothing if you can't be bother, think of me if you want to spiral. The world could always wait for my princess." },
+  ginger: { img: "ginger.png", wish: "Hug hug baby. Stay warm and drink plenty of water in this winter. And don't forget my goodnight kisses." },
+  present: { img: "present.png", wish: "I know people come and go, but I guess I did planned to keep taking the blue pills with you." },
+  cat: { img: "cat.png", wish: "Stuff that I don't say it out: I wanted you to rest early, cause I hate to miss you too much during the day. I wanted you to not call me if its only a short call, cause I will miss you more afterwards. I wanted you to spiral with me, even though its just blind leading the blind. But I need you to know I am here for you." },
+  wdzy: { img: "wdzy.png", wish: "Merry Christmas and a Happy New Year my foxy. I wish you joy and peace. Always, everyday, 24/7." }
 };
 
 /* =========================
@@ -85,9 +69,7 @@ function showWish(el, text) {
   bubble.style.transform = "translate(-50%, -100%)";
 }
 
-bubbleClose.addEventListener("click", () => {
-  bubble.hidden = true;
-});
+bubbleClose.addEventListener("click", () => bubble.hidden = true);
 
 document.addEventListener("click", e => {
   if (!e.target.classList.contains("tree-ornament")) {
@@ -105,14 +87,13 @@ function placeOnTree(type) {
 
   const el = document.createElement("img");
   el.src = `ornaments/${data.img}`;
-  el.className = "tree-ornament placed-ornament";
+  el.className = "tree-ornament placed";
   el.style.position = "absolute";
-  el.style.width = "80px"; // initial size
+  el.style.width = "80px";
   el.style.transform = "translate(-50%, -50%)";
   el.style.cursor = "pointer";
   el.style.transition = "left 2.5s ease, top 2.5s ease";
 
-  // start from tray
   const trayRect = tray.getBoundingClientRect();
   const stageRect = stage.getBoundingClientRect();
 
@@ -121,17 +102,13 @@ function placeOnTree(type) {
 
   layer.appendChild(el);
 
-  // drift to final position
   requestAnimationFrame(() => {
     const px = pctToPx(pos.x, pos.y);
     el.style.left = px.left + "px";
     el.style.top = px.top + "px";
   });
 
-  // show wish after arrival
-  setTimeout(() => {
-    showWish(el, data.wish);
-  }, 2600);
+  setTimeout(() => showWish(el, data.wish), 2600);
 
   el.addEventListener("click", e => {
     e.stopPropagation();
@@ -140,41 +117,7 @@ function placeOnTree(type) {
 }
 
 /* =========================
-   SNOW (CONTINUOUS)
+   SNOW
 ========================= */
 
-function createSnowflake() {
-  const flake = document.createElement("div");
-  flake.className = "snowflake";
-  flake.textContent = "❄";
-
-  flake.style.left = Math.random() * 100 + "vw";
-  flake.style.animationDuration = 6 + Math.random() * 6 + "s";
-  flake.style.opacity = 0.4 + Math.random() * 0.6;
-  flake.style.fontSize = 10 + Math.random() * 12 + "px";
-
-  snowLayer.appendChild(flake);
-  setTimeout(() => flake.remove(), 12000);
-}
-
-setInterval(createSnowflake, 400);
-
-/* =========================
-   TRAY INTERACTION
-========================= */
-
-tray.querySelectorAll(".ornament-template").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const type = btn.dataset.type;
-    if (!ORNAMENTS[type]) return;
-
-    btn.style.opacity = "0";
-    btn.style.pointerEvents = "none";
-
-    placeOnTree(type);
-  });
-});
-}
-
-console.log("🎄 Ornament ritual ready");
-</script>
+functio
