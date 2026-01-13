@@ -1,59 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>For Foxy..</title>
-
-  
-  <link rel="stylesheet" href="style.css">
-  <script defer type="module" src="script.js"></script>
+  <meta charset="UTF-8" />
+  <title>Timeline</title>
+  <link rel="stylesheet" href="timeline.css" />
 </head>
-
 <body>
 
-  <header>
-    <h1>To foxy,</h1>
-    <label class="switch">
-    </label>
-    <nav>
-      <a href="presence.html">Stars</a>
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <a href="index.html" class="active">home</a>
+    <a href="winter.html">Winter</a>
+    <a href="presence.html">stars</a>
   </nav>
-  </header>
 
-  <main>
-    <!-- STAGE -->
-    <div id="stage">
-      <img id="tree" src="tree.PNG" alt="Christmas Tree">
-      <div id="decorate-layer"></div>
-    </div>
+  <!-- Timeline Container -->
+  <main class="timeline-container">
 
-    <!-- ORNAMENT TRAY -->
-    <div id="ornament-tray">
-      <img class="ornament-template" src="ornaments/star.png" data-type="star">
-      <img class="ornament-template" src="ornaments/bauble-red.png" data-type="red">
-      <img class="ornament-template" src="ornaments/bauble-blue.png" data-type="blue">
-      <img class="ornament-template" src="ornaments/candy.png" data-type="candy">
-      <img class="ornament-template" src="ornaments/bell.png" data-type="bell">
-      <img class="ornament-template" src="ornaments/ginger.png" data-type="ginger">
-      <img class="ornament-template" src="ornaments/present.png" data-type="present">
-      <img class="ornament-template" src="ornaments/cat.png" data-type="cat">
-      <img class="ornament-template" src="ornaments/wdzy.png" data-type="wdzy">
-    </div>
+    <header class="timeline-header">
+      <h1>Time, quietly kept</h1>
+      <p>Not everything needs to be remembered. Only what stayed.</p>
+    </header>
 
-    <div id="snow-layer"></div>
-    
-<div id="wish-bubble" hidden>
-  <button id="wish-close">×</button>
-  <div id="wish-text"></div>
-</div>
+    <section class="timeline">
+
+      <div class="timeline-entry" data-id="1">
+        <span class="dot"></span>
+        <div class="content">
+          <time>Dec 2024</time>
+          <p>We learned how to wait.</p>
+        </div>
+      </div>
+
+      <div class="timeline-entry" data-id="2">
+        <span class="dot"></span>
+        <div class="content">
+          <time>Jan 2025</time>
+          <p>The quiet became less frightening.</p>
+        </div>
+      </div>
+
+      <div class="timeline-entry" data-id="3">
+        <span class="dot"></span>
+        <div class="content">
+          <time>Feb 2025</time>
+          <p>You stayed, even when nothing was resolved.</p>
+        </div>
+      </div>
+
+      <div class="timeline-entry" data-id="4">
+        <span class="dot"></span>
+        <div class="content">
+          <time>—</time>
+          <p>This part is still unfolding.</p>
+        </div>
+      </div>
+
+    </section>
 
   </main>
 
-  <footer>
-    <p>Last edited: 13/01/2026 </p>
-    <p>made with love, puppy zᶻ ૮˶- ﻌ -˶ა⌒)ᦱ</p>
-  </footer>
+  <!-- Overlay for expanded memory -->
+  <div id="memory-overlay" hidden>
+    <div class="memory-box">
+      <button id="close-memory">×</button>
+      <div id="memory-content"></div>
+    </div>
+  </div>
 
+  <script src="timeline.js"></script>
 </body>
 </html>
