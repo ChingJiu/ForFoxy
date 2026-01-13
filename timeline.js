@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     4: "This memory hasn’t decided what it wants to be yet."
   };
 
+  if (overlay) overlay.hidden = true;
+
   entries.forEach(entry => {
     entry.addEventListener("click", () => {
       const id = entry.dataset.id;
@@ -20,11 +22,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  closeBtn.addEventListener("click", () => {
-    overlay.hidden = true;
-  });
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      overlay.hidden = true;
+    });
+  }
 
-  overlay.addEventListener("click", e => {
+  overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
       overlay.hidden = true;
     }
