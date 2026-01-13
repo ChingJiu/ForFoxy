@@ -125,7 +125,7 @@ function createSnowflake() {
   flake.className = "snowflake";
   flake.textContent = "❄";
 
-  const size = 12 + Math.random() * 28;
+  const size = 12 + Math.random() * 26;
   flake.style.fontSize = size + "px";
 
   flake.style.left = Math.random() * 100 + "vw";
@@ -135,7 +135,7 @@ function createSnowflake() {
   snowLayer.appendChild(flake);
   setTimeout(() => flake.remove(), 14000);
 }
-setInterval(createSnowflake, 400);
+setInterval(createSnowflake, 600);
 
 /* =========================
    TRAY
