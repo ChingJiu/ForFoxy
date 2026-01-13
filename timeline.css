@@ -115,6 +115,10 @@ body {
 
 /* Overlay */
 
+#memory-overlay[hidden] {
+  display: none;
+}
+
 #memory-overlay {
   position: fixed;
   inset: 0;
