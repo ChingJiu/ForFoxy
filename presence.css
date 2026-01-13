@@ -57,124 +57,6 @@ main {
   z-index: 2;
 }
 
-#stage {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: 20px auto;
-}
-
-#tree {
-  width: 100%;
-  height: auto;
-  display: block;
-  pointer-events: none;
-}
-
-#decorate-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: auto;
-}
-
-/* =========================
-   WISH BUBBLE
-   ========================= */
-#wish-bubble {
-  position: fixed;
-  max-width: 260px;
-  padding: 14px 18px;
-  background: rgba(246, 245, 243, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  z-index: 2000;
-  pointer-events: auto;
-}
-
-#wish-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 1rem;
-  line-height: 1.5;
-  font-style: italic;
-  color: #2a2a2a;
-}
-
-#wish-close {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  border: none;
-  background: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: #666;
-}
-
-body[data-theme="dark"] #wish-bubble {
-  background: #1e1e1e;
-}
-
-body[data-theme="dark"] #wish-text {
-  color: #f4f4f4;
-}
-
-/* =========================
-   SNOW
-   ========================= */
-#snow-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.snowflake {
-  position: absolute;
-  top: -10px;
-  color: white;
-  font-size: 12px;
-  opacity: 0.8;
-  animation: fall linear infinite;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(110vh);
-  }
-}
-
-/* =========================
-   ORNAMENT TRAY
-   ========================= */
-#ornament-tray {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin: 16px auto;
-  position: relative;
-  z-index: 2;
-}
-
-#ornament-tray img {
-  width: 55px;
-  margin: 6px;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-/* Ornaments once placed on tree */
-.placed {
-  position: absolute;
-  width: 90px;   /* ← increase this */
-  height: auto;
-  transition: transform 0.6s ease;
-}
-
-/* =========================
-   PRESENCE PAGE
-   ========================= */
-
 .presence-wrapper {
   max-width: 500px;
   margin: 40px auto;
@@ -247,14 +129,6 @@ body[data-theme="dark"] .presence-dot.night {
   box-shadow: 0 0 12px rgba(255, 200, 160, 0.5);
 }
 
-/* =========================
-   AGING / FADING
-   ========================= */
-
-.presence-dot.old {
-  opacity: 0.3;
-  box-shadow: none;
-}
 
 /* =========================
    OPTIONAL CONSTELLATION LINES
