@@ -1,12 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+
+  if (sessionStorage.getItem("unlocked") !== "true") {
+    window.location.href = "index.html";
+}
+  
   const entries = document.querySelectorAll(".timeline-entry");
   const overlay = document.getElementById("memory-overlay");
   const memoryContent = document.getElementById("memory-content");
   const closeBtn = document.getElementById("close-memory");
 
   const MEMORIES = {
-    1: "Waiting was not passive. It was an act of trust, repeated daily.",
+    1: "From the ever start, .",
     2: "Silence stopped feeling like abandonment. It became space.",
     3: "Nothing was solved. Everything softened.",
     4: "This memory hasn’t decided what it wants to be yet."
