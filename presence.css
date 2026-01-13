@@ -1,1 +1,319 @@
+:root {
+  --bg-light: #f4f4f4;
+  --text-light: #111;
+  --bg-dark: #0c0c0c;
+  --text-dark: #e6e6e6;
+}
 
+/* =========================
+   BASE
+   ========================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+body[data-theme="dark"] {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* =========================
+   HEADER + FOOTER
+   ========================= */
+header {
+  background: #84D4F6;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+footer {
+  margin: 20px 0;
+  text-align: center;
+  opacity: 0.7;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================
+   STAGE
+   ========================= */
+main {
+  position: relative;
+  z-index: 2;
+}
+
+#stage {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+#tree {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+#decorate-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+/* =========================
+   WISH BUBBLE
+   ========================= */
+#wish-bubble {
+  position: fixed;
+  max-width: 260px;
+  padding: 14px 18px;
+  background: rgba(246, 245, 243, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  z-index: 2000;
+  pointer-events: auto;
+}
+
+#wish-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: #2a2a2a;
+}
+
+#wish-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+body[data-theme="dark"] #wish-bubble {
+  background: #1e1e1e;
+}
+
+body[data-theme="dark"] #wish-text {
+  color: #f4f4f4;
+}
+
+/* =========================
+   SNOW
+   ========================= */
+#snow-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: white;
+  font-size: 12px;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+/* =========================
+   ORNAMENT TRAY
+   ========================= */
+#ornament-tray {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 16px auto;
+  position: relative;
+  z-index: 2;
+}
+
+#ornament-tray img {
+  width: 55px;
+  margin: 6px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Ornaments once placed on tree */
+.placed {
+  position: absolute;
+  width: 90px;   /* ← increase this */
+  height: auto;
+  transition: transform 0.6s ease;
+}
+
+/* =========================
+   PRESENCE PAGE
+   ========================= */
+
+.presence-wrapper {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Month container */
+.month-sky {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 48px;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+/* Dark mode sky */
+body[data-theme="dark"] .month-sky {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Month label */
+.month-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   DOTS (VISITS)
+   ========================= */
+
+.presence-dot {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.75;
+  transition:
+    opacity 1.2s ease,
+    box-shadow 1.2s ease,
+    transform 1.2s ease;
+}
+
+/* Day visits */
+.presence-dot.day {
+  width: 5px;
+  height: 5px;
+  background: rgba(120, 120, 140, 0.7);
+}
+
+/* Night visits — warmer, softer glow */
+.presence-dot.night {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 190, 150, 0.85);
+  box-shadow: 0 0 10px rgba(255, 180, 130, 0.45);
+}
+
+/* Dark mode tuning */
+body[data-theme="dark"] .presence-dot.day {
+  background: rgba(200, 200, 220, 0.6);
+}
+
+body[data-theme="dark"] .presence-dot.night {
+  background: rgba(255, 200, 160, 0.9);
+  box-shadow: 0 0 12px rgba(255, 200, 160, 0.5);
+}
+
+/* =========================
+   AGING / FADING
+   ========================= */
+
+.presence-dot.old {
+  opacity: 0.3;
+  box-shadow: none;
+}
+
+/* =========================
+   OPTIONAL CONSTELLATION LINES
+   (use only at month end if you want)
+   ========================= */
+
+.constellation-line {
+  position: absolute;
+  height: 1px;
+  background: rgba(180, 180, 200, 0.25);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+body[data-theme="dark"] .constellation-line {
+  background: rgba(220, 220, 240, 0.25);
+}
+
+
+/* =========================
+   THEME SWITCH
+   ========================= */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s, background 0.3s;
+}
+
+input:checked + .slider {
+  background: #555;
+}
+
+input:checked + .slider::before {
+  transform: translateX(20px);
+  background: #ffd700;
+}
