@@ -125,7 +125,7 @@ function createSnowflake() {
   flake.className = "snowflake";
   flake.textContent = "❄";
 
-  const size = 12 + Math.random() * 26;
+  const size = 12 + Math.random() * 24;
   flake.style.fontSize = size + "px";
 
   flake.style.left = Math.random() * 100 + "vw";
