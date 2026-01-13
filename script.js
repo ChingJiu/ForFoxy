@@ -72,5 +72,16 @@ function createSnowflake() {
   flake.style.left = Math.random() * 100 + "vw"; 
   flake.style.animationDuration = 6 + Math.random() * 6 + "s"; 
   flake.style.opacity = 0.4 + Math.random() * 0.6; 
-  flake.style.fontSize = 10 + Math.random() * 12 + "px"; snowLayer.appendChild(flake); setTimeout(() => flake.remove(), 12000); } setInterval(createSnowflake, 400); /* ========================= TRAY INTERACTION ========================= */ tray.querySelectorAll(".ornament-template").forEach(btn => { btn.addEventListener("click", () => { const type = btn.dataset.type; if (!ORNAMENTS[type]) return; btn.style.opacity = "0"; btn.style.pointerEvents = "none"; placeOnTree(type); }); }); } console.log("🎄 Ornament ritual ready");
+  flake.style.fontSize = 10 + Math.random() * 12 + "px"; 
+  snowLayer.appendChild(flake); setTimeout(() => flake.remove(), 12000); 
+} setInterval(createSnowflake, 400); 
+/* ========================= TRAY INTERACTION ========================= */ 
+tray.querySelectorAll(".ornament-template").forEach(btn => { 
+  btn.addEventListener("click", () => { 
+  const type = btn.dataset.type; 
+    if (!ORNAMENTS[type]) return; btn.style.opacity = "0"; 
+    btn.style.pointerEvents = "none"; 
+    placeOnTree(type); }); }); } 
+
+console.log("🎄 Ornament ritual ready");
 
