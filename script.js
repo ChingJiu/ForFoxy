@@ -179,51 +179,73 @@ tray.querySelectorAll(".ornament-template").forEach(btn => {
 console.log("🎄 Ornament ritual ready");
 
 <script>
-/* -------- CONFIG -------- */
+/* =========================
+   PRESENCE — SHARED SKY
+   ========================= */
 
-// Set who this device belongs to
-// Change to "B" on your partner’s device
-const PARTNER = "A";
-
-/* -------- VISIT LOGGING -------- */
-
+/* ---- Time ---- */
 const now = new Date();
 const hour = now.getHours();
 const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
+/* ---- Visit record ---- */
 const visit = {
-  partner: PARTNER,
   month: monthKey,
   hour: hour,
   time: now.getTime()
 };
 
-const visits = JSON.parse(localStorage.getItem("presenceVisits") || "[]");
+/* ---- Storage ---- */
+const STORAGE_KEY = "presence_shared_visits";
+const visits = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 visits.push(visit);
-localStorage.setItem("presenceVisits", JSON.stringify(visits));
+localStorage.setItem(STORAGE_KEY, JSON.stringify(visits));
 
-/* -------- RENDER -------- */
+/* =========================
+   RENDER
+   ========================= */
 
-const container = document.getElementById("constellation");
+const wrapper = document.querySelector(".presence-wrapper");
 
-const currentMonthVisits = visits.filter(v => v.month === monthKey);
+/* Group visits by month */
+const visitsByMonth = visits.reduce((acc, v) => {
+  acc[v.month] = acc[v.month] || [];
+  acc[v.month].push(v);
+  return acc;
+}, {});
 
-currentMonthVisits.forEach(v => {
-  const dot = document.createElement("div");
-  dot.classList.add("dot");
+/* Render each month */
+Object.keys(visitsByMonth)
+  .sort()
+  .reverse()
+  .forEach(month => {
+    const label = document.createElement("div");
+    label.className = "month-label";
+    label.textContent = month;
 
-  // Partner identity
-  dot.classList.add(v.partner === "A" ? "partner-a" : "partner-b");
+    const sky = document.createElement("div");
+    sky.className = "month-sky";
 
-  // Time tone
-  const isNight = v.hour >= 22 || v.hour < 5;
-  dot.classList.add(isNight ? "night" : "day");
+    wrapper.appendChild(label);
+    wrapper.appendChild(sky);
 
-  // Fade older visits
-  const ageHours = (Date.now() - v.time) / 36e5;
-  if (ageHours > 48) dot.classList.add("faded");
+    visitsByMonth[month].forEach(v => {
+      const dot = document.createElement("div");
+      dot.classList.add("presence-dot");
 
-  container.appendChild(dot);
-});
-</script>
+      const isNight = v.hour >= 22 || v.hour < 5;
+      dot.classList.add(isNight ? "night" : "day");
+
+      /* Organic positioning */
+      dot.style.left = `${Math.random() * 92 + 4}%`;
+      dot.style.top = `${Math.random() * 92 + 4}%`;
+
+      /* Aging */
+      const ageDays = (Date.now() - v.time) / (1000 * 60 * 60 * 24);
+      if (ageDays > 20) dot.classList.add("old");
+
+      sky.appendChild(dot);
+    });
+  });
+
 
