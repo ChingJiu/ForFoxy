@@ -164,6 +164,17 @@ body[data-theme="dark"] .constellation-line {
 /* =========================
    THEME SWITCH
    ========================= */
+.site-header {
+  display:grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: centre;
+  gap: 1rem;
+}
+
+.theme-switch{
+  justify-self:end;
+}
+
 .switch {
   display: inline-flex;
   align-items: center;
@@ -202,5 +213,5 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(20px);
-  background: #ffd700;
+  background: #84d4f6;
 }
