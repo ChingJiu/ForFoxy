@@ -9,7 +9,7 @@ function unlock() {
 
   if (input.value === PASSWORD) {
     sessionStorage.setItem("unlocked", "true");
-    window.location.href = "timeline.html";
+    window.location.href = "lny.html";
   } else {
     error.textContent = "This space is not for you.";
     input.value = "";
