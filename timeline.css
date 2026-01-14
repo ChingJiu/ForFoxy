@@ -1,4 +1,10 @@
-/* Base */
+:root {
+  --bg-light: #f4f4f4;
+  --text-light: #111;
+  --bg-dark: #0c0c0c;
+  --text-dark: #e6e6e6;
+}
+
 
 * {
   box-sizing: border-box;
@@ -6,10 +12,10 @@
 
 body {
   margin: 0;
-  background: #0e0f12;
-  color: #e6e6e6;
-  font-family: "Georgia", "Times New Roman", serif;
-  line-height: 1.6;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 /* Navigation */
@@ -17,24 +23,28 @@ body {
 .site-nav {
   position: fixed;
   top: 20px;
-  right: 30px;
+  left: 20px;
   display: flex;
   gap: 18px;
+  font-weight: 600;
   z-index: 10;
 }
 
 .site-nav a {
   text-decoration: none;
-  color: #9a9a9a;
+  color: var(--text-light);
   font-size: 14px;
   letter-spacing: 0.04em;
-  transition: color 0.3s ease;
+  opacity: 0.7;
+  transition: color 0.3s ease, opacity 0.3s ease;
 }
 
 .site-nav a:hover,
 .site-nav a.active {
   color: #ffffff;
+  opacity: 1;
 }
+
 
 /* Container */
 
@@ -45,14 +55,28 @@ body {
 }
 
 /* Header */
-
-.timeline-header h1 {
-  font-weight: normal;
-  font-size: 28px;
-  margin-bottom: 8px;
+header {
+  background: #84D4F6;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
-.timeline-header p {
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+footer {
+  margin: 20px 0;
+  text-align: center;
+  opacity: 0.7;
+  position: relative;
+  z-index: 2;
+}
+
+p {
   color: #a0a0a0;
   font-size: 15px;
   margin-bottom: 60px;
@@ -150,6 +174,47 @@ body {
 
 #close-memory:hover {
   color: #fff;
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s, background 0.3s;
+}
+
+input:checked + .slider {
+  background: #555;
+}
+
+input:checked + .slider::before {
+  transform: translateX(20px);
+  background: #ffd700;
 }
 
 #memory-content {
