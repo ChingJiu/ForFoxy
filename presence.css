@@ -64,6 +64,12 @@ main {
   z-index: 2;
 }
 
+.constellation {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
 .presence-wrapper {
   max-width: 500px;
   margin: 40px auto;
