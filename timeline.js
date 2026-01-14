@@ -3,11 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   // PASSWORD GATE (SESSION)
   // =========================
-  if (sessionStorage.getItem("unlocked") !== "true") {
-    window.location.replace("index.html");
-    return; // STOP script execution
-  }
-
+  
   // =========================
   // ELEMENTS
   // =========================
