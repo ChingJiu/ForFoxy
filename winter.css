@@ -14,7 +14,7 @@
   --text: var(--text-light);
 }
 
-body[data-theme="dark"] {
+html[data-theme="dark"] {
   --bg: var(--bg-dark);
   --text: var(--text-dark);
 }
@@ -201,6 +201,18 @@ body[data-theme="dark"] #wish-text {
 /* =========================
    THEME SWITCH
    ========================= */
+
+.site-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-switch {
+  justify-self: end;
+}
+
 .switch {
   display: inline-flex;
   align-items: center;
