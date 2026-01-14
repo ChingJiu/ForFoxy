@@ -71,19 +71,21 @@ footer {
    NAVIGATION
    ========================= */
 .site-nav a {
-  margin: 0 1rem;
+   margin: 0 1 rem;
   text-decoration: none;
-  font-weight: 700;
-  color: var(--text);
+  color: var(--text-light);
+  font-size: 14px;
+  letter-spacing: 0.04em;
   opacity: 0.6;
-  transition: opacity 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
+  transition: color 0.3s ease, opacity 0.3s ease;
 }
 
 .site-nav a:hover,
 .site-nav a.active {
+  color: #ffffff;
   opacity: 1;
 }
+
 
 .site-nav a:focus,
 .site-nav a:active,
