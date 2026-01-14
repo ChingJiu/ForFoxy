@@ -95,6 +95,7 @@ footer {
 /* =========================
    STAGE / TREE
    ========================= */
+
 #stage {
   position: relative;
   width: 100%;
@@ -137,7 +138,11 @@ footer {
   position: absolute;
   width: 90px;
   height: auto;
-  transition: transform 0.6s ease;
+  transform: translate(-50%, -50%);
+  transition:
+    left 2.6s ease,
+    top 2.6s ease,
+    transform 0.6s ease;
 }
 
 /* =========================
