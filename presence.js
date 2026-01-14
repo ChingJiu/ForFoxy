@@ -3,6 +3,20 @@
    PRESENCE — SHARED SKY
    ========================= */
 
+const html = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
+
+  const savedTheme = localStorage.getItem("theme") || "light";
+  html.dataset.theme = savedTheme;
+  themeToggle.checked = savedTheme === "dark";
+
+  themeToggle.addEventListener("change", () => {
+    const theme = themeToggle.checked ? "dark" : "light";
+    html.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+  });
+
+
 /* ---- Time ---- */
 const now = new Date();
 const hour = now.getHours();
