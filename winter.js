@@ -24,6 +24,16 @@ const ORNAMENTS = {
   wdzy: { img: "wdzy.png", wish: "Merry Christmas and a Happy New Year my foxy. I wish you joy and peace. Always, everyday, 24/7." }
 };
 
+   const html = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+html.dataset.theme = localStorage.getItem('theme') || 'light';
+themeToggle.checked = html.dataset.theme === 'dark';
+themeToggle.addEventListener('change', () => {
+  const newTheme = themeToggle.checked ? 'dark' : 'light';
+  html.dataset.theme = newTheme;
+  localStorage.setItem('theme', newTheme);
+});
+   
 /* =========================
    TREE POSITIONS
 ========================= */
