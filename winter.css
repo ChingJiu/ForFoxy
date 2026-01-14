@@ -3,8 +3,11 @@
   --text-light: #111;
   --bg-dark: #0c0c0c;
   --text-dark: #e6e6e6;
+  --accent:#FFD700
 }
 
+[data-theme="light"]{ --bg:var(--bg-light); --text:var(--text-light);}
+[data-theme="dark"]{ --bg:var(--bg-dark); --text:var(--text-dark);}
 
 nav a{
   margin:0 1rem;
