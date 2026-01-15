@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
- document.addEventListener("DOMContentLoaded", () => {
-
+  // =========================
+  // THEME TOGGLE
+  // =========================
   const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
 
@@ -18,9 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-});
-
-  
   // =========================
   // ELEMENTS
   // =========================
@@ -30,17 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = document.getElementById("close-memory");
   const memoryBox = document.querySelector(".memory-box");
 
+ 
   // =========================
-  // MEMORY DATA
+  // VISIT RECORD
   // =========================
-  const MEMORIES = {
-    1: "From the very start, something was already leaning toward us.",
-    2: "Silence stopped feeling like abandonment. It became space.",
-    3: "Nothing was solved. Everything softened.",
-    4: "This memory hasn’t decided what it wants to be yet."
-  };
-
-
   const now = new Date();
 
   const visit = {
@@ -49,3 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     time: now.getTime(),
     page: window.location.pathname
   };
+
+  // (store / sync logic can live here)
+
+});
