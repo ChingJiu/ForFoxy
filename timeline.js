@@ -1,8 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // PASSWORD GATE (SESSION)
-  // =========================
+   const html = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
+
+  const savedTheme = localStorage.getItem("theme") || "light";
+  html.dataset.theme = savedTheme;
+
+  if (themeToggle) {
+    themeToggle.checked = savedTheme === "dark";
+
+    themeToggle.addEventListener("change", () => {
+      const theme = themeToggle.checked ? "dark" : "light";
+      html.dataset.theme = theme;
+      localStorage.setItem("theme", theme);
+    });
+  }
+
   
   // =========================
   // ELEMENTS
