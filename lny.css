@@ -182,5 +182,5 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(20px);
-  background: #84df46;
+  background: #84d4f6;
 }
