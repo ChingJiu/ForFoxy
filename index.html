@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Timeline</title>
   
   <link rel="stylesheet" href="timeline.css" />
-  <script defer type="module" src="timeline.js"></script>
+  <script defer  src="timeline.js"></script>
 </head>
   
 <body>
@@ -21,8 +21,10 @@
     <header>
       <h1>Time, quietly kept</h1>
       <p>our memories</p>
-      <label class="switch"></label>
-      <span class=themeToggle></span>
+      <label class="switch">
+      <input type="checkbox" id="themeToggle">
+      <span class="slider"></span>
+    </label>
     </header>
 
     <section class="timeline">
