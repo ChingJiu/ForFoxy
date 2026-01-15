@@ -41,16 +41,16 @@ body {
   padding: 120px 20px 160px
 }
 
-.nav-entry .dot {
-  background: transparent;
-  border: 1px solid currentColor;
+nav a {
+  text-decoration: none;
+  color: var(--accent);
 }
 
 .nav-links a {
   margin-right: 16px;
   text-decoration: none;
   color: var(--text);
-  transition: color 0.3s ease, opactiy 0.3s ease;
+  transition: color 0.3s ease, opacity 0.3s ease;
   font-weight: 600;
   opacity: 0.6;
 }
@@ -112,22 +112,6 @@ p {
   cursor: pointer;
 }
 
-.timeline-entry .dot {
-  position: absolute;
-  left: -1px;
-  top: 6px;
-  width: 12px;
-  height: 12px;
-  background: #e6e6e6;
-  border-radius: 50%;
-  opacity: 0.6;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.timeline-entry:hover .dot {
-  transform: scale(1.4);
-  opacity: 1;
-}
 
 .timeline-entry .content time {
   display: block;
