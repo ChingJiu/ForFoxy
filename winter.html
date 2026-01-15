@@ -5,7 +5,39 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>For Foxy..</title>
   <link rel="stylesheet" href="winter.css">
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    push,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+    authDomain: "foxy-8816f.firebaseapp.com",
+    databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+    projectId: "foxy-8816f",
+    storageBucket: "foxy-8816f.appspot.com",
+    messagingSenderId: "435722069384",
+    appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.firebaseDB = db;
+  window.firebaseRef = ref;
+  window.firebasePush = push;
+  window.firebaseOnValue = onValue;
+</script>
+
   <script defer src="winter.js"></script>
+  <script defer src="visit-recorder.js"></script>
+
 </head>
 
 <body>
