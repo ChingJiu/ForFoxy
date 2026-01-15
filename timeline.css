@@ -11,7 +11,7 @@
 
 html[data-theme="light"] {
   --bg:var(--bg-light);
-  --text:var(--text-dark);
+  --text:var(--text-light);
 }
 
 html[data-theme="dark"] {
@@ -50,7 +50,7 @@ body {
 }
 
 .site-nav a {
-  margin: 0 1 rem;
+  margin: 1 rem;
   text-decoration: none;
   color: var(--text-light);
   font-size: 14px;
