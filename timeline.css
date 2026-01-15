@@ -100,7 +100,7 @@ footer {
 }
 
 p {
-  color: #a0a0a0;
+  color: var(--text);
   font-size: 15px;
   margin-bottom: 60px;
 }
