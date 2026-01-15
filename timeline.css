@@ -93,6 +93,25 @@ p {
 
 /* Timeline */
 
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between time and link */
+}
+
+.timeline-item time {
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.timeline-item a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+
 .timeline {
   position: relative;
   padding-left: 30px;
