@@ -5,22 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>For foxy..</title>
 
-      <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.1.0/firebas-database.js";
-  const firebaseConfig = {
-  apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
-  authDomain: "foxy-8816f.firebaseapp.com",
-  databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
-  projectId: "foxy-8816f",
-  storageBucket: "foxy-8816f.firebasestorage.app",
-  messagingSenderId: "435722069384",
-  appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
-};
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const dp = getDatabase(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+    authDomain: "foxy-8816f.firebaseapp.com",
+    databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+    projectId: "foxy-8816f",
+    storageBucket: "foxy-8816f.appspot.com",
+    messagingSenderId: "435722069384",
+    appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // expose database to presence.js
+  window.firebaseDB = db;
+</script>
 
   const visitsRef = ref(db, 'visits');
 
