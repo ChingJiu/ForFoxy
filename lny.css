@@ -29,12 +29,12 @@ body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-body[data-theme="light"] {
+html[data-theme="light"] {
   background: var(--bg-light);
   color: var(--text-light);
 }
 
-body[data-theme="dark"] {
+html[data-theme="dark"] {
   background: var(--bg-dark);
   color: var(--text-dark);
 }
