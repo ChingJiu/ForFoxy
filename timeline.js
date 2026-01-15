@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-   const html = document.documentElement;
+ document.addEventListener("DOMContentLoaded", () => {
+
+  const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
 
   const savedTheme = localStorage.getItem("theme") || "light";
@@ -15,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("theme", theme);
     });
   }
+
+});
 
   
   // =========================
@@ -43,5 +47,5 @@ document.addEventListener("DOMContentLoaded", () => {
     month: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`,
     hour: now.getHours(),
     time: now.getTime(),
-    page: window.presence.html
+    page: window.location.pathname
   };
