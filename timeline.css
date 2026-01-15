@@ -42,7 +42,7 @@ body {
 }
 
 nav a {
-  color: var(--text);
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -50,7 +50,7 @@ nav a {
 .nav-links a {
   margin-right: 16px;
   text-decoration: none;
-  color: var(--text);
+  color: var(--accent);
   transition: color 0.3s ease, opacity 0.3s ease;
   font-weight: 600;
   opacity: 0.6;
