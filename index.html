@@ -4,30 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Timeline</title>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.1.0/firebas-database.js";
-  const firebaseConfig = {
-  apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
-  authDomain: "foxy-8816f.firebaseapp.com",
-  databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
-  projectId: "foxy-8816f",
-  storageBucket: "foxy-8816f.firebasestorage.app",
-  messagingSenderId: "435722069384",
-  appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const dp = getDatabase(app);
-
-    window.firebaseDB = db;
-    window.firebasePush = push;
-    window.firebaseRef = ref;
-    window.firebaseOnValue = onValue;
-  </script>
-  
   <link rel="stylesheet" href="timeline.css" />
   <script defer  src="timeline.js"></script>
 </head>
@@ -38,11 +14,9 @@ const dp = getDatabase(app);
 
 
   <!-- Timeline Container -->
-
   
     <header>
       <h1>Time, quietly kept</h1>
-      <p>our memories</p>
       <label class="switch">
       <input type="checkbox" id="themeToggle">
       <span class="slider"></span>
