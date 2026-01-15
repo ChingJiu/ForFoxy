@@ -15,7 +15,16 @@
     onValue
   } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
-  const firebaseConfig = { /* your config */ };
+    const firebaseConfig = {
+    apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+    authDomain: "foxy-8816f.firebaseapp.com",
+    databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+    projectId: "foxy-8816f",
+    storageBucket: "foxy-8816f.appspot.com",
+    messagingSenderId: "435722069384",
+    appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+  };
+
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
