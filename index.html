@@ -5,7 +5,30 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Timeline</title>
   <link rel="stylesheet" href="timeline.css" />
-  <script defer  src="timeline.js"></script>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    push,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+  const firebaseConfig = { /* your config */ };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.firebaseDB = db;
+  window.firebaseRef = ref;
+  window.firebasePush = push;
+  window.firebaseOnValue = onValue;
+</script>
+
+  <script defer src="timeline.js"></script>
+  <script defer src="visit-recorder.js"></script>
+
 </head>
   
 <body>
