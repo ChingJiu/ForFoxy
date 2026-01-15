@@ -166,7 +166,7 @@ html[data-theme="dark"] .presence-dot.night {
   pointer-events: none;
 }
 
-body[data-theme="dark"] .constellation-line {
+html[data-theme="dark"] .constellation-line {
   background: rgba(220, 220, 240, 0.25);
 }
 
