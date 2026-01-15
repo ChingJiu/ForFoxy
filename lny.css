@@ -105,11 +105,11 @@ main {
   color: #666;
 }
 
-body[data-theme="dark"] #wish-bubble {
+html[data-theme="dark"] #wish-bubble {
   background: #1e1e1e;
 }
 
-body[data-theme="dark"] #wish-text {
+html[data-theme="dark"] #wish-text {
   color: #f4f4f4;
 }
 
