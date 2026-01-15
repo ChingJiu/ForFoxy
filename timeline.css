@@ -9,6 +9,9 @@
   --text: var(--text-light);
 }
 
+html[data-theme="light"] {
+  --bg:var(--bg-light);
+  --text:var(--text-dark);
 html[data-theme="dark"] {
   --bg:var(--bg-dark);
   --text:var(--text-dark);
