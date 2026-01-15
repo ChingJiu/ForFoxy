@@ -3,12 +3,13 @@
   --text-light: #111;
   --bg-dark: #0c0c0c;
   --text-dark: #e6e6e6;
+  --accent: #600000;
 }
 
 
 nav a{
   margin:0 1rem;
-  color:var(--bg-light);
+  color:var(--accent);
   text-decoration:none;
   font-weight:700
 }
@@ -22,10 +23,15 @@ nav a{
 
 body {
   margin: 0;
-  background: var(--bg-light);
-  color: var(--text-light);
+  background: var(--bg);
+  color: var(--text);
   transition: background 0.3s, color 0.3s;
   font-family: 'Space Grotesk', sans-serif;
+}
+
+body[data-theme="light"] {
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
 body[data-theme="dark"] {
@@ -65,25 +71,6 @@ main {
   z-index: 2;
 }
 
-#stage {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: 20px auto;
-}
-
-#tree {
-  width: 100%;
-  height: auto;
-  display: block;
-  pointer-events: none;
-}
-
-#decorate-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: auto;
-}
 
 /* =========================
    WISH BUBBLE
@@ -124,32 +111,6 @@ body[data-theme="dark"] #wish-bubble {
 
 body[data-theme="dark"] #wish-text {
   color: #f4f4f4;
-}
-
-/* =========================
-   SNOW
-   ========================= */
-#snow-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.snowflake {
-  position: absolute;
-  top: -10px;
-  color: white;
-  font-size: 12px;
-  opacity: 0.8;
-  animation: fall linear infinite;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(110vh);
-  }
 }
 
 /* =========================
@@ -221,5 +182,5 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(20px);
-  background: #ffd700;
+  background: #84df46;
 }
