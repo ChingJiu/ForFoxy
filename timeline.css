@@ -91,16 +91,19 @@ p {
 
 /* Timeline */
 
+.timeline-entry {
+  margin-bottom: 40px; /* space between events */
+}
+
 .timeline-item {
   display: flex;
   align-items: center;
-  gap: 12px; /* space between time and link */
+  gap: 12px; /* space between date and link */
 }
 
 .timeline-item time {
-  display: inline-block;
-  opacity: 0.6;
   font-size: 12px;
+  opacity: 0.6;
 }
 
 .timeline-item a {
@@ -108,6 +111,12 @@ p {
   color: var(--text);
   font-weight: 600;
   transition: color 0.3s;
+}
+
+.timeline-entry p {
+  margin-top: 4px; /* small spacing from timeline-item */
+  margin-bottom: 12px;
+  font-size: 16px;
 }
 
 
@@ -132,22 +141,6 @@ p {
   color: var(--text);
   opacity: 0.6;
   font-size: 12px;
-}
-
-/* Entry */
-
-.timeline-entry {
-  position: relative;
-  margin-bottom: 50px;
-  cursor: pointer;
-}
-
-
-
-.timeline-entry .content p {
-  margin-bottom: 12px;
-  margin: 0;
-  font-size: 16px;
 }
 
 
