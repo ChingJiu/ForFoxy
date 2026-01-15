@@ -25,10 +25,15 @@ nav a{
 
 body {
   margin: 0;
-  background: var(--bg-light);
-  color: var(--text-light);
+  background: var(--bg);
+  color: var(--tex);
   transition: background 0.3s, color 0.3s;
   font-family: 'Space Grotesk', sans-serif;
+}
+
+html[data-theme="light"] body {
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
 html[data-theme="dark"] body {
