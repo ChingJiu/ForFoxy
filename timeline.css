@@ -12,6 +12,8 @@
 html[data-theme="light"] {
   --bg:var(--bg-light);
   --text:var(--text-dark);
+}
+
 html[data-theme="dark"] {
   --bg:var(--bg-dark);
   --text:var(--text-dark);
@@ -57,19 +59,6 @@ body {
   transition: color 0.3s ease, opacity 0.3s ease;
 }
 
-.site-nav a:hover,
-.site-nav a.active {
-  color: #ffffff;
-  opacity: 1;
-}
-
-.site-nav a:focus,
-.site-nav a:active,
-.site-nav a:visited {
-  text-decoration: none;
-  outline: none;
-}
-
 
 .nav-entry .dot {
   background: transparent;
@@ -83,10 +72,6 @@ body {
   opacity: 0.6;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
-  opacity: 1;
-}
 
 
 /* Container */
