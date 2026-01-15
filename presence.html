@@ -25,25 +25,6 @@
   // expose database to presence.js
   window.firebaseDB = db;
 </script>
-
-  const visitsRef = ref(db, 'visits');
-
-  // Push current visit
-  const now = new Date();
-  const visit = {
-    month: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,
-    hour: now.getHours(),
-    time: now.getTime()
-  };
-
-  push(visitsRef, visit);
-
-  // Listen for updates
-  onValue(visitsRef, (snapshot) => {
-    const visits = snapshot.val();
-    renderConstellation(visits); // your function to render dots
-  });
-</script>
     
   <link rel="stylesheet" href="presence.css">
   <script defer src="presence.js"></script>
