@@ -11,14 +11,14 @@ nav a{
   font-size: 14px;
   letter-spacing: 0.04em;
   text-decoration:none;
-  font-weight:700
-  transition: color 0.3s ease, opacitty 0.3s ease;
+  font-weight: 700;
+  transition: color 0.3s ease, opacity 0.3s ease;
 }
 
 nav a: hover,
-nav: active {
-  color: (--accent);
-  opactiy: 1;
+nav:active {
+  color: var(--accent);
+  opacity: 1;
 }
 
 
@@ -37,7 +37,7 @@ body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-html[data-theme="dark"] {
+html[data-theme="dark"] body {
   background: var(--bg-dark);
   color: var(--text-dark);
 }
