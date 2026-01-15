@@ -80,20 +80,6 @@ footer {
   transition: color 0.3s ease, opacity 0.3s ease;
 }
 
-.site-nav a:hover,
-.site-nav a.active {
-  color: #ffffff;
-  opacity: 1;
-}
-
-
-.site-nav a:focus,
-.site-nav a:active,
-.site-nav a:visited {
-  text-decoration: none;
-  outline: none;
-}
-
 /* =========================
    STAGE / TREE
    ========================= */
