@@ -43,6 +43,7 @@ body {
 
 nav a {
   color: var(--text);
+  text-decoration: none;
 }
 
 
@@ -53,7 +54,9 @@ nav a {
   transition: color 0.3s ease, opacity 0.3s ease;
   font-weight: 600;
   opacity: 0.6;
-  margin-bottom: 32px;
+  display: flex;
+  gap: 32px;
+  flex-direction: column;
 }
 
 
@@ -96,6 +99,12 @@ p {
 }
 
 .timeline::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
   background: color-mix(in srgb, var(--text) 20%, transparent);
 }
 
