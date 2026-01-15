@@ -45,9 +45,6 @@ nav a {
   color: var(--text);
 }
 
-nav a:hover {
-  color: var(--accent);
-}
 
 .nav-links a {
   margin-right: 16px;
@@ -56,6 +53,7 @@ nav a:hover {
   transition: color 0.3s ease, opacity 0.3s ease;
   font-weight: 600;
   opacity: 0.6;
+  margin-bottom: 32px;
 }
 
 
