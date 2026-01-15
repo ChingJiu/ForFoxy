@@ -1,12 +1,12 @@
 /* =========================
-   PRESENCE — SHARED SKY
+   PRESENCE — SHARED SKY WITH FIREBASE
    ========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     THEME (GLOBAL)
-     ========================= */
+  /* -------------------
+     THEME TOGGLE
+  ------------------- */
   const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
 
@@ -23,42 +23,49 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* =========================
-     VISIT RECORD (GLOBAL)
-     ========================= */
-
+  /* -------------------
+     CURRENT VISIT
+  ------------------- */
   const now = new Date();
+  const hour = now.getHours();
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
   const visit = {
-    month: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`,
-    hour: now.getHours(),
+    month: monthKey,
+    hour: hour,
     time: now.getTime(),
-    path: window.location.pathname   // ← which page
+    page: window.location.pathname // optional: record which page
   };
 
-  const STORAGE_KEY = "presence_shared_visits";
-  const visits = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  /* -------------------
+     FIREBASE: PUSH VISIT
+  ------------------- */
+  const db = window.firebaseDB;
+  const visitsRef = window.firebaseRef(db, "visits");
+  window.firebasePush(visitsRef, visit);
 
-  visits.push(visit);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(visits));
-
-  /* =========================
+  /* -------------------
      RENDER CONSTELLATION
-     (ONLY IF PRESENT)
-     ========================= */
-
+  ------------------- */
   const wrapper = document.querySelector(".presence-wrapper");
-  if (!wrapper) return; // ← silently exit on non-constellation pages
 
-  const visitsByMonth = visits.reduce((acc, v) => {
-    acc[v.month] = acc[v.month] || [];
-    acc[v.month].push(v);
-    return acc;
-  }, {});
+  function renderConstellation(visitsObj) {
+    if (!wrapper) return;
+    wrapper.innerHTML = ""; // clear previous
 
-  Object.keys(visitsByMonth)
-    .sort()
-    .reverse()
-    .forEach(month => {
+    if (!visitsObj) return;
+
+    // Firebase returns objects with unique keys
+    const visits = Object.values(visitsObj);
+
+    // Group by month
+    const visitsByMonth = visits.reduce((acc, v) => {
+      acc[v.month] = acc[v.month] || [];
+      acc[v.month].push(v);
+      return acc;
+    }, {});
+
+    Object.keys(visitsByMonth).sort().reverse().forEach(month => {
       const label = document.createElement("div");
       label.className = "month-label";
       label.textContent = month;
@@ -72,17 +79,26 @@ document.addEventListener("DOMContentLoaded", () => {
       visitsByMonth[month].forEach(v => {
         const dot = document.createElement("div");
         dot.classList.add("presence-dot");
-
-        const isNight = v.hour >= 22 || v.hour < 5;
-        dot.classList.add(isNight ? "night" : "day");
+        dot.classList.add(v.hour >= 22 || v.hour < 5 ? "night" : "day");
 
         dot.style.left = `${Math.random() * 92 + 4}%`;
         dot.style.top = `${Math.random() * 92 + 4}%`;
 
-        const ageDays = (Date.now() - v.time) / (1000 * 60 * 60 * 24);
+        const ageDays = (Date.now() - v.time) / (1000*60*60*24);
         if (ageDays > 20) dot.classList.add("old");
 
         sky.appendChild(dot);
       });
     });
+  }
+
+  /* -------------------
+     FIREBASE: LISTEN FOR UPDATES
+  ------------------- */
+  const onValue = window.firebaseOnValue;
+  onValue(visitsRef, snapshot => {
+    const visitsObj = snapshot.val();
+    renderConstellation(visitsObj);
+  });
+
 });
