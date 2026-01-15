@@ -15,12 +15,6 @@ nav a{
   transition: color 0.3s ease, opacity 0.3s ease;
 }
 
-nav a: hover,
-nav:active {
-  color: var(--accent);
-  opacity: 1;
-}
-
 
 /* =========================
    BASE
