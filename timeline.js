@@ -36,45 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
     4: "This memory hasn’t decided what it wants to be yet."
   };
 
-  // =========================
-  // INITIAL STATE
-  // =========================
-  if (!overlay) return;
-  overlay.hidden = true;
 
-  // =========================
-  // OPEN MEMORY
-  // =========================
-  entries.forEach(entry => {
-    entry.addEventListener("click", () => {
-      const id = entry.dataset.id;
-      memoryContent.textContent = MEMORIES[id] || "";
-      overlay.hidden = false;
-    });
-  });
+  const now = new Date();
 
-  // =========================
-  // CLOSE MEMORY
-  // =========================
-  if (closeBtn) {
-    closeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      overlay.hidden = true;
-    });
-  }
-
-  // Click outside box closes
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) {
-      overlay.hidden = true;
-    }
-  });
-
-  // Prevent inner clicks from closing
-  if (memoryBox) {
-    memoryBox.addEventListener("click", e => {
-      e.stopPropagation();
-    });
-  }
-
-});
+  const visit = {
+    month: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`,
+    hour: now.getHours(),
+    time: now.getTime(),
+    page: window.presence.html
+  };
