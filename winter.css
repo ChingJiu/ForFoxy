@@ -70,13 +70,13 @@ footer {
 /* =========================
    NAVIGATION
    ========================= */
-.site-nav a {
-   margin: 0 1 rem;
-  text-decoration: none;
-  color: var(--text-light);
+nav a{
+  margin:0 1rem;
   font-size: 14px;
   letter-spacing: 0.04em;
-  opacity: 0.6;
+  text-decoration:none;
+  font-weight: 700;
+   colour: var(--text);
   transition: color 0.3s ease, opacity 0.3s ease;
 }
 
