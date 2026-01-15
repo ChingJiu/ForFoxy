@@ -5,6 +5,50 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>For foxy..</title>
 
+      <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.1.0/firebas-database.js";
+  const firebaseConfig = {
+  apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+  authDomain: "foxy-8816f.firebaseapp.com",
+  databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+  projectId: "foxy-8816f",
+  storageBucket: "foxy-8816f.firebasestorage.app",
+  messagingSenderId: "435722069384",
+  appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const dp = getDatabase(app);
+
+  const visitsRef = ref(db, 'visits');
+
+  // Push current visit
+  const now = new Date();
+  const visit = {
+    month: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,
+    hour: now.getHours(),
+    time: now.getTime()
+  };
+
+  push(visitsRef, visit);
+
+  // Listen for updates
+  onValue(visitsRef, (snapshot) => {
+    const visits = snapshot.val();
+    renderConstellation(visits); // your function to render dots
+  });
+</script>
+
+
+    window.firebaseDB = db;
+    window.firebasePush = push;
+    window.firebaseRef = ref;
+    window.firebaseOnValue = onValue;
+  </script>
+
+    
   <link rel="stylesheet" href="presence.css">
   <script defer src="presence.js"></script>
 </head>
