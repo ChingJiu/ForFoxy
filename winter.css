@@ -7,7 +7,7 @@
   --bg-dark: #0c0c0c;
   --text-dark: #e6e6e6;
 
-  --accent: #ffaaaa;
+  --accent: #600000;
 
   /* Active theme (default: light) */
   --bg: var(--bg-light);
