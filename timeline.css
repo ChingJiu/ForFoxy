@@ -54,9 +54,7 @@ nav a {
   transition: color 0.3s ease, opacity 0.3s ease;
   font-weight: 600;
   opacity: 0.6;
-  display: flex;
   gap: 32px;
-  flex-direction: column;
 }
 
 
@@ -100,6 +98,7 @@ p {
 }
 
 .timeline-item time {
+  display: inline-block;
   opacity: 0.6;
   font-size: 12px;
 }
@@ -128,11 +127,11 @@ p {
 }
 
 .timeline-entry .content time {
-  display: block;
-  margin-top: 24px;
-  margin-bottom: 6px;
+  display: inline-block;
+  margin: 0;
   color: var(--text);
   opacity: 0.6;
+  font-size: 12px;
 }
 
 /* Entry */
