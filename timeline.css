@@ -108,7 +108,7 @@ p {
 
 .timeline-item a {
   text-decoration: none;
-  color: var(--text);
+  color: var(--accent);
   font-weight: 600;
   transition: color 0.3s;
 }
