@@ -41,25 +41,6 @@ body {
   padding: 120px 20px 160px
 }
 
-.site-nav {
-  position: sticky;
-  top: 40px;
-  align-self: flex-start;
-  font-weight: 600;
-  z-index: 10;
-}
-
-.site-nav a {
-  margin: 1 rem;
-  text-decoration: none;
-  color: var(--text-light);
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  opacity: 0.6;
-  transition: color 0.3s ease, opacity 0.3s ease;
-}
-
-
 .nav-entry .dot {
   background: transparent;
   border: 1px solid currentColor;
@@ -68,6 +49,8 @@ body {
 .nav-links a {
   margin-right: 16px;
   text-decoration: none;
+  color: var(--text);
+  transition: color 0.3s ease, opactiy 0.3s ease;
   font-weight: 600;
   opacity: 0.6;
 }
@@ -102,7 +85,6 @@ footer {
 p {
   color: var(--text);
   font-size: 15px;
-  margin-bottom: 60px;
 }
 
 /* Timeline */
