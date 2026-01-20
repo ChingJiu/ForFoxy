@@ -7,38 +7,36 @@
 
   <link rel="stylesheet" href="bulletin.css" />
 
-  <!-- Firebase bootstrap (same pattern as your other pages) -->
+  <!-- Firebase bootstrap -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
     import {
       getDatabase,
       ref,
       push,
-      onValue
+      onValue,
+      remove
     } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
-    import { remove } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
-
-window.firebaseRemove = remove;
-
-
-     const firebaseConfig = {
-    apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
-    authDomain: "foxy-8816f.firebaseapp.com",
-    databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
-    projectId: "foxy-8816f",
-    storageBucket: "foxy-8816f.appspot.com",
-    messagingSenderId: "435722069384",
-    appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+      authDomain: "foxy-8816f.firebaseapp.com",
+      databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+      projectId: "foxy-8816f",
+      storageBucket: "foxy-8816f.appspot.com",
+      messagingSenderId: "435722069384",
+      appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // expose for bulletin.js
     window.firebaseDB = db;
     window.firebaseRef = ref;
     window.firebasePush = push;
     window.firebaseOnValue = onValue;
+    window.firebaseRemove = remove;
   </script>
 
   <script defer src="bulletin.js"></script>
@@ -47,7 +45,7 @@ window.firebaseRemove = remove;
 <body>
 
   <header class="site-header">
-    <h1>Notes, </h1>
+    <h1>Notes,</h1>
 
     <nav>
       <a href="index.html">Home</a>
@@ -63,32 +61,34 @@ window.firebaseRemove = remove;
 
     <!-- Input Panel -->
     <section class="bulletin-input">
-      <textarea
-        id="noteInput"
-        placeholder="Leave a note here… "
-        rows="3"></textarea>
+      <form id="bulletin-form">
+        <textarea
+          id="bulletin-input"
+          placeholder="Leave a note here…"
+          rows="3"></textarea>
 
-      <div class="input-row">
-        <select id="moodSelect">
-          <option value="soft">soft</option>
-          <option value="warm">warm</option>
-          <option value="unsaid">unsaid</option>
-        </select>
+        <div class="input-row">
+          <select id="bulletin-mood">
+            <option value="soft">soft</option>
+            <option value="warm">warm</option>
+            <option value="unsaid">unsaid</option>
+          </select>
 
-        <button id="pinNote">Pin</button>
-      </div>
+          <button type="submit">Pin</button>
+        </div>
+      </form>
     </section>
 
     <!-- Bulletin Board -->
-    <section class="bulletin-board" id="bulletinBoard">
-      <!-- Notes get rendered here -->
+    <section class="bulletin-board" id="bulletin-board">
+      <!-- Notes render here -->
     </section>
 
   </main>
 
   <footer>
     <p>Last edited: 20/01/2026</p>
-    <p>for emergency communications and in case of spiralling. </p></p>
+    <p>for emergency communications and in case of spiralling.</p>
   </footer>
 
 </body>
