@@ -1,0 +1,277 @@
+:root {
+  --bg-light: #f4f4f4;
+  --text-light: #111;
+  --bg-dark: #0c0c0c;
+  --text-dark: #e6e6e6;
+  --accent: #600000;
+
+  --bg: var(--bg-light);
+  --text: var(--text-light);
+}
+
+html[data-theme="light"] {
+  --bg: var(--bg-light);
+  --text: var(--text-light);
+}
+
+html[data-theme="dark"] {
+  --bg: var(--bg-dark);
+  --text: var(--text-dark);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+header {
+  background: #84D4F6;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+}
+
+/* =========================
+   CONTAINER
+   ========================= */
+
+.bulletin-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 120px 20px 160px;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================
+   INPUT PANEL
+   ========================= */
+
+.bulletin-input {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  margin-bottom: 40px;
+  align-items: center;
+}
+
+#noteInput {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+  color: var(--text);
+  outline: none;
+  transition: border 0.3s ease, background 0.3s ease;
+}
+
+html[data-theme="dark"] #noteInput {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#noteInput::placeholder {
+  opacity: 0.6;
+}
+
+#moodSelect {
+  padding: 12px 14px;
+  font-size: 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+  color: var(--text);
+  outline: none;
+  transition: border 0.3s ease, background 0.3s ease;
+}
+
+html[data-theme="dark"] #moodSelect {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#pinNote {
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#pinNote:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   BOARD
+   ========================= */
+
+#bulletinBoard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* =========================
+   NOTE CARD
+   ========================= */
+
+.bulletin-note {
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.02);
+  position: relative;
+  animation: fadeIn 0.6s ease;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+html[data-theme="dark"] .bulletin-note {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.bulletin-note:hover {
+  transform: translateY(-1px);
+}
+
+.note-text {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+}
+
+.note-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  opacity: 0.6;
+  letter-spacing: 0.04em;
+}
+
+.note-time {
+  font-variant-numeric: tabular-nums;
+}
+
+.note-mood {
+  text-transform: uppercase;
+}
+
+/* =========================
+   MOOD STYLES
+   ========================= */
+
+.mood-soft {
+  opacity: 0.85;
+}
+
+.mood-warm {
+  box-shadow: 0 0 14px rgba(255, 200, 180, 0.25);
+}
+
+.mood-longing {
+  letter-spacing: 0.05em;
+}
+
+.mood-unsaid {
+  filter: blur(0.2px);
+  opacity: 0.7;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+footer {
+  margin: 40px 0 20px;
+  text-align: center;
+  opacity: 0.7;
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+}
+
+/* =========================
+   THEME SWITCH
+   ========================= */
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  width: 40px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s, background 0.3s;
+}
+
+input:checked + .slider {
+  background: #555;
+}
+
+input:checked + .slider::before {
+  transform: translateX(20px);
+  background: #84d4f6;
+}
+
+/* =========================
+   FADE IN
+   ========================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
