@@ -59,29 +59,27 @@
 
   <main class="bulletin-container">
 
-    <!-- Input Panel -->
+        <!-- Input Panel -->
     <section class="bulletin-input">
-      <form id="bulletin-form">
-        <textarea
-          id="bulletin-input"
-          placeholder="Leave a note here…"
-          rows="3"></textarea>
+      <textarea
+        id="noteInput"
+        placeholder="Leave a note here…"
+        rows="3"></textarea>
 
-        <div class="input-row">
-          <select id="bulletin-mood">
-            <option value="soft">soft</option>
-            <option value="warm">warm</option>
-            <option value="unsaid">unsaid</option>
-          </select>
+      <div class="input-row">
+        <select id="moodSelect">
+          <option value="soft">soft</option>
+          <option value="warm">warm</option>
+          <option value="unsaid">unsaid</option>
+        </select>
 
-          <button type="submit">Pin</button>
-        </div>
-      </form>
+        <button id="pinNote">Pin</button>
+      </div>
     </section>
 
     <!-- Bulletin Board -->
-    <section class="bulletin-board" id="bulletin-board">
-      <!-- Notes render here -->
+    <section class="bulletin-board" id="bulletinBoard">
+      <!-- Notes get rendered here -->
     </section>
 
   </main>
