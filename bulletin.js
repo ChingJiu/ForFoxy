@@ -123,17 +123,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
-  // UTIL
-  // =========================
-  function formatTime(iso) {
-    const d = new Date(iso);
-    return d.toLocaleTimeString([], { 
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit", 
-      minute: "2-digit" 
-    });
-  }
+// UTIL
+// =========================
+function formatTime(iso) {
+  const d = new Date(iso);
+
+  return d.toLocaleString([], {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 
 });
