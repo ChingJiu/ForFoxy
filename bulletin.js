@@ -31,20 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const notesRef = ref(db, "bulletin");
 
   // =========================
-  // ELEMENTS
+  // ELEMENTS (MATCH HTML)
   // =========================
-  const form = document.getElementById("bulletin-form");
-  const input = document.getElementById("bulletin-input");
-  const moodSelect = document.getElementById("bulletin-mood");
-  const board = document.getElementById("bulletin-board");
+  const input = document.getElementById("noteInput");
+  const moodSelect = document.getElementById("moodSelect");
+  const pinBtn = document.getElementById("pinNote");
+  const board = document.getElementById("bulletinBoard");
 
   // =========================
   // SUBMIT NOTE
   // =========================
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
+  if (pinBtn) {
+    pinBtn.addEventListener("click", () => {
       const text = input.value.trim();
       const mood = moodSelect.value;
 
@@ -87,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "delete-note";
       deleteBtn.setAttribute("aria-label", "Delete note");
+      deleteBtn.textContent = "×";
 
       deleteBtn.addEventListener("click", () => {
         card.classList.add("removing");
