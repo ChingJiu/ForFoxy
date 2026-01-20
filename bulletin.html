@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ForFoxy</title>
+
+  <link rel="stylesheet" href="bulletin.css" />
+
+  <!-- Firebase bootstrap (same pattern as your other pages) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_KEY",
+      authDomain: "YOUR_DOMAIN",
+      databaseURL: "YOUR_DB_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.firebaseDB = db;
+    window.firebaseRef = ref;
+    window.firebasePush = push;
+    window.firebaseOnValue = onValue;
+  </script>
+
+  <script defer src="bulletin.js"></script>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <h1>Notes, quietly left</h1>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="presence.html">Stars</a>
+    </nav>
+
+    <label class="switch">
+      <input type="checkbox" id="themeToggle" />
+      <span class="slider"></span>
+    </label>
+  </header>
+
+  <main class="bulletin-container">
+
+    <!-- Input Panel -->
+    <section class="bulletin-input">
+      <textarea
+        id="noteInput"
+        placeholder="Leave a note here… something soft, something honest."
+        rows="3"></textarea>
+
+      <div class="input-row">
+        <select id="moodSelect">
+          <option value="soft">soft</option>
+          <option value="longing">longing</option>
+          <option value="warm">warm</option>
+          <option value="quiet">quiet</option>
+          <option value="unsaid">unsaid</option>
+        </select>
+
+        <button id="pinNote">Pin</button>
+      </div>
+    </section>
+
+    <!-- Bulletin Board -->
+    <section class="bulletin-board" id="bulletinBoard">
+      <!-- Notes get rendered here -->
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Last edited: 20/01/2026</p>
+    <p>for emergency communications and in case of spiralling. </p></p>
+  </footer>
+
+</body>
+</html>
