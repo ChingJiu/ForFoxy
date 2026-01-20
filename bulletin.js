@@ -1,136 +1,134 @@
-// bulletin.js — Quiet Wall Logic
+document.addEventListener("DOMContentLoaded", () => {
 
-// ---------- Theme Toggle ----------
+  // =========================
+  // THEME TOGGLE
+  // =========================
+  const html = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
 
-const themeToggle = document.getElementById("themeToggle");
-const root = document.documentElement;
+  const savedTheme = localStorage.getItem("theme") || "light";
+  html.dataset.theme = savedTheme;
 
-const savedTheme = localStorage.getItem("theme") || "light";
-root.setAttribute("data-theme", savedTheme);
+  if (themeToggle) {
+    themeToggle.checked = savedTheme === "dark";
 
-if (themeToggle) {
-  themeToggle.checked = savedTheme === "dark";
+    themeToggle.addEventListener("change", () => {
+      const theme = themeToggle.checked ? "dark" : "light";
+      html.dataset.theme = theme;
+      localStorage.setItem("theme", theme);
+    });
+  }
 
-  themeToggle.addEventListener("change", () => {
-    const newTheme = themeToggle.checked ? "dark" : "light";
-    root.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
+  // =========================
+  // FIREBASE SETUP
+  // =========================
+  const db = window.firebaseDB;
+  const ref = window.firebaseRef;
+  const push = window.firebasePush;
+  const onValue = window.firebaseOnValue;
+  const remove = window.firebaseRemove;
+
+  const notesRef = ref(db, "bulletin");
+
+  // =========================
+  // ELEMENTS
+  // =========================
+  const form = document.getElementById("bulletin-form");
+  const input = document.getElementById("bulletin-input");
+  const moodSelect = document.getElementById("bulletin-mood");
+  const board = document.getElementById("bulletin-board");
+
+  // =========================
+  // SUBMIT NOTE
+  // =========================
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const text = input.value.trim();
+      const mood = moodSelect.value;
+
+      if (!text) return;
+
+      const now = new Date();
+
+      const note = {
+        text,
+        mood,
+        time: now.toISOString(),
+        timestamp: now.getTime()
+      };
+
+      push(notesRef, note);
+
+      input.value = "";
+      moodSelect.value = "soft";
+    });
+  }
+
+  // =========================
+  // RENDER NOTES
+  // =========================
+  onValue(notesRef, (snapshot) => {
+    board.innerHTML = "";
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const notes = Object.entries(data)
+      .map(([id, value]) => ({ id, ...value }))
+      .sort((a, b) => b.timestamp - a.timestamp);
+
+    notes.forEach(note => {
+      const card = document.createElement("div");
+      card.className = `bulletin-note mood-${note.mood}`;
+      card.dataset.id = note.id;
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "delete-note";
+      deleteBtn.setAttribute("aria-label", "Delete note");
+
+      deleteBtn.addEventListener("click", () => {
+        card.classList.add("removing");
+
+        setTimeout(() => {
+          const noteRef = ref(db, `bulletin/${note.id}`);
+          remove(noteRef);
+        }, 300);
+      });
+
+      const textEl = document.createElement("div");
+      textEl.className = "note-text";
+      textEl.textContent = note.text;
+
+      const meta = document.createElement("div");
+      meta.className = "note-meta";
+
+      const timeEl = document.createElement("span");
+      timeEl.className = "note-time";
+      timeEl.textContent = formatTime(note.time);
+
+      const moodEl = document.createElement("span");
+      moodEl.className = "note-mood";
+      moodEl.textContent = note.mood;
+
+      meta.appendChild(timeEl);
+      meta.appendChild(moodEl);
+
+      card.appendChild(deleteBtn);
+      card.appendChild(textEl);
+      card.appendChild(meta);
+
+      board.appendChild(card);
+    });
   });
-}
 
+  // =========================
+  // UTIL
+  // =========================
+  function formatTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
 
-// ---------- Firebase References ----------
-
-const db = window.firebaseDB;
-const ref = window.firebaseRef;
-const push = window.firebasePush;
-const onValue = window.firebaseOnValue;
-
-const notesRef = ref(db, "bulletin");
-
-
-// ---------- DOM Elements ----------
-
-const noteInput = document.getElementById("noteInput");
-const moodSelect = document.getElementById("moodSelect");
-const pinButton = document.getElementById("pinNote");
-const board = document.getElementById("bulletinBoard");
-
-
-// ---------- Helpers ----------
-
-function formatTime(ts) {
-  const d = new Date(ts);
-  return d.toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
-
-// ---------- Post a Note ----------
-
-if (pinButton) {
-  pinButton.addEventListener("click", () => {
-    const text = noteInput.value.trim();
-    const mood = moodSelect.value;
-
-    if (!text) return;
-
-    const payload = {
-      text,
-      mood,
-      timestamp: Date.now()
-    };
-
-    push(notesRef, payload);
-
-    noteInput.value = "";
-  });
-}
-
-
-// ---------- Render Board ----------
-
-function renderNotes(snapshot) {
-  board.innerHTML = "";
-
-  const data = snapshot.val();
-  if (!data) return;
-
-  const entries = Object.entries(data).map(([id, note]) => ({
-    id,
-    ...note
-  }));
-
-  entries.sort((a, b) => b.timestamp - a.timestamp);
-
-  entries.forEach(note => {
-    const card = document.createElement("div");
-    card.className = `bulletin-note mood-${note.mood}`;
-
-    const text = document.createElement("div");
-    text.className = "note-text";
-    text.textContent = note.text;
-
-    const meta = document.createElement("div");
-    meta.className = "note-meta";
-
-    const time = document.createElement("span");
-    time.className = "note-time";
-    time.textContent = formatTime(note.timestamp);
-
-    const mood = document.createElement("span");
-    mood.className = "note-mood";
-    mood.textContent = note.mood;
-
-    meta.appendChild(time);
-    meta.appendChild(mood);
-
-    card.appendChild(text);
-    card.appendChild(meta);
-
-    board.appendChild(card);
-  });
-}
-
-
-// ---------- Live Sync ----------
-
-onValue(notesRef, snapshot => {
-  renderNotes(snapshot);
 });
-
-
-// ---------- Soft Keyboard Ritual ----------
-
-if (noteInput) {
-  noteInput.addEventListener("keydown", e => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-      pinButton.click();
-    }
-  });
-}
