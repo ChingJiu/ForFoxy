@@ -173,12 +173,7 @@ html[data-theme="dark"] #moodSelect {
   transform: scale(0.95);
 }
 
-/* Optional subtle symbol styling */
-.delete-note::before {
-  content: "×";
-  font-size: 16px;
-  line-height: 1;
-}
+
 
 /* =========================
    DELETING ANIMATION
@@ -241,7 +236,7 @@ html[data-theme="dark"] .bulletin-note {
    ========================= */
 
 .mood-soft {
-  opacity: 0.85;
+  opacity: 0.75;
 }
 
 .mood-warm {
