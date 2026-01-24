@@ -4,57 +4,128 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>For Foxy..</title>
+
   <link rel="stylesheet" href="bar.css">
 
+  <!-- Firebase bootstrap -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-  import {
-    getDatabase,
-    ref,
-    push,
-    onValue
-  } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
     const firebaseConfig = {
-    apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
-    authDomain: "foxy-8816f.firebaseapp.com",
-    databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
-    projectId: "foxy-8816f",
-    storageBucket: "foxy-8816f.appspot.com",
-    messagingSenderId: "435722069384",
-    appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
-  };
+      apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+      authDomain: "foxy-8816f.firebaseapp.com",
+      databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+      projectId: "foxy-8816f",
+      storageBucket: "foxy-8816f.appspot.com",
+      messagingSenderId: "435722069384",
+      appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+    };
 
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.firebaseDB = db;
-  window.firebaseRef = ref;
-  window.firebasePush = push;
-  window.firebaseOnValue = onValue;
-</script>
+    window.firebaseDB = db;
+    window.firebaseRef = ref;
+    window.firebasePush = push;
+    window.firebaseOnValue = onValue;
+  </script>
 
   <script defer src="bar.js"></script>
   <script defer src="visit-recorder.js"></script>
-
 </head>
 
 <body>
 
-  <header>
+  <!-- =========================
+       HEADER
+  ========================= -->
+  <header class="site-header">
     <h1>Which chocolate are you craving,</h1>
-      <nav>
+
+    <nav>
       <a href="index.html">Home</a>
-  </nav>
+    </nav>
+
     <label class="switch">
       <input type="checkbox" id="themeToggle">
       <span class="slider"></span>
     </label>
   </header>
 
+
+  <!-- =========================
+       BAR UI
+  ========================= -->
+  <main class="bar-container">
+
+    <section class="bar-shelf">
+
+      <!-- Each drink = one ritual button -->
+      <div class="drink" data-drink="wine">
+        <div class="drink-icon">🍷</div>
+        <div class="drink-label">Wine</div>
+      </div>
+
+      <div class="drink" data-drink="coffee">
+        <div class="drink-icon">☕</div>
+        <div class="drink-label">Coffee</div>
+      </div>
+
+      <div class="drink" data-drink="tea">
+        <div class="drink-icon">🍵</div>
+        <div class="drink-label">Tea</div>
+      </div>
+
+      <div class="drink" data-drink="cocktail">
+        <div class="drink-icon">🍸</div>
+        <div class="drink-label">Cocktail</div>
+      </div>
+
+      <div class="drink" data-drink="chocolate">
+        <div class="drink-icon">🍫</div>
+        <div class="drink-label">Chocolate</div>
+      </div>
+
+      <div class="drink" data-drink="midnight">
+        <div class="drink-icon">🌙</div>
+        <div class="drink-label">Midnight</div>
+      </div>
+
+      <!-- Random ritual -->
+      <div class="drink random" data-drink="random">
+        <div class="drink-icon">🎲</div>
+        <div class="drink-label">Random</div>
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         MESSAGE PANEL
+    ========================= -->
+    <section class="bar-message">
+
+      <div class="bar-message-drink">—</div>
+      <div class="bar-message-text">
+        Choose a chocolate and I’ll pour you something gentle.
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
   <footer>
-    <p>Last edited: 19/01/2026 </p>
+    <p>Last edited: 19/01/2026</p>
     <p>have a chocolate, baby zᶻ ૮˶- ﻌ -˶ა⌒)ᦱ</p>
   </footer>
 
