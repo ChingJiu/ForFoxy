@@ -1,137 +1,208 @@
 /* =========================
-   THEME VARIABLES
-   ========================= */
-:root {
-  --bg-light: #f4f4f4;
-  --text-light: #111;
-  --bg-dark: #0c0c0c;
-  --text-dark: #e6e6e6;
+   BAR PAGE CONTAINER
+========================= */
 
-  --accent: #600000;
-
-  /* Active theme (default: light) */
-  --bg: var(--bg-light);
-  --text: var(--text-light);
+.bar-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
 }
 
-html[data-theme="dark"] {
-  --bg: var(--bg-dark);
-  --text: var(--text-dark);
-}
-
-/* =========================
-   RESET / BASE
-   ========================= */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Space Grotesk', sans-serif;
-  transition: background 0.3s, color 0.3s;
-}
-
-/* =========================
-   TYPOGRAPHY
-   ========================= */
-h1 {
-  margin: 0;
+.bar-title {
   font-size: 1.8rem;
-}
-
-/* =========================
-   LAYOUT
-   ========================= */
-main {
-  position: relative;
-  z-index: 2;
-}
-
-header,
-footer {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-}
-
-header {
-  background: #84d4f6;
-  padding: 1rem;
-}
-
-footer {
-  margin: 20px 0;
-  opacity: 0.7;
-}
-
-/* =========================
-   NAVIGATION
-   ========================= */
-nav a{
-  margin:0 1rem;
-  font-size: 14px;
   letter-spacing: 0.04em;
-  text-decoration:none;
-  font-weight: 700;
-  color: var(--accent);
-  transition: color 0.3s ease, opacity 0.3s ease;
+  font-weight: 500;
+  opacity: 0.9;
 }
+
+.bar-subtitle {
+  font-size: 0.95rem;
+  opacity: 0.65;
+  text-align: center;
+  line-height: 1.6;
+}
+
 
 /* =========================
-   THEME SWITCH
-   ========================= */
+   DRINK GRID
+========================= */
 
-.site-header {
+.drink-grid {
+  width: 100%;
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 1.2rem;
 }
 
-.theme-switch {
-  justify-self: end;
-}
-
-.switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.switch input {
-  display: none;
-}
-
-.slider {
-  width: 40px;
-  height: 20px;
-  background: #ccc;
-  border-radius: 20px;
+.drink {
   position: relative;
-  transition: background 0.3s;
+  border-radius: 14px;
+  padding: 1.1rem 0.6rem 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: 
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    background 0.35s ease;
+  background: var(--card-bg);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
-.slider::before {
-  content: '';
+.drink:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.1);
+}
+
+.drink:active {
+  transform: scale(0.97);
+}
+
+.drink img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  margin-bottom: 0.7rem;
+  pointer-events: none;
+}
+
+.drink-name {
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+
+/* =========================
+   RANDOM DRINK (SPECIAL)
+========================= */
+
+.drink.random {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 220, 0.25),
+    rgba(180, 200, 255, 0.25)
+  );
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+}
+
+[data-theme="dark"] .drink.random {
+  background: linear-gradient(
+    135deg,
+    rgba(160, 120, 180, 0.25),
+    rgba(100, 120, 200, 0.25)
+  );
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.drink.random::after {
+  content: "??";
   position: absolute;
-  width: 16px;
-  height: 16px;
-  background: white;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s, background 0.3s;
+  top: 10px;
+  right: 12px;
+  font-size: 0.75rem;
+  opacity: 0.6;
 }
 
-input:checked + .slider {
-  background: #555;
+
+/* =========================
+   MESSAGE PANEL
+========================= */
+
+.bar-message-wrap {
+  width: 100%;
+  max-width: 560px;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-input:checked + .slider::before {
-  transform: translateX(20px);
-  background: #84d4f6;
+.bar-message {
+  width: 100%;
+  padding: 1.6rem 1.8rem;
+  border-radius: 18px;
+  background: var(--panel-bg);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translateY(10px) scale(0.97);
+  transition: 
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  position: relative;
+}
+
+.bar-message.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.bar-message-text {
+  font-size: 1rem;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  opacity: 0.92;
+}
+
+.bar-message-drink {
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  font-size: 0.75rem;
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+}
+
+
+/* =========================
+   SOFT GLOW EFFECT (OPTIONAL)
+========================= */
+
+.bar-message::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 200, 230, 0.3),
+    rgba(200, 220, 255, 0.3),
+    rgba(255, 200, 230, 0.3)
+  );
+  opacity: 0.25;
+  z-index: -1;
+  filter: blur(18px);
+}
+
+[data-theme="dark"] .bar-message::before {
+  background: linear-gradient(
+    120deg,
+    rgba(180, 120, 200, 0.35),
+    rgba(120, 140, 220, 0.35),
+    rgba(180, 120, 200, 0.35)
+  );
+}
+
+
+/* =========================
+   RESPONSIVE TWEAKS
+========================= */
+
+@media (max-width: 520px) {
+  .bar-title {
+    font-size: 1.55rem;
+  }
+
+  .drink img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .bar-message {
+    padding: 1.3rem 1.4rem;
+  }
 }
