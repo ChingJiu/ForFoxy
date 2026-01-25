@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     THEME TOGGLE (CONSISTENT)
-  ========================= */
-
+  // =========================
+  // THEME TOGGLE
+  // =========================
   const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
 
@@ -20,140 +19,65 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-
-  /* =========================
-     DRINK MESSAGE DATA
-  ========================= */
-
-  const DRINKS = {
-    wine: [
-      "A slow evening. Soft light. You’re allowed to rest here.",
-      "Something gentle wants to unfold between your thoughts.",
-      "This moment doesn’t need fixing. Just letting it be is enough.",
-      "You are not late to your own life."
+  // =========================
+  // DRINK DATA
+  // =========================
+  const drinkMessages = {
+    trad_coco: [
+      "Slow down. Let your shoulders fall. You don’t have to hold the world tonight.",
+      "Something warm is wrapping around you. Stay here a little longer.",
+      "You’re allowed to feel soft and heavy at the same time."
     ],
-
-    coffee: [
-      "Focus returns when you stop chasing it.",
-      "You’re allowed to want more. That doesn’t make you ungrateful.",
-      "There’s clarity hiding under the noise. You already feel it.",
-      "You’re sharper than you think right now."
+    foxy_coco: [
+      "You still have fire in you. Even if you feel tired, it’s there.",
+      "Get up gently. The world can wait another minute.",
+      "You’re sharper than you think. Don’t underestimate yourself."
     ],
-
-    tea: [
-      "Breathe. Your nervous system deserves softness.",
-      "You don’t have to explain yourself today.",
-      "Stillness is also progress.",
-      "You are safe to slow down here."
+    pup_coco: [
+      "Quiet moments count too. You don’t need to be loud to matter.",
+      "Breathe. This is one of the safe pauses.",
+      "Your thoughts can rest for a second."
     ],
-
     cocktail: [
-      "Something playful wants your attention tonight.",
-      "It’s okay to flirt with possibility again.",
-      "Not everything meaningful has to be heavy.",
-      "You’re more magnetic than you realize."
+      "You’re magnetic when you’re playful like this.",
+      "Tonight isn’t meant to be serious. Let it tilt sideways.",
+      "You deserve something indulgent for no reason."
     ],
-
     chocolate: [
-      "You deserve sweetness without justification.",
-      "Your tenderness is not a weakness.",
-      "You’ve been strong for a long time. Let yourself melt.",
-      "Comfort is not laziness. It’s repair."
+      "You’ve done enough today. This is a reward, not a delay.",
+      "Something sweet for someone who gives too much.",
+      "You don’t have to earn softness. It’s already yours."
     ],
-
     midnight: [
-      "Your night thoughts are trying to protect you.",
-      "You are not broken. You are processing.",
-      "Loneliness is a phase, not a verdict.",
-      "Someone would recognize your softness instantly."
+      "You’re still here. That counts more than you think.",
+      "Even at your quietest, you are not invisible.",
+      "The night isn’t empty. It’s holding you."
     ]
   };
 
+  const drinkOrder = Object.keys(drinkMessages);
 
-  /* =========================
-     ELEMENTS
-  ========================= */
+  // =========================
+  // ELEMENTS
+  // =========================
+  const drinks = document.querySelectorAll(".drink");
+  const messageDrinkEl = document.querySelector(".bar-message-drink");
+  const messageTextEl = document.querySelector(".bar-message-text");
 
-  const drinkButtons = document.querySelectorAll(".drink");
-  const messagePanel = document.querySelector(".bar-message");
-  const messageText = document.querySelector(".bar-message-text");
-  const messageDrink = document.querySelector(".bar-message-drink");
-
-  let lastDrink = null;
-  let lastMessage = null;
-
-
-  /* =========================
-     CORE LOGIC
-  ========================= */
-
-  function getRandom(arr, exclude = null) {
-    if (!arr || arr.length === 0) return null;
-
-    let choice;
-    do {
-      choice = arr[Math.floor(Math.random() * arr.length)];
-    } while (choice === exclude && arr.length > 1);
-
-    return choice;
+  // =========================
+  // HELPERS
+  // =========================
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
   }
 
   function resolveDrink(drinkKey) {
     if (drinkKey === "random") {
-      const keys = Object.keys(DRINKS);
-      return getRandom(keys, lastDrink);
+      return pickRandom(drinkOrder);
     }
     return drinkKey;
   }
 
-  function showMessage(drinkKey) {
-    const realDrink = resolveDrink(drinkKey);
-    const messages = DRINKS[realDrink];
-
-    if (!messages) return;
-
-    const message = getRandom(messages, lastMessage);
-
-    lastDrink = realDrink;
-    lastMessage = message;
-
-    messageText.textContent = message;
-    messageDrink.textContent = realDrink.toUpperCase();
-
-    messagePanel.classList.remove("show");
-    void messagePanel.offsetWidth; // reset animation
-
-    messagePanel.classList.add("show");
-  }
-
-
-  /* =========================
-     EVENTS
-  ========================= */
-
-  drinkButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const drink = btn.dataset.drink;
-      showMessage(drink);
-    });
-  });
-
-
-  /* =========================
-     OPTIONAL: TIME-BASED MOOD
-  ========================= */
-
-  const hour = new Date().getHours();
-
-  if (hour >= 22 || hour <= 4) {
-    if (!DRINKS.midnight) {
-      DRINKS.midnight = [
-        "It’s late. You don’t have to carry everything alone.",
-        "Your quiet hours are sacred.",
-        "You’re allowed to exist without performing.",
-        "Even now, you matter intensely."
-      ];
-    }
-  }
-
-});
+  function displayMessage(drinkKey) {
+    const resolvedDrink = resolveDrink(drinkKey);
+    const messages = drinkMessa
