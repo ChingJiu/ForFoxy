@@ -65,6 +65,11 @@ footer {
   z-index: 2;
 }
 
+p {
+  color: var(--text);
+  font-size: 15px;
+}
+
 /* =========================
    BAR PAGE CONTAINER
 ========================= */
