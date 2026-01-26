@@ -55,14 +55,20 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   };
 
-  const drinkOrder = Object.keys(drinkMessages);
+  const drinkKeys = Object.keys(drinkMessages);
 
   // =========================
   // ELEMENTS
   // =========================
   const drinks = document.querySelectorAll(".drink");
-  const messageDrinkEl = document.querySelector(".bar-message-drink");
+  const messageBox = document.querySelector(".bar-message");
   const messageTextEl = document.querySelector(".bar-message-text");
+  const messageDrinkEl = document.querySelector(".bar-message-drink");
+
+  if (!drinks.length || !messageBox || !messageTextEl || !messageDrinkEl) {
+    console.warn("Bar page: missing required elements.");
+    return;
+  }
 
   // =========================
   // HELPERS
@@ -73,11 +79,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resolveDrink(drinkKey) {
     if (drinkKey === "random") {
-      return pickRandom(drinkOrder);
+      return pickRandom(drinkKeys);
     }
     return drinkKey;
   }
 
   function displayMessage(drinkKey) {
     const resolvedDrink = resolveDrink(drinkKey);
-    const messages = drinkMessa
+    const messages = drinkMessages[resolvedDrink];
+    const message = pickRandom(messages);
+
+    // animate out first
+    messageBox.classList.remove("show");
+
+    setTimeout(() => {
+      messageTextEl.textContent = message;
+      messageDrinkEl.textContent = resolvedDrink.replace("_", " ");
+
+      messageBox.classList.add("show");
+    }, 200);
+  }
+
+  // =========================
+  // BIND DRINK CLICKS
+  // =========================
+  drinks.forEach(drink => {
+    const key = drink.dataset.drink;
+
+    if (!key) return;
+
+    drink.addEventListener("click", () => {
+      displayMessage(key);
+    });
+  });
+
+});
