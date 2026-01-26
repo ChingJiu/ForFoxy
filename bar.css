@@ -16,6 +16,29 @@ nav a{
   transition: color 0.3s ease, opacity 0.3s ease;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tex);
+  transition: background 0.3s, color 0.3s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+html[data-theme="light"] body {
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+
+html[data-theme="dark"] body {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+
 header {
   background: #84D4F6;
   padding: 1rem;
