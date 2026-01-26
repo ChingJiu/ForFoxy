@@ -2,8 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>For Foxy..</title>
+
   <link rel="stylesheet" href="bar.css">
 
   <!-- Firebase bootstrap -->
@@ -46,47 +47,61 @@
   ========================= -->
   <header class="site-header">
     <h1>Happy Valentine's,</h1>
+
     <nav>
       <a href="index.html">Home</a>
     </nav>
+
     <label class="switch">
-      <input type="checkbox" id="themeToggle">
+      <input type="checkbox" id="themeToggle" aria-label="Toggle theme">
       <span class="slider"></span>
     </label>
   </header>
 
 
   <!-- =========================
-       BAR UI
+       BAR PAGE
   ========================= -->
-  <main class="bar-container">
+  <main class="bar-page">
 
+    <div class="bar-title">The Quiet Bar</div>
+    <div class="bar-subtitle">
+      Pick a drink. I’ll tell you what it means tonight.
+    </div>
+
+    <!-- Drink Grid -->
     <section class="bar-shelf">
 
       <div class="drink" data-drink="trad_coco">
-      <img src="bar/Trad_coco.PNG" alt="Trad_coco">
-      <div class="drink-label">Cafe Chocolate</div>
+        <img src="bar/Trad_coco.PNG" alt="Cafe Chocolate">
+        <div class="drink-label">Cafe Chocolate</div>
       </div>
 
-    <div class="drink" data-drink="foxy_coco">
-      <img src="bar/Foxy_coco.PNG" alt="Foxy_coco">
-      <div class="drink-label">Foxy's Cup</div>
+      <div class="drink" data-drink="foxy_coco">
+        <img src="bar/Foxy_coco.PNG" alt="Foxy's Cup">
+        <div class="drink-label">Foxy's Cup</div>
       </div>
 
       <div class="drink" data-drink="pup_coco">
-      <img src="bar/Pup_coco.PNG" alt="Pup_coco">
-      <div class="drink-label">Pup's Glass</div>
+        <img src="bar/Pup_coco.PNG" alt="Pup's Glass">
+        <div class="drink-label">Pup's Glass</div>
       </div>
 
-      
-    <!-- Random ritual -->
+      <!-- Random Ritual -->
       <div class="drink random" data-drink="random">
+        <img src="bar/Random.PNG" alt="Random">
         <div class="drink-label">Random</div>
       </div>
 
     </section>
 
-
+    <!-- Message Panel -->
+    <div class="bar-message-wrap">
+      <div class="bar-message">
+        <div class="bar-message-text"></div>
+        <div class="bar-message-drink"></div>
+      </div>
+    </div>
 
   </main>
 
