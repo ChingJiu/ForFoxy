@@ -2,10 +2,10 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>For Foxy..</title>
 
-  <link rel="stylesheet" href="bar.css">
+  <link rel="stylesheet" href="bar.css" />
 
   <!-- Firebase bootstrap -->
   <script type="module">
@@ -46,10 +46,12 @@
        HEADER
   ========================= -->
   <header>
-    <h1>Happy Valentine's,</h1>
+    <h1>Happy Valentine’s,</h1>
+
     <nav>
       <a href="index.html">Home</a>
     </nav>
+
     <label class="switch">
       <input type="checkbox" id="themeToggle" aria-label="Toggle theme">
       <span class="slider"></span>
@@ -72,30 +74,33 @@
 
       <div class="drink" data-drink="foxy_coco">
         <img src="bar/Foxy_coco.PNG" alt="Foxy's Cup">
-        <div class="drink-label">Foxy's Cup</div>
+        <div class="drink-label">Foxy’s Cup</div>
       </div>
 
       <div class="drink" data-drink="pup_coco">
         <img src="bar/Pup_coco.PNG" alt="Pup's Glass">
-        <div class="drink-label">Pup's Glass</div>
+        <div class="drink-label">Pup’s Glass</div>
       </div>
 
       <!-- Random Ritual -->
       <div class="drink random" data-drink="random">
-        <img src="bar/Random_coco.PNG" alt="Random">
+        <img src="bar/Random_coco.PNG" alt="Random drink">
         <div class="drink-label">Just any?</div>
       </div>
 
     </section>
 
-    <!-- Message Panel -->
-    <div class="bar-message-wrap">
-      <div class="bar-message">
-        <div class="bar-message-text"></div>
-      </div>
-    </div>
-
   </main>
+
+
+  <!-- =========================
+       MESSAGE OVERLAY (HIDDEN BY DEFAULT)
+  ========================= -->
+  <div class="bar-overlay" hidden>
+    <div class="bar-message-box">
+      <div class="bar-message-text"></div>
+    </div>
+  </div>
 
 
   <!-- =========================
