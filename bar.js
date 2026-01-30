@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // THEME TOGGLE
-  // =========================
+  /* =========================
+     THEME TOGGLE
+  ========================= */
   const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
 
@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // =========================
-  // DRINK DATA
-  // =========================
+  /* =========================
+     DRINK DATA
+  ========================= */
   const drinkMessages = {
     trad_coco: [
       "Slow down. Let your shoulders fall. You don’t have to hold the world tonight.",
@@ -37,80 +37,68 @@ document.addEventListener("DOMContentLoaded", () => {
       "Quiet moments count too. You don’t need to be loud to matter.",
       "Breathe. This is one of the safe pauses.",
       "Your thoughts can rest for a second."
-    ],
-    cocktail: [
-      "You’re magnetic when you’re playful like this.",
-      "Tonight isn’t meant to be serious. Let it tilt sideways.",
-      "You deserve something indulgent for no reason."
-    ],
-    chocolate: [
-      "You’ve done enough today. This is a reward, not a delay.",
-      "Something sweet for someone who gives too much.",
-      "You don’t have to earn softness. It’s already yours."
-    ],
-    midnight: [
-      "You’re still here. That counts more than you think.",
-      "Even at your quietest, you are not invisible.",
-      "The night isn’t empty. It’s holding you."
     ]
   };
 
   const drinkKeys = Object.keys(drinkMessages);
 
-  // =========================
-  // ELEMENTS
-  // =========================
+  /* =========================
+     ELEMENTS
+  ========================= */
   const drinks = document.querySelectorAll(".drink");
-  const messageBox = document.querySelector(".bar-message");
-  const messageTextEl = document.querySelector(".bar-message-text");
-  const messageDrinkEl = document.querySelector(".bar-message-drink");
+  const overlay = document.querySelector(".bar-overlay");
+  const messageText = document.querySelector(".bar-message-text");
 
-  if (!drinks.length || !messageBox || !messageTextEl || !messageDrinkEl) {
+  if (!drinks.length || !overlay || !messageText) {
     console.warn("Bar page: missing required elements.");
     return;
   }
 
-  // =========================
-  // HELPERS
-  // =========================
+  /* =========================
+     HELPERS
+  ========================= */
   function pickRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function resolveDrink(drinkKey) {
-    if (drinkKey === "random") {
+  function resolveDrink(key) {
+    if (key === "random") {
       return pickRandom(drinkKeys);
     }
-    return drinkKey;
+    return key;
   }
 
-  function displayMessage(drinkKey) {
-    const resolvedDrink = resolveDrink(drinkKey);
-    const messages = drinkMessages[resolvedDrink];
-    const message = pickRandom(messages);
+  function openMessage(drinkKey) {
+    const resolved = resolveDrink(drinkKey);
+    const message = pickRandom(drinkMessages[resolved]);
 
-    // animate out first
-    messageBox.classList.remove("show");
-
-    setTimeout(() => {
-      messageTextEl.textContent = message;
-      messageDrinkEl.textContent = resolvedDrink.replace("_", " ");
-
-      messageBox.classList.add("show");
-    }, 200);
+    messageText.textContent = message;
+    overlay.hidden = false;
   }
 
-  // =========================
-  // BIND DRINK CLICKS
-  // =========================
+  function closeMessage() {
+    overlay.hidden = true;
+  }
+
+  /* =========================
+     BIND DRINK CLICKS
+  ========================= */
   drinks.forEach(drink => {
     const key = drink.dataset.drink;
-
     if (!key) return;
 
     drink.addEventListener("click", () => {
-      displayMessage(key);
+      openMessage(key);
     });
+  });
+
+  /* =========================
+     CLOSE ON OUTSIDE CLICK
+  ========================= */
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closeMessage();
+    }
   });
 
 });
