@@ -29,14 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
       "You’re allowed to feel soft and heavy at the same time."
     ],
     foxy_coco: [
-      "You still have fire in you. Even if you feel tired, it’s there.",
-      "Get up gently. The world can wait another minute.",
-      "You’re sharper than you think. Don’t underestimate yourself."
+      "You're allowed to slow down. Let your shoulders fall.",
+      "Having the courage to allow a breakdown, is for you to rebuild yourself.",
+      "."
     ],
     pup_coco: [
-      "Quiet moments count too. You don’t need to be loud to matter.",
-      "Breathe. This is one of the safe pauses.",
-      "Your thoughts can rest for a second."
+      "I love you. I love you too. I love you no matter first or last. And I love you.",
+      "Thank you for choosing me continously, thank you for trusting me, thank you for holding my vulunerability.",
+      "I wish you love that meets you where you are, that recognises every part of you, that never have you to chase for."
     ],
     matcha_coco: [
       "You still have fire in you. Even if you feel tired, it’s there.",
