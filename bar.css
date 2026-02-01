@@ -101,8 +101,9 @@ footer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  padding: 10px 6px 20px;
+  padding: 16px 16px 28px;
 }
+
 
 @media (max-width: 900px) {
   .bar-shelf {
