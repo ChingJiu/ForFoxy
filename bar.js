@@ -37,7 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
       "Quiet moments count too. You don’t need to be loud to matter.",
       "Breathe. This is one of the safe pauses.",
       "Your thoughts can rest for a second."
-    ]
+    ],
+    matcha_coco: [
+      "You still have fire in you. Even if you feel tired, it’s there.",
+      "Get up gently. The world can wait another minute.",
+      "You’re sharper than you think. Don’t underestimate yourself."
+    ],
+    wine_coco: [
+      "You still have fire in you. Even if you feel tired, it’s there.",
+      "Get up gently. The world can wait another minute.",
+      "You’re sharper than you think. Don’t underestimate yourself."
+    ],
   };
 
   const drinkKeys = Object.keys(drinkMessages);
