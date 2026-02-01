@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ],
     foxy_coco: [
       "You're allowed to slow down. Let your shoulders fall.",
-      "Having the courage to allow a breakdown, is for you to rebuild yourself.",
-      "Even in your most fragile moments, you are still becoming."
+      "Breaking down is not scary. Let everything out, allow yourself to rebuild yourself.",
+      "You are so loved. So cherished. Stay grounded. You are here and your heart is still beating. "
     ],
     pup_coco: [
       "I love you. I love you too. I love you no matter first or last. And I love you.",
