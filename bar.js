@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================
      THEME TOGGLE
   ========================= */
+
   const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
 
@@ -20,8 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================
-     DRINK DATA
+     DRINK MESSAGES
   ========================= */
+
   const drinkMessages = {
     trad_coco: [
       "Slow down. Let your shoulders fall. You don’t have to hold the world tonight.",
@@ -31,12 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     foxy_coco: [
       "You're allowed to slow down. Let your shoulders fall.",
       "Having the courage to allow a breakdown, is for you to rebuild yourself.",
-      "."
+      "Even in your most fragile moments, you are still becoming."
     ],
     pup_coco: [
       "I love you. I love you too. I love you no matter first or last. And I love you.",
-      "Thank you for choosing me continously, thank you for trusting me, thank you for holding my vulunerability.",
-      "I wish you love that meets you where you are, that recognises every part of you, that never have you to chase for."
+      "Thank you for choosing me continuously, thank you for trusting me, thank you for holding my vulnerability.",
+      "I wish you love that meets you where you are, that recognises every part of you, that never makes you chase."
     ],
     matcha_coco: [
       "You still have fire in you. Even if you feel tired, it’s there.",
@@ -55,18 +57,20 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================
      ELEMENTS
   ========================= */
+
   const drinks = document.querySelectorAll(".drink");
   const overlay = document.querySelector(".bar-overlay");
   const messageText = document.querySelector(".bar-message-text");
 
   if (!drinks.length || !overlay || !messageText) {
-    console.warn("Bar page: missing required elements.");
+    console.error("Missing required elements: .drink, .bar-overlay, or .bar-message-text");
     return;
   }
 
   /* =========================
      HELPERS
   ========================= */
+
   function pickRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
@@ -80,8 +84,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openMessage(drinkKey) {
     const resolved = resolveDrink(drinkKey);
-    const message = pickRandom(drinkMessages[resolved]);
 
+    if (!drinkMessages[resolved]) {
+      console.error(`No messages found for drink: ${resolved}`);
+      return;
+    }
+
+    const messages = drinkMessages[resolved];
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      console.error(`Message array missing or empty for: ${resolved}`);
+      return;
+    }
+
+    const message = pickRandom(messages);
     messageText.textContent = message;
     overlay.hidden = false;
   }
@@ -91,8 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================
-     BIND DRINK CLICKS
+     CLICK HANDLERS
   ========================= */
+
   drinks.forEach(drink => {
     const key = drink.dataset.drink;
     if (!key) return;
@@ -103,8 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =========================
-     CLOSE ON OUTSIDE CLICK
+     CLOSE OVERLAY WHEN CLICKING OUTSIDE
   ========================= */
+
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
       closeMessage();
