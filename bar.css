@@ -190,6 +190,21 @@ html[data-theme="dark"] .bar-message-box {
   letter-spacing: 0.02em;
 }
 
+/* === NEW: styling for random choice === */
+
+.random-picked {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 10px;
+}
+
+.random-message {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
 /* =========================
    ANIMATION
 ========================= */
