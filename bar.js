@@ -49,7 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "I think of you as many times as the stars blinked at me tonight. And it's a clear sky tonight.",
       "I still listen to The Christmas Song sometimes. And read the poem, and the letter, and the trivia. ",
       "Be my valentine. Be my baby. Be my...mine. "
-    ]
+    ],
+    random: [
+      "Orion.",
+      "Hello.",
+      "songs of the year?",
+    ],
   };
 
   const drinkKeys = Object.keys(drinkMessages);
@@ -77,7 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resolveDrink(key) {
     if (key === "random") {
-      return pickRandom(drinkKeys);
+      const allOptions = [drinkKeys, "random"];
+      return pickRandom(allOptions);
     }
     return key;
   }
