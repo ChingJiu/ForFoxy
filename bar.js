@@ -101,11 +101,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const chosenMessage = pickRandom(messages);
 
     if (wasRandom) {
-      const drinkName = resolved.replace("_", " ");
-      messageText.textContent = `Random chose: ${drinkName}\n\n${chosenMessage}`;
-    } else {
-      messageText.textContent = chosenMessage;
-    }
+  const prettyName = resolved
+    .replace("_coco", "")
+    .replace("_", " ")
+    .replace(/\b\w/g, c => c.toUpperCase()); // makes it pretty title case
+
+  messageText.innerHTML = `
+    <div class="random-picked">Random chose: ${prettyName}</div>
+    <div class="random-message">${chosenMessage}</div>
+  `;
+} else {
+  messageText.textContent = chosenMessage;
+}
 
     overlay.hidden = false;
   }
