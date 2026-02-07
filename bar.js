@@ -27,13 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const drinkMessages = {
     trad_coco: [
       "In case I don't say it enough: I appreciate you. I believe in you. And you are just really special.",
-      "Don't care what you gonna say, I definitely love you more. (okay prove me wrong :ragebaiting you kekeke) ",
-      "What the world really needs, is probaly more love (like us) and less paperwork (meeting is banned :3)."
+      "Don't care what you gonna say, I definitely love you more. (okay prove me wrong :ragebaiting you kekeke)",
+      "What the world really needs, is probably more love (like us) and less paperwork (meeting is banned :3)."
     ],
     foxy_coco: [
       "You're allowed to slow down. Let your shoulders fall.",
       "Breaking down is not scary. Let everything out, allow yourself to rebuild yourself.",
-      "You are so loved. So cherished. Stay grounded. You are here and your heart is still beating.  "
+      "You are so loved. So cherished. Stay grounded. You are here and your heart is still beating."
     ],
     pup_coco: [
       "I love you. I love you too. I love you no matter first or last. And I love you.",
@@ -41,20 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
       "I wish you love that meets you where you are, that recognises every part of you, that never makes you chase."
     ],
     matcha_coco: [
-      "Do you like raisin? How about date? You know, a date with me. ",
-      "You're my favourite notification. Ping me when you read this. ",
-      "I love you more than the cat (almost). :this line suits you. "
+      "Do you like raisin? How about date? You know, a date with me.",
+      "You're my favourite notification. Ping me when you read this.",
+      "I love you more than the cat (almost). :this line suits you."
     ],
     wine_coco: [
       "I think of you as many times as the stars blinked at me tonight. And it's a clear sky tonight.",
-      "I still listen to The Christmas Song sometimes. And read the poem, and the letter, and the trivia. ",
-      "Be my valentine. Be my baby. Be my...mine. "
+      "I still listen to The Christmas Song sometimes. And read the poem, and the letter, and the trivia.",
+      "Be my valentine. Be my baby. Be my... mine."
     ],
     random: [
       "Orion.",
       "Hello.",
-      "songs of the year?",
-    ],
+      "songs of the year?"
+    ]
   };
 
   const drinkKeys = Object.keys(drinkMessages);
@@ -82,19 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resolveDrink(key) {
     if (key === "random") {
-      const allOptions = [drinkKeys, "random"];
-      return pickRandom(allOptions);
+      return pickRandom(drinkKeys); 
     }
     return key;
   }
 
   function openMessage(drinkKey) {
+    const wasRandom = drinkKey === "random";
     const resolved = resolveDrink(drinkKey);
-
-    if (!drinkMessages[resolved]) {
-      console.error(`No messages found for drink: ${resolved}`);
-      return;
-    }
 
     const messages = drinkMessages[resolved];
 
@@ -103,8 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const message = pickRandom(messages);
-    messageText.textContent = message;
+    const chosenMessage = pickRandom(messages);
+
+    if (wasRandom) {
+      const drinkName = resolved.replace("_", " ");
+      messageText.textContent = `Random chose: ${drinkName}\n\n${chosenMessage}`;
+    } else {
+      messageText.textContent = chosenMessage;
+    }
+
     overlay.hidden = false;
   }
 
