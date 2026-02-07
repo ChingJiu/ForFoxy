@@ -26,14 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const drinkMessages = {
     trad_coco: [
-      "Slow down. Let your shoulders fall. You don’t have to hold the world tonight.",
-      "Something warm is wrapping around you. Stay here a little longer.",
+      "In case I don't say it enough: I appreciate you. I believe in you. And you are just really special.",
+      "Don't care what you gonna say, I definitely love you more. (okay prove me wrong :ragebaiting you kekeke) ",
       "You’re allowed to feel soft and heavy at the same time."
     ],
     foxy_coco: [
       "You're allowed to slow down. Let your shoulders fall.",
       "Breaking down is not scary. Let everything out, allow yourself to rebuild yourself.",
-      "You are so loved. So cherished. Stay grounded. You are here and your heart is still beating. "
+      "You are so loved. So cherished. Stay grounded. You are here and your heart is still beating.  "
     ],
     pup_coco: [
       "I love you. I love you too. I love you no matter first or last. And I love you.",
@@ -43,12 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
     matcha_coco: [
       "You still have fire in you. Even if you feel tired, it’s there.",
       "Get up gently. The world can wait another minute.",
-      "You’re sharper than you think. Don’t underestimate yourself."
+      "I love you more than the cat (almost). :this line suits you. "
     ],
     wine_coco: [
-      "You still have fire in you. Even if you feel tired, it’s there.",
-      "Get up gently. The world can wait another minute.",
-      "You’re sharper than you think. Don’t underestimate yourself."
+      "I think of you as many times as the stars blinked at me tonight. And it's a clear sky tonight.",
+      "I still listen to The Christmas Song sometimes. And read the poem, and the letter.",
+      "Be my valentine. Be my baby. Be my..mine. "
     ]
   };
 
