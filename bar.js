@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     trad_coco: [
       "In case I don't say it enough: I appreciate you. I believe in you. And you are just really special.",
       "Don't care what you gonna say, I definitely love you more. (okay prove me wrong :ragebaiting you kekeke) ",
-      "You’re allowed to feel soft and heavy at the same time."
+      "What the world really needs, is probaly more love (like us) and less paperwork (meeting is banned :3)."
     ],
     foxy_coco: [
       "You're allowed to slow down. Let your shoulders fall.",
@@ -41,14 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
       "I wish you love that meets you where you are, that recognises every part of you, that never makes you chase."
     ],
     matcha_coco: [
-      "You still have fire in you. Even if you feel tired, it’s there.",
-      "Get up gently. The world can wait another minute.",
+      "Do you like raisin? How about date? You know, a date with me. ",
+      "You're my favourite notification. Ping me when you read this. ",
       "I love you more than the cat (almost). :this line suits you. "
     ],
     wine_coco: [
       "I think of you as many times as the stars blinked at me tonight. And it's a clear sky tonight.",
-      "I still listen to The Christmas Song sometimes. And read the poem, and the letter.",
-      "Be my valentine. Be my baby. Be my..mine. "
+      "I still listen to The Christmas Song sometimes. And read the poem, and the letter, and the trivia. ",
+      "Be my valentine. Be my baby. Be my...mine. "
     ]
   };
 
