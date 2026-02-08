@@ -5,25 +5,42 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>For foxy..</title>
 
-  <script type="module">
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-  import { getDatabase } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+  import {
+    getDatabase,
+    ref,
+    push,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
-    authDomain: "foxy-8816f.firebaseapp.com",
-    databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
-    projectId: "foxy-8816f",
-    storageBucket: "foxy-8816f.appspot.com",
-    messagingSenderId: "435722069384",
-    appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
-  };
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+      const firebaseConfig = {
+      apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
+      authDomain: "foxy-8816f.firebaseapp.com",
+      databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
+      projectId: "foxy-8816f",
+      storageBucket: "foxy-8816f.appspot.com",
+      messagingSenderId: "435722069384",
+      appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
+    };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const auth = getAuth(app);
 
-  // expose database to presence.js
+  // Sign users in anonymously so they can write to the database
+  signInAnonymously(auth).catch(err => {
+    console.error("Firebase auth failed:", err);
+  });
+
+  // Expose for your other scripts
   window.firebaseDB = db;
+  window.firebaseRef = ref;
+  window.firebasePush = push;
+  window.firebaseOnValue = onValue;
+  window.firebaseAuth = auth;
 </script>
     
   <link rel="stylesheet" href="presence.css">
