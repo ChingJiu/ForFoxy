@@ -9,16 +9,17 @@
 
   <!-- Firebase bootstrap -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    import {
-      getDatabase,
-      ref,
-      push,
-      onValue,
-      remove
-    } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    push,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
-    const firebaseConfig = {
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+      const firebaseConfig = {
       apiKey: "AIzaSyCqGDbUvlJ_BCclqxeMd4-kpTJeV8fpw0o",
       authDomain: "foxy-8816f.firebaseapp.com",
       databaseURL: "https://foxy-8816f-default-rtdb.firebaseio.com",
@@ -28,16 +29,23 @@
       appId: "1:435722069384:web:5ced054b33bcdb3f98063d"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
 
-    // expose for bulletin.js
-    window.firebaseDB = db;
-    window.firebaseRef = ref;
-    window.firebasePush = push;
-    window.firebaseOnValue = onValue;
-    window.firebaseRemove = remove;
-  </script>
+  // Sign users in anonymously so they can write to the database
+  signInAnonymously(auth).catch(err => {
+    console.error("Firebase auth failed:", err);
+  });
+
+  // Expose for your other scripts
+  window.firebaseDB = db;
+  window.firebaseRef = ref;
+  window.firebasePush = push;
+  window.firebaseOnValue = onValue;
+  window.firebaseAuth = auth;
+</script>
+
 
   <script defer src="bulletin.js"></script>
   <script defer src="visit-recorder.js"></script>
