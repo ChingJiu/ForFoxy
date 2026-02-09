@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "Be my valentine. Be my baby. Be my... mine."
     ],
     random: [
-      "Orion.",
-      "Hello.",
-      "songs of the year?"
+      "我想緊緊地抱住你，特別在我不知該如何安慰你的深夜，我更想擁抱你，然後笨拙地告訴你我愛你。",
+      "比如說，你下午四點來，那從三點鐘起，我就開始感到幸福。時間越臨近，我就越感到幸福。 -《小王子》。",
+      "我多麼希望世界明天就毀滅，那我就能鼓起勇氣去和你見面，然後跟你花上一整天看展覽，吃好吃的，晚上再看看星空，在世界毀滅之前我特別想見你一面。"
     ]
   };
 
