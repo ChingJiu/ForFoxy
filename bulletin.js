@@ -43,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   if (pinBtn) {
     pinBtn.addEventListener("click", () => {
+      if (!window.firebaseReady) {
+        console.error("Auth not ready yet.");
+        return;
+      }
       const text = input.value.trim();
       const mood = moodSelect.value;
 
