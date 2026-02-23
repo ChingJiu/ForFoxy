@@ -1,17 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // THEME TOGGLE
-  // =========================
   const html = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
-
   const savedTheme = localStorage.getItem("theme") || "light";
   html.dataset.theme = savedTheme;
 
   if (themeToggle) {
     themeToggle.checked = savedTheme === "dark";
-
     themeToggle.addEventListener("change", () => {
       const theme = themeToggle.checked ? "dark" : "light";
       html.dataset.theme = theme;
@@ -19,9 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // =========================
-  // FIREBASE SETUP
-  // =========================
   const db = window.firebaseDB;
   const ref = window.firebaseRef;
   const push = window.firebasePush;
@@ -30,47 +22,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const notesRef = ref(db, "bulletin");
 
-  // =========================
-  // ELEMENTS (MATCH HTML)
-  // =========================
   const input = document.getElementById("noteInput");
   const moodSelect = document.getElementById("moodSelect");
   const pinBtn = document.getElementById("pinNote");
   const board = document.getElementById("bulletinBoard");
 
-  // =========================
-  // SUBMIT NOTE
-  // =========================
-  if (pinBtn) {
-    pinBtn.addEventListener("click", () => {
-      if (!window.firebaseReady) {
-        console.error("Auth not ready yet.");
-        return;
-      }
-      const text = input.value.trim();
-      const mood = moodSelect.value;
+  // Disable until auth ready
+  pinBtn.disabled = true;
 
-      if (!text) return;
+  // Submit note
+  pinBtn.addEventListener("click", async () => {
 
-      const now = new Date();
+    if (!window.firebaseAuthReady) {
+      console.error("Auth not ready.");
+      return;
+    }
 
-      const note = {
-        text,
-        mood,
-        time: now.toISOString(),
-        timestamp: now.getTime()
-      };
+    const text = input.value.trim();
+    if (!text) return;
 
-      push(notesRef, note);
+    const now = new Date();
 
+    const note = {
+      text,
+      mood: moodSelect.value,
+      time: now.toISOString(),
+      timestamp: now.getTime()
+    };
+
+    try {
+      await push(notesRef, note);
       input.value = "";
       moodSelect.value = "soft";
-    });
-  }
+    } catch (err) {
+      console.error("Push failed:", err);
+    }
+  });
 
-  // =========================
-  // RENDER NOTES
-  // =========================
+  // Render notes
   onValue(notesRef, (snapshot) => {
     board.innerHTML = "";
 
@@ -82,21 +71,22 @@ document.addEventListener("DOMContentLoaded", () => {
       .sort((a, b) => b.timestamp - a.timestamp);
 
     notes.forEach(note => {
+
       const card = document.createElement("div");
       card.className = `bulletin-note mood-${note.mood}`;
-      card.dataset.id = note.id;
 
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "delete-note";
-      deleteBtn.setAttribute("aria-label", "Delete note");
       deleteBtn.textContent = "×";
 
-      deleteBtn.addEventListener("click", () => {
+      deleteBtn.addEventListener("click", async () => {
         card.classList.add("removing");
-
-        setTimeout(() => {
-          const noteRef = ref(db, `bulletin/${note.id}`);
-          remove(noteRef);
+        setTimeout(async () => {
+          try {
+            await remove(ref(db, `bulletin/${note.id}`));
+          } catch (err) {
+            console.error("Delete failed:", err);
+          }
         }, 300);
       });
 
@@ -108,11 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
       meta.className = "note-meta";
 
       const timeEl = document.createElement("span");
-      timeEl.className = "note-time";
       timeEl.textContent = formatTime(note.time);
 
       const moodEl = document.createElement("span");
-      moodEl.className = "note-mood";
       moodEl.textContent = note.mood;
 
       meta.appendChild(timeEl);
@@ -126,20 +114,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // =========================
-// UTIL
-// =========================
-function formatTime(iso) {
-  const d = new Date(iso);
-
-  return d.toLocaleString([], {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
+  function formatTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString([], {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
 
 });
