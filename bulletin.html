@@ -34,9 +34,17 @@
   const auth = getAuth(app);
 
   // Sign users in anonymously so they can write to the database
-  signInAnonymously(auth).catch(err => {
-    console.error("Firebase auth failed:", err);
-  });
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+signInAnonymously(auth).catch(err => {
+  console.error("Firebase auth failed:", err);
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.firebaseReady = true;
+  }
+});
 
   // Expose for your other scripts
   window.firebaseDB = db;
